@@ -1,5 +1,7 @@
-from deck import *
+from deck import Deck
 from player import Player
+
+
 class Game:
     def __init__(self, numPlayers):
         """ visual:
@@ -19,13 +21,11 @@ class Game:
                 p.take(d.draw())
 
         self.tableCard = d.flip()
-        self.dank = self.tableCard.suit # Determine Dank suit
-        print( 'Table Card:')
-        print( self.tableCard)
+        self.dank = self.tableCard.suit  # Determine Dank suit
+        print('Table Card:')
+        print(self.tableCard)
         for p in self.players:
-            print( p)
+            print(p)
+
 
 g = Game(4)
-
-
-
