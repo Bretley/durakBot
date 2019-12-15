@@ -1,5 +1,5 @@
 """
-A module used to store classes related the the representation of a game
+A module used to store classes related to the representation of a game
 
 Classes
 -------
@@ -23,14 +23,8 @@ class Game:
         The card on the table
     dank: Card.suit
         The suit of the trump card
-
-    Methods
-    -------
-    temp_public_method()
-        A method to be implemented later TODO
-    temp_public_method_2()
-        A method to be implemented later TODO
     """
+
     def __init__(self, num_players):
         """
         visual:
@@ -60,16 +54,6 @@ class Game:
         print(self.table_card)
         for player in self.players:
             print(player)
-
-    def temp_public_method(self):
-        """
-        A method to be implemented later TODO
-        """
-
-    def temp_public_method_2(self):
-        """
-        A method to be implemented later TODO
-        """
 
 
 def main():

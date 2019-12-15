@@ -35,6 +35,17 @@ class Player:
         self.hand = []
         self.num = num
 
+    def __str__(self):
+        """
+        Returns the player as a string
+        """
+
+        ret = "==" + str(self.num) + "==\n"
+        ret += "hand:\n"
+        for card in self.hand:
+            ret += str(card) + '\n'
+        return ret
+
     def take(self, card_list):
         """
         Adds a card to the player's hand
@@ -48,14 +59,3 @@ class Player:
         for card in card_list:
             if card is not None:
                 self.hand.append(card)
-
-    def __str__(self):
-        """
-        Returns the player as a string
-        """
-
-        ret = "==" + str(self.num) + "==\n"
-        ret += "hand:\n"
-        for card in self.hand:
-            ret += str(card) + '\n'
-        return ret
