@@ -89,6 +89,7 @@ class Card:
     suit : str
         The Suit of the card
     """
+
     def __init__(self, rank, suit):
         """
         """
