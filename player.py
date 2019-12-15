@@ -1,4 +1,3 @@
-from deck import *
 class Player:
     def __init__(self, num):
         self.hand = []
@@ -10,9 +9,8 @@ class Player:
                 self.hand.append(card)
 
     def __str__(self):
-        ret =  "==" + str(self.num) + "==\n"
-        ret +=  "hand:\n"
+        ret = "==" + str(self.num) + "==\n"
+        ret += "hand:\n"
         for card in self.hand:
             ret += str(card) + '\n'
         return ret
-
