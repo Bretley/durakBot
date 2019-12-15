@@ -13,12 +13,9 @@ import itertools
 
 from random import shuffle
 
-import functools
-
 RANKS = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6']
 SUITS = ['Diamonds', 'Spades', 'Clubs', 'Hearts']
-CARDS = list(itertools.product(RANKS, SUITS))
-RANK_NUM = {rank: index for index, rank in enumerate(reversed(RANKS))}
+CARDS = itertools.product(RANKS, SUITS)
 
 
 class Deck:
@@ -79,31 +76,6 @@ class Deck:
         Randomizes the order of the deck
         """
         shuffle(self.cards)
-
-
-def create_card_comparator(dank):
-    """
-    Returns a comparator that orders cards depending on the dank suit
-    comparator will be wrapped as key arg to sorted and list.sort
-    """
-    def compare(x, y):
-        if x.suit == dank and y.suit == dank:
-            if RANK_NUM[x.rank] > RANK_NUM[y.rank]:
-                return 1
-            elif RANK_NUM[x.rank] < RANK_NUM[y.rank]:
-                return -1
-            else:
-                return 0
-        elif x.suit != dank and y.suit != dank:
-            if RANK_NUM[x.rank] > RANK_NUM[y.rank]:
-                return 1
-            elif RANK_NUM[x.rank] < RANK_NUM[y.rank]:
-                return -1
-            else:
-                return 0
-        else:  # Only one is a dank, if x then x > y else y > x
-            return 1 if x.suit == dank else -1
-    return functools.cmp_to_key(compare)
 
 
 class Card:

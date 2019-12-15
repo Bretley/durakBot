@@ -7,7 +7,7 @@ Player
     The representation of a game
 """
 
-from deck import Deck
+from deck import Deck, create_card_comparator, Card
 from player import Player
 
 
@@ -55,12 +55,22 @@ class Game:
         for player in self.players:
             print(player)
 
+    def play(self):
+        """
+        Begins and runs the game
+        """
+        pass
+
 
 def main():
     """
     The main function for the game
     """
     game = Game(4)
+    d = Deck()
+    x = sorted(d.cards, key=create_card_comparator('Diamonds'), reverse=True)
+    for card in x:
+        print(card)
     del game  # For now until we use something else with the game variable
 
 
