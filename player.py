@@ -80,9 +80,17 @@ class Player:
         """
         if len(table) == 0:
             return Attack.play, self.hand.pop(0)
-            # Must play
+            # Must play, 1st attack
         else:
-            # Default logic
+            # Default bot logic: play lowest first,
+            # don't pass to other player until out of matches
+            # Assumes sorted hand
+            matches = [card for card in self.hand if rank_in_table(card, table)]
+            if matches != []:
+                self.hand.remove(matches[0])
+                return Attack.play, matches[0]
+            else:
+                return Attack.done, None
 
         return None, None
 
@@ -90,6 +98,17 @@ class Player:
         #     MUST play first card, then can either match or allow other attacker
         #     play one per method
         #     if pass then none ?
+
+    def shed(self, table, max_shed_allowed):
+        if max_shed_allowed == 0:
+            return []
+        else:
+            p = []
+            for card in self.hand:
+                if card.suit != self.dank and len(p) < max_shed_allowed and rank_in_table(card, table):
+                    p.append(card)
+            return p
+
 
     def defend(self, table, pass_is_legal, cards_to_defend):
         """
@@ -109,7 +128,6 @@ class Player:
             matches = rank_matches(self.hand, table[-1].rank)
             if matches:
                 self.hand.remove(matches[0])
-                print(matches[0])
                 return Defense.pass_to, [matches[0]]
 
         # Came from pass, special logic
@@ -132,10 +150,10 @@ class Player:
 
         attack = table[-1]
         current_defense = lowest_defense(attack, self.hand, self.dank)
-        print('defense logic')
-        print(attack)
-        print(self)
-        print(current_defense)
+        # print('defense logic')
+        # print(attack)
+        # print(self)
+        # print(current_defense)
 
         if current_defense is None:
             return Defense.take, None
@@ -211,6 +229,17 @@ def lowest_defense(attack, hand, dank):
                 return card
 
     return None
+
+def rank_in_table(card, table):
+    """
+    returns True if a card in the hand matches one in the table by rank
+
+    Params
+    ------
+    card: Card
+    table: List
+    """
+    return any(card.rank == x.rank for x in table)
 
 
 class Defense(enum.Enum):

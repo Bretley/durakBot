@@ -94,15 +94,33 @@ class Game:
         # FOR DEBUGGING
         # print(held_danks[0][0], held_danks[0][1])
 
+    def draw(self):
+        """
+        Handles the logic of giving players cards in the right order
+        Attacker first, then attacker + 2, then defender, then defender + 2
+        """
+        # if len(self.players) == 2:
+            # # Attacker then defender
+            # a, d, n = self.get_players()
+            # if self.deck.is_empty():
+
+            # for _ in range(6-len(a)):
+                # a.take(self.deck.draw())
+        # else:
+            # pass
+
     def play(self):
         """
         Begins and runs the game
         """
         while len(self.players) > 1:
             self.turn()
+            # self.draw()
             self.turns += 1
 
-            break
+            if self.turns > 100:
+                break
+
 
             # right to left removal of empty players
 
@@ -176,21 +194,24 @@ class Game:
 
         table.append(atk[1])
         # FOR DEBUGGING
-        print(self.dank)
-        print(attacker)
-        print("\n\n\n\n")
-        print(defender)
-        print(self.dank)
+        # print(self.dank
+        # print(attacker)
+        # print("\n\n\n\n")
+        # print(defender)
+        # print(self.dank)
         print('Player ' + str(attacker.num) + ' Attacks with: ' + str(atk[1]))
 
         # Pass phase
         pass_count = 0
+        attack_count = 0
+        defense = None
         while True:
             pass_is_legal = (len(next_player) >= len(table) + 1)
             defense = defender.defend(table, pass_is_legal, len(table))
             if defense[0] == Defense.pass_to:
                 print('Player ' + str(defender.num) + ' Passes with: ' + str(defense[1][0]))
                 pass_count += 1
+                attack_count += 1
                 self.inc_attacker(1)
                 attacker, defender, next_player = self.get_players()
 
@@ -203,6 +224,7 @@ class Game:
             if defense[0] == Defense.take:
                 print('Player ' + str(defender.num) + ' takes ' + ', '.join([str(x) for x in table]))
                 defender.take_table(table)
+                table = []
                 self.inc_attacker(2)
                 attacker, defender, next_player = self.get_players()
                 break
@@ -216,22 +238,60 @@ class Game:
 
         # Defense phase
         lastMove = None # used to check for 2 passes in a row
-        atk = attacker.attack(table)
-        if atk[0] == Attack.play:
-            pass
-        elif atk[0] == Attack.done:
-            pass
+        attacker, defender, next_player = self.get_players()
+        while attack_count < 6 and len(defender) > 0 and defense[1] != Defense.take:
+            # Loop until table reaches 12 (fully attacked)
+            # or len(defender) == 0 (defender is out of cards) 
+            atk = attacker.attack(table)
+            if atk[0] == Attack.play:
+                print('Player ' + str(attacker.num) + ' Attacks with: ' + str(atk[1]))
+                attack_count += 1
+                # defender must defend then try again until defender takes or
+                # player is done
+                table.append(atk[1])
+                defense = defender.defend(table, False, len(table))
+                if defense[0] == Defense.defend:
+                    # Attack-defense continues until one gives up or cards have
+                    # reached min(6, len(defender))
+                    table += defense[1]
+                    print('Player ' + str(defender.num) + ' defends with ' + ', '.join([str(x) for x in defense[1]]))
+                    continue
+                elif defense[0] == Defense.take:
+                    # Defender has to take cards
+                    # move to shed then draw
+                    print('Player ' + str(defender.num) + ' takes ' + ', '.join([str(x) for x in table]))
+                    defender.take_table(table)
+                    table = []
+                    break
 
-        if pass_count > 3:
-            print("Bug in game turn, pass_count > 3")
+            elif atk[0] == Attack.done:
+                print( 'Player ' + str(attacker.num) + ' has ceased attack')
+                if len(self.players) == 2:
+                    break
+                else:
+                    # TODO (Bretley)
+                    # Add logic for other players to join in on the attack
+                    break
 
+            # shed phase
+            if defense[0] == Defense.take:
+                table += attacker.shed()
+                defender.take_table(table)
+                print( 'defender picks up shed')
+                table = []
+            else:
+                pass
+                # success for attacker
+        return
 
 def main():
     """
     The main function for the game
     """
-    game = Game(2)
-    game.play()
+    for i in range(pow(10,5)):
+        game = Game(2)
+        game.play()
+        break
 
 
 if __name__ == "__main__":
