@@ -167,7 +167,7 @@ class Game:
 
             # right to left removal of empty players
             for p_num in range(-len(self.players), -1):
-                if len(self.players[p_num]) == 0 and self.deck.isEmpty():
+                if len(self.players[p_num]) == 0 and self.deck.is_empty():
                     self.players.pop()
 
             if self.turns > 2:  # Probably shouldn't take over 100
