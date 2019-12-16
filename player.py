@@ -88,7 +88,7 @@ class Player:
             if matches != []:
                 self.hand.remove(matches[0])
                 print( matches[0])
-                return (Defense.pass_to, matches[0])
+                return (Defense.pass_to, [matches[0]])
         
         if cards_to_defend > 1:  # came from pass, special logic
             defense = []
@@ -107,11 +107,15 @@ class Player:
         else:  # the last card played was a single attack, we can just use -1
             attack = table[-1]
             current_defense = lowest_defense(attack, self.hand, self.dank)
+            print( 'defense logic')
+            print( attack)
+            print( self)
+            print( current_defense)
             if current_defense is None:
                 return (Defense.take, None)
             else:
                 self.hand.remove(current_defense)
-                return (Defense.defend, current_defense)
+                return (Defense.defend, [current_defense])
         return (Defense.take, None)
 
     def attack(self, table):
@@ -147,11 +151,6 @@ def lowest_defense(attack, hand, dank):
                 return card 
         return None
                 
-        
-
-
-
-
 class Defense(enum.Enum):
     pass_to = 0
     defend = 1
@@ -160,5 +159,5 @@ class Defense(enum.Enum):
 
 class Attack(enum.Enum):
     play = 0
-    passTo = 1
+    done = 1
 

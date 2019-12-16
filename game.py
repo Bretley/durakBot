@@ -108,6 +108,15 @@ class Game:
             pass
 
         table.append(atk[1])
+        print( self.dank)
+        print(attacker)
+        print()
+        print()
+        print()
+        print()
+        print()
+        print(defender)
+        print( self.dank)
         print('Player ' + str(attacker.num) + ' Attacks with: ' + str(atk[1]))
 
         # pass phase
@@ -116,23 +125,33 @@ class Game:
             pass_is_legal = (len(self.players[pass_to]) >= len(table) + 1)
             defense = defender.defend(table, pass_is_legal, len(table))
             if defense[0] == Defense.pass_to:
-                print( 'Player ' + str(defender.num) + ' Passes with: ' + str(defense[1]))
+                print( 'Player ' + str(defender.num) + ' Passes with: ' + str(defense[1][0]))
                 pass_count += 1
                 self.attacker = (self.attacker + 1) % len(self.players)
                 attacker = self.players[self.attacker]
                 defender = self.players[(self.attacker + 1) % len(self.players)]
-                table.append(defense[1])
+                table += defense[1]
                 continue
             elif defense[0] == Defense.take:
-                print( 'Player ' + str(defender.num) + ' takes ' + ','.join([str(x) for x in table]))
+                print( 'Player ' + str(defender.num) + ' takes ' + ', '.join([str(x) for x in table]))
                 defender.take_table(table)
                 self.attacker = (self.attacker + 2) % len(self.players)
                 break
+            elif defense[0] == Defense.defend:
+                print('Player ' + str(defender.num) + ' defends with ' + 
+                        ', '.join([str(x) for x in defense[1]]))
+                break
 
         if pass_count > 3:
-            print( "Bug in game turn, pass_count > 3")
+            print( "Bug in game.turn, pass_count > 3")
 
+        # Defense phase
         attacker = self.players[self.attacker]
+        atk = attacker.attack(table)
+        if atk[0] == Attack.play:
+            pass
+        elif atk[0] == Attack.done:
+            pass
 
 
 
