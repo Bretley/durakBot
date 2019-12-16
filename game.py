@@ -113,6 +113,27 @@ class Game:
             # Probably shouldn't take over 100
             # if self.turns > 2:
             #     break
+    def add_mod(self, a, b):
+        """
+        returns  a+ b mod number of players
+
+        Parameters
+        ----------
+        a: int
+        b: int
+        """
+
+        return (a + b) % len(self.players)
+
+    def inc_attacker(self, i):
+        """
+        Updates the attacker value mod number of players
+
+        Parameters
+        ----------
+        i: int
+        """
+        self.attacker = (self.attacker + i) % len(self.players)
 
     def turn(self):
         """
@@ -134,9 +155,9 @@ class Game:
         """
 
         # Attack phase
-        pass_to = (self.attacker + 2) % len(self.players)
+        pass_to = self.add_mod(self.attacker, 2)
         attacker = self.players[self.attacker]
-        defender = self.players[(self.attacker + 1) % len(self.players)]
+        defender = self.players[self.add_mod(self.attacker, 1)]
         table = []
         atk = attacker.attack(self.table)
 
@@ -161,9 +182,9 @@ class Game:
             if defense[0] == Defense.pass_to:
                 print('Player ' + str(defender.num) + ' Passes with: ' + str(defense[1][0]))
                 pass_count += 1
-                self.attacker = (self.attacker + 1) % len(self.players)
+                self.inc_attacker(1)
                 attacker = self.players[self.attacker]
-                defender = self.players[(self.attacker + 1) % len(self.players)]
+                defender = self.players[self.add_mod(self.attacker, 1)]
 
                 # TODO(Bretley) Use attacker
                 del attacker
@@ -174,7 +195,7 @@ class Game:
             if defense[0] == Defense.take:
                 print('Player ' + str(defender.num) + ' takes ' + ', '.join([str(x) for x in table]))
                 defender.take_table(table)
-                self.attacker = (self.attacker + 2) % len(self.players)
+                self.inc_attacker(2)
                 break
 
             if defense[0] == Defense.defend:
