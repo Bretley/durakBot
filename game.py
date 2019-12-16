@@ -121,11 +121,18 @@ class Game:
                 self.attacker = (self.attacker + 1) % len(self.players)
                 attacker = self.players[self.attacker]
                 defender = self.players[(self.attacker + 1) % len(self.players)]
+                table.append(defense[1])
                 continue
-            else:
+            elif defense[0] == Defense.take:
+                print( 'Player ' + str(defender.num) + ' takes ' + ','.join([str(x) for x in table]))
+                defender.take_table(table)
+                self.attacker = (self.attacker + 2) % len(self.players)
                 break
+
         if pass_count > 3:
             print( "Bug in game turn, pass_count > 3")
+
+        attacker = self.players[self.attacker]
 
 
 

@@ -57,6 +57,7 @@ class Player:
 
     def take_table(self, cards):
         self.hand += cards
+        print( self.hand)
         self.sort()
 
     def take(self, card):
@@ -86,6 +87,7 @@ class Player:
             matches = rank_matches(self.hand, table[-1].rank)
             if matches != []:
                 self.hand.remove(matches[0])
+                print( matches[0])
                 return (Defense.pass_to, matches[0])
         
         if cards_to_defend > 1:  # came from pass, special logic
@@ -94,19 +96,22 @@ class Player:
                 current_defense = lowest_defense(attack, self.hand, self.dank)
                 if current_defense is not None:
                     # Accumulate defense cards to send back
-                    defense.append(self.hand.remove(current_defense))
+                    self.hand.remove(current_defense)
+                    defense.append(current_defense)
                 else:
                     # Put cards back in hand and signal defeat
                     for x in defense:
                         self.hand.append(x)
                     return (Defense.take, None)  # Don't need to sort because taking cards
+            return (Defense.defend, defense)
         else:  # the last card played was a single attack, we can just use -1
             attack = table[-1]
-            
-
-
-
-            lowest_defense(table[-1], self.hand, self.dank))
+            current_defense = lowest_defense(attack, self.hand, self.dank)
+            if current_defense is None:
+                return (Defense.take, None)
+            else:
+                self.hand.remove(current_defense)
+                return (Defense.defend, current_defense)
         return (Defense.take, None)
 
     def attack(self, table):
