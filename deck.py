@@ -15,10 +15,8 @@ from random import shuffle
 
 import functools
 
-RANKS = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6']
-SUITS = ['Diamonds', 'Spades', 'Clubs', 'Hearts']
-CARDS = list(itertools.product(RANKS, SUITS))
-RANK_NUM = {rank: index for index, rank in enumerate(reversed(RANKS))}
+from card import *
+
 
 
 class Deck:
@@ -45,7 +43,7 @@ class Deck:
     def __init__(self):
         """
         """
-        self.cards = [Card(rank, suit) for rank, suit in CARDS]
+        self.cards = [card for card in CARDS]
 
     def __len__(self):
         """
@@ -64,8 +62,7 @@ class Deck:
         Takes a card from the top of the deck
         """
         if len(self.cards) > 0:
-            return [self.cards.pop()]  # takes the -1th card by default
-
+            return self.cards.pop()  # takes the -1th card by default
         return None
 
     def flip(self):
@@ -80,55 +77,13 @@ class Deck:
         """
         shuffle(self.cards)
 
-
-def create_card_comparator(dank):
-    """
-    Returns a comparator that orders cards depending on the dank suit
-    comparator will be wrapped as key arg to sorted and list.sort
-    """
-    def compare(x, y):
-        if x.suit == dank and y.suit == dank:
-            if RANK_NUM[x.rank] > RANK_NUM[y.rank]:
-                return 1
-            elif RANK_NUM[x.rank] < RANK_NUM[y.rank]:
-                return -1
-            else:
-                return 0
-        elif x.suit != dank and y.suit != dank:
-            if RANK_NUM[x.rank] > RANK_NUM[y.rank]:
-                return 1
-            elif RANK_NUM[x.rank] < RANK_NUM[y.rank]:
-                return -1
-            else:
-                return 0
-        else:  # Only one is a dank, if x then x > y else y > x
-            return 1 if x.suit == dank else -1
-    return functools.cmp_to_key(compare)
-
-
-class Card:
-    """
-    A class used to represent a card
-
-    Attributes
-    ----------
-    rank : str
-        The value of a card
-    suit : str
-        The Suit of the card
-    """
-
-    def __init__(self, rank, suit):
+    def isEmpty(self):
         """
+        Returns whether deck is empty
         """
-        self.rank = rank
-        self.suit = suit
+        return len(self.cards) > 0
 
-    def __str__(self):
-        """
-        Returns the card as a string
-        """
-        return self.rank + ' of ' + self.suit
+
 
 # for i in range(1, pow(10,7)):
 #     d = Deck()
