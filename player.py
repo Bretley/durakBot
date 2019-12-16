@@ -55,12 +55,22 @@ class Player:
     def __len__(self):
         """
         Implements len function for Player:
+
+        Returns
+        -------
+        int
+            The number of cards in the hand
         """
         return len(self.hand)
 
     def __str__(self):
         """
         Returns the player as a string
+
+        Returns
+        -------
+        str
+            The player as a string
         """
 
         ret = "==" + str(self.num) + "==\n"
@@ -77,11 +87,17 @@ class Player:
         ----------
         table : Table
             The cards on the table
+
+        Returns
+        -------
+        Attack, Card
+            An Attack enum, the card to be removed
         """
         if len(table) == 0:
             return Attack.play, self.hand.pop(0)
             # Must play
         else:
+            pass
             # Default logic
 
         return None, None
@@ -103,6 +119,11 @@ class Player:
             Whether or not a pass is legal
         cards_to_defend : int
             The number of cards to defend against
+
+        Returns
+        -------
+        Defense, list
+            A Defense enum, a list of Cards
         """
 
         if pass_is_legal:
@@ -194,6 +215,11 @@ def lowest_defense(attack, hand, dank):
         The list of cards in the hand
     dank : Card.suit
         The suit of the dank card
+
+    Returns
+    -------
+    Card
+        The lowest card that can defend or None if there is not a valid card
     """
     low = RANK_NUM[attack.rank]
     # Can only defend in dank suit
