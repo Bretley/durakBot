@@ -81,6 +81,8 @@ class Player:
         if len(table) == 0:
             return Attack.play, self.hand.pop(0)
             # Must play
+        else:
+            # Default logic
 
         return None, None
 

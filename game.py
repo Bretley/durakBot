@@ -113,6 +113,17 @@ class Game:
             # Probably shouldn't take over 100
             # if self.turns > 2:
             #     break
+
+    def get_players(self):
+        """
+        Returns players involved in a turn
+        returns (Player, Player, Player)
+        """
+        a = self.players[self.attacker]
+        d = self.players[self.add_mod(self.attacker, 1)]
+        n = self.players[self.add_mod(self.attacker, 2)]
+        return a, d, n
+
     def add_mod(self, a, b):
         """
         returns  a+ b mod number of players
@@ -155,9 +166,7 @@ class Game:
         """
 
         # Attack phase
-        pass_to = self.add_mod(self.attacker, 2)
-        attacker = self.players[self.attacker]
-        defender = self.players[self.add_mod(self.attacker, 1)]
+        attacker, defender, next_player = self.get_players()
         table = []
         atk = attacker.attack(self.table)
 
@@ -177,14 +186,13 @@ class Game:
         # Pass phase
         pass_count = 0
         while True:
-            pass_is_legal = (len(self.players[pass_to]) >= len(table) + 1)
+            pass_is_legal = (len(next_player) >= len(table) + 1)
             defense = defender.defend(table, pass_is_legal, len(table))
             if defense[0] == Defense.pass_to:
                 print('Player ' + str(defender.num) + ' Passes with: ' + str(defense[1][0]))
                 pass_count += 1
                 self.inc_attacker(1)
-                attacker = self.players[self.attacker]
-                defender = self.players[self.add_mod(self.attacker, 1)]
+                attacker, defender, next_player = self.get_players()
 
                 # TODO(Bretley) Use attacker
                 del attacker
@@ -196,6 +204,7 @@ class Game:
                 print('Player ' + str(defender.num) + ' takes ' + ', '.join([str(x) for x in table]))
                 defender.take_table(table)
                 self.inc_attacker(2)
+                attacker, defender, next_player = self.get_players()
                 break
 
             if defense[0] == Defense.defend:
@@ -206,7 +215,7 @@ class Game:
             print("Bug in game.turn, pass_count > 3")
 
         # Defense phase
-        attacker = self.players[self.attacker]
+        lastMove = None # used to check for 2 passes in a row
         atk = attacker.attack(table)
         if atk[0] == Attack.play:
             pass
