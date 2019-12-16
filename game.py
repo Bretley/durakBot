@@ -7,9 +7,9 @@ Player
     The representation of a game
 """
 
-from deck import *
-from card import *
-from player import *
+from card import CARD_COMPARATORS, RANK_NUM
+from deck import Deck
+from player import Attack, Defense, Player
 
 
 class Game:
@@ -24,6 +24,21 @@ class Game:
         The card on the table
     dank: Card.suit
         The suit of the trump card
+    cmp : CARD_COMPARATORS
+        A card comparator function
+    turns : int
+        A count of turns that have passed
+    table : list
+        TODO(Bretley)
+    attacker : int
+        The player that is attacking
+
+    Methods
+    -------
+    play()
+        Begins and runs the game
+    turn()
+        Method reflecting a single turn
     """
 
     def __init__(self, num_players):
@@ -45,7 +60,7 @@ class Game:
         deck.shuffle()
 
         self.players = [Player(x) for x in range(num_players)]
-        for card_num in range(6):
+        for _ in range(6):
             for player in self.players:
                 player.take(deck.draw())
 
@@ -55,16 +70,20 @@ class Game:
         self.turns = 0
         self.table = []
         self.attacker = 0
+
+        # FOR DEBUGGING
         # print('Table Card:')
         # print(self.table_card)
 
-        # check danks at start of round
-        # whoever has the lowest one goes first
-        # else we default to 0
+        # Check danks at start of round
+        # Whoever has the lowest one goes first
+        # Else we default to 0
+
         min_rank = 9
         min_start = None
         for player in self.players:
-            player.dank = self.dank  # give player dank suit knowledge
+            # Give player dank suit knowledge
+            player.dank = self.dank
             player.sort()
             for card in player.hand:
                 if card.suit == self.dank and RANK_NUM[card.rank] < min_rank:
@@ -72,62 +91,8 @@ class Game:
                     min_rank = RANK_NUM[card.rank]
         if min_start is not None:
             self.attacker = min_start[0]
+        # FOR DEBUGGING
         # print(held_danks[0][0], held_danks[0][1])
-
-
-
-    def turn(self):
-        """
-        method reflecting a single turn
-        """
-        """
-        General gist:
-        attacker attacks to + 1 % len(self.players):
-            play 1 card:
-        defender has 3 choices:
-            pass -> Can only be done if all cards on table match rank
-                (i.e attack with 6 -> pass to next with 6 -> pass with 6)
-                as soon as a non-6 is played cards can't be passed
-            defend -> plays a card higher rank and same suit
-            take -> takes up to 12 cards, gets skipped
-                after that, the attackers can shed
-
-
-        back and forth
-        can't play more than min(6, len(defender.cars))
-        round is over when either a player runs out of cards 
-        """
-
-        # Attack phase
-        pass_to = (self.attacker + 2) % len(self.players)
-        attacker = self.players[self.attacker]
-        defender = self.players[(self.attacker + 1) % len(self.players)]
-        table = []
-        atk = attacker.attack(self.table)
-        if atk[0] == Attack.play:  # it definitely does, this is to catch errors
-            pass
-
-        table.append(atk[1])
-        print('Player ' + str(attacker.num) + ' Attacks with: ' + str(atk[1]))
-
-        # pass phase
-        pass_count = 0
-        while True:
-            pass_is_legal = (len(self.players[pass_to]) >= len(table) + 1)
-            defense = defender.defend(table, pass_is_legal, len(table))
-            if defense[0] == Defense.pass_to:
-                print( 'Player ' + str(defender.num) + ' Passes with: ' + str(defense[1]))
-                pass_count += 1
-                self.attacker = (self.attacker + 1) % len(self.players)
-                attacker = self.players[self.attacker]
-                defender = self.players[(self.attacker + 1) % len(self.players)]
-                continue
-            else:
-                break
-        if pass_count > 3:
-            print( "Bug in game turn, pass_count > 3")
-
-
 
     def play(self):
         """
@@ -137,26 +102,75 @@ class Game:
             self.turn()
             self.turns += 1
 
-            break
-
             # right to left removal of empty players
-            for p_num in range(-len(self.players), -1):
-                if len(self.players[p_num]) == 0 and self.deck.is_empty():
-                    self.players.pop()
 
-            if self.turns > 2:  # Probably shouldn't take over 100
-                break
+            # for p_num in range(-len(self.players), -1):
+            #     if len(self.players[p_num]) == 0 and self.deck.is_empty():
+            #         self.players.pop()
+
+            # Probably shouldn't take over 100
+            # if self.turns > 2:
+            #     break
+
+    def turn(self):
+        """
+        Method reflecting a single turn
+
+        General gist:
+        Attacker attacks to + 1 % len(self.players):
+            Play 1 card:
+        Defender has 3 choices:
+            Pass -> Can only be done if all cards on table match rank (i.e attack with 6 -> pass to next with 6 -> pass with 6)
+                As soon as a non-6 is played cards can't be passed
+            Defend -> Plays a card higher rank and same suit
+            Take -> Takes up to 12 cards, gets skipped
+                After that, the attackers can shed
+
+        Back and forth
+        Can't play more than min(6, len(defender.cars))
+        Round is over when either a player runs out of cards
+        """
+
+        # Attack phase
+        pass_to = (self.attacker + 2) % len(self.players)
+        attacker = self.players[self.attacker]
+        defender = self.players[(self.attacker + 1) % len(self.players)]
+        table = []
+        atk = attacker.attack(self.table)
+
+        # It definitely does, this is to catch errors
+        if atk[0] == Attack.play:
+            pass
+
+        table.append(atk[1])
+        print('Player ' + str(attacker.num) + ' Attacks with: ' + str(atk[1]))
+
+        # Pass phase
+        pass_count = 0
+        while True:
+            pass_is_legal = (len(self.players[pass_to]) >= len(table) + 1)
+            defense = defender.defend(table, pass_is_legal, len(table))
+            if defense[0] == Defense.pass_to:
+                print('Player ' + str(defender.num) + ' Passes with: ' + str(defense[1]))
+                pass_count += 1
+                self.attacker = (self.attacker + 1) % len(self.players)
+                attacker = self.players[self.attacker]
+                defender = self.players[(self.attacker + 1) % len(self.players)]
+
+                # TODO(Bretley) Use attacker
+                del attacker
+                continue
+
+        if pass_count > 3:
+            print("Bug in game turn, pass_count > 3")
 
 
 def main():
     """
     The main function for the game
     """
-    g = Game(2)
-    g.play()
-    # for x in range(pow(10, 5)):
-        # game = Game(4)
-    # del g  # For now until we use something else with the game variable
+    game = Game(2)
+    game.play()
 
 
 if __name__ == "__main__":
