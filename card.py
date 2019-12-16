@@ -52,6 +52,7 @@ def create_comparator(dank_suit):
     dank_suit: Card.suit
         The suit of the dank card
     """
+
     def compare(card1, card2):
         """
         Compares two cards
@@ -74,6 +75,7 @@ def create_comparator(dank_suit):
 
         # Only one is a dank, if x then x > y else y > x
         return 1 if card1.suit == dank_suit else -1
+
     return compare
 
 
