@@ -32,6 +32,11 @@ class Card:
     def __str__(self):
         """
         Returns the card as a string
+
+        Returns
+        -------
+        str
+            The card as a string
         """
         return self.rank + ' of ' + self.suit
 
@@ -63,6 +68,13 @@ def create_comparator(dank_suit):
             The first card to compare
         card2: Card
             The second card to compare
+
+        Returns
+        -------
+        int
+            -1 if the first card is smaller
+            0 if they are the same
+            1 if the first card is bigger
         """
         if (card1.suit == dank_suit and card2.suit == dank_suit) or (dank_suit not in (card1.suit, card2.suit)):
             if RANK_NUM[card1.rank] > RANK_NUM[card2.rank]:
@@ -93,6 +105,11 @@ def suited(card, suit):
             The card to check
         suit: Card.suit
             The suit to check
+
+    Returns
+    -------
+    bool
+        True if they are the same suit, false otherwise
     """
     return card.suit == suit
 
@@ -107,5 +124,10 @@ def rank_matches(cards, rank):
             A list of cards
         rank: int
             The rank to check for
+
+    Returns
+    -------
+    list
+        The list of cards that match the rank
     """
     return [card for card in cards if card.rank == rank]

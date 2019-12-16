@@ -7,6 +7,8 @@ Player
     The representation of a game
 """
 
+import sys
+
 from card import CARD_COMPARATORS, RANK_NUM
 from deck import Deck
 from player import Attack, Defense, Player
@@ -29,7 +31,7 @@ class Game:
     turns : int
         A count of turns that have passed
     table : list
-        TODO(Bretley)
+        The cards on the table
     attacker : int
         The player that is attacking
 
@@ -57,7 +59,7 @@ class Game:
             The number of players
         """
         deck = Deck()
-        deck.shuffle()
+        deck.shuffle_deck()
 
         self.players = [Player(x) for x in range(num_players)]
         for _ in range(6):
@@ -65,6 +67,9 @@ class Game:
                 player.take(deck.draw())
 
         self.table_card = deck.flip()
+        if self.table_card is None:
+            # TODO
+            sys.exit()
         self.dank = self.table_card.suit  # Determine Dank suit
         self.cmp = CARD_COMPARATORS[self.dank]
         self.turns = 0
@@ -135,34 +140,46 @@ class Game:
     def get_players(self):
         """
         Returns players involved in a turn
-        returns (Player, Player, Player)
-        """
-        a = self.players[self.attacker]
-        d = self.players[self.add_mod(self.attacker, 1)]
-        n = self.players[self.add_mod(self.attacker, 2)]
-        return a, d, n
 
-    def add_mod(self, a, b):
+        Returns
+        -------
+        Player, Player, Player
+            The Attacker, the Defender, and the next Player
         """
-        returns  a+ b mod number of players
+        attacker = self.players[self.attacker]
+        defender = self.players[self.add_mod(self.attacker, 1)]
+        next_player = self.players[self.add_mod(self.attacker, 2)]
+        return attacker, defender, next_player
+
+    def add_mod(self, start, offset):
+        """
+        Returns the player that is offset after the start
 
         Parameters
         ----------
-        a: int
-        b: int
+        start: int
+            The starting position
+        offset: int
+            The amount to offset by
+
+        Returns
+        -------
+        int
+            The player that is offset after the start
         """
 
-        return (a + b) % len(self.players)
+        return (start + offset) % len(self.players)
 
-    def inc_attacker(self, i):
+    def inc_attacker(self, increment):
         """
         Updates the attacker value mod number of players
 
         Parameters
         ----------
-        i: int
+        increment: int
+            The amount to increment by
         """
-        self.attacker = (self.attacker + i) % len(self.players)
+        self.attacker = (self.attacker + increment) % len(self.players)
 
     def turn(self):
         """
@@ -201,6 +218,8 @@ class Game:
         # print(self.dank)
         print('Player ' + str(attacker.num) + ' Attacks with: ' + str(atk[1]))
 
+        attacker = None
+
         # Pass phase
         pass_count = 0
         attack_count = 0
@@ -214,9 +233,6 @@ class Game:
                 attack_count += 1
                 self.inc_attacker(1)
                 attacker, defender, next_player = self.get_players()
-
-                # TODO(Bretley) Use attacker
-                del attacker
 
                 table += defense[1]
                 continue
