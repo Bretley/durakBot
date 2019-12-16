@@ -18,7 +18,7 @@ class Deck:
 
     Attributes
     ----------
-    cards : list
+    cards : list(Card)
         The list of cards in the deck
 
     Methods
@@ -29,7 +29,7 @@ class Deck:
         Reveals the top card of the deck
     is_empty()
         Returns whether deck is empty
-    shuffle()
+    shuffle_deck()
         Randomizes the order of the deck
 
 
@@ -42,7 +42,7 @@ class Deck:
 
     def __len__(self):
         """
-        Returns the amount of cards in the deck
+        Implements len function for Deck
 
         Returns
         -------
@@ -53,7 +53,7 @@ class Deck:
 
     def __str__(self):
         """
-        Returns the deck as a string
+        Implements str function for Deck
 
         Returns
         -------
@@ -108,4 +108,4 @@ class Deck:
 # FOR DEBUGGING
 # for i in range(1, pow(10,7)):
 #     d = Deck()
-# runs in ~4.6s
+# Runs in ~4.6s

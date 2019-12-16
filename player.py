@@ -22,10 +22,12 @@ class Player:
 
     Attributes
     ----------
-    hand : list
+    hand : list(Card)
         The list of cards in the player's hand
     num : int
         The Player's ID
+    dank : Card.suit
+        The suit of the Dank card
 
     Methods
     -------
@@ -39,6 +41,8 @@ class Player:
         Adds card to the player's hand
     take_table(cards)
         Adds cards to the player's hand
+    shed(table, max_shed_allowed)
+        Sheds cards to the player's hand
     """
 
     def __init__(self, num):
@@ -54,7 +58,7 @@ class Player:
 
     def __len__(self):
         """
-        Implements len function for Player:
+        Implements len function for Player
 
         Returns
         -------
@@ -65,7 +69,7 @@ class Player:
 
     def __str__(self):
         """
-        Returns the player as a string
+        Implements str function for Player
 
         Returns
         -------
@@ -93,37 +97,25 @@ class Player:
         Attack, Card
             An Attack enum, the card to be removed
         """
+
         if len(table) == 0:
             return Attack.play, self.hand.pop(0)
             # Must play, 1st attack
-        else:
-            # Default bot logic: play lowest first,
-            # don't pass to other player until out of matches
-            # Assumes sorted hand
-            matches = [card for card in self.hand if rank_in_table(card, table)]
-            if matches != []:
-                self.hand.remove(matches[0])
-                return Attack.play, matches[0]
-            else:
-                return Attack.done, None
 
-        return None, None
+        # Default bot logic: play lowest first,
+        # don't pass to other player until out of matches
+        # Assumes sorted hand
+        matches = [card for card in self.hand if rank_in_table(card, table)]
+        if matches:
+            self.hand.remove(matches[0])
+            return Attack.play, matches[0]
+
+        return Attack.done, None
 
         # Player's attack method when option to attack:
         #     MUST play first card, then can either match or allow other attacker
         #     play one per method
         #     if pass then none ?
-
-    def shed(self, table, max_shed_allowed):
-        if max_shed_allowed == 0:
-            return []
-        else:
-            p = []
-            for card in self.hand:
-                if card.suit != self.dank and len(p) < max_shed_allowed and rank_in_table(card, table):
-                    p.append(card)
-            return p
-
 
     def defend(self, table, pass_is_legal, cards_to_defend):
         """
@@ -131,7 +123,7 @@ class Player:
 
         Parameters
         ----------
-        table : list
+        table : list(Card)
             The cards on the table
         pass_is_legal : bool
             Whether or not a pass is legal
@@ -194,14 +186,13 @@ class Player:
 
         Parameters
         ----------
-        card: Card
+        card : Card
             The card to add to the hand
         """
 
         if self.dank is not None:
+            # This might be more efficient than constantly iterating over hands over and over to find least valuable card
             self.sort()
-            # this might be more efficient than constantly
-            # iterating over hands over and over to find least valuable card
 
         if card is not None:
             self.hand.append(card)
@@ -212,11 +203,37 @@ class Player:
 
         Parameters
         ----------
-        cards: list
+        cards : list(Card)
             The list of cards to add to the player's hand
         """
+
         self.hand += cards
         self.sort()
+
+    def shed(self, table, max_shed_allowed):
+        """
+        Sheds cards to the player's hand
+
+        Parameters
+        ----------
+        table : list(Card)
+            The list of cards on the table
+        max_shed_allowed : int
+            The maximum amount of cards to shed
+
+        Returns
+        -------
+        list
+            A list of Cards
+        """
+        if max_shed_allowed == 0:
+            return []
+
+        card_list = []
+        for card in self.hand:
+            if card.suit != self.dank and len(card_list) < max_shed_allowed and rank_in_table(card, table):
+                card_list.append(card)
+        return card_list
 
 
 def lowest_defense(attack, hand, dank):
@@ -228,7 +245,7 @@ def lowest_defense(attack, hand, dank):
     ----------
     attack : Card
         The card to attack with
-    hand : list
+    hand : list(Card)
         The list of cards in the hand
     dank : Card.suit
         The suit of the dank card
@@ -255,14 +272,22 @@ def lowest_defense(attack, hand, dank):
 
     return None
 
+
 def rank_in_table(card, table):
     """
-    returns True if a card in the hand matches one in the table by rank
+    Returns True if a card in the hand matches one in the table by rank
 
-    Params
+    Parameters
     ------
-    card: Card
-    table: List
+    card : Card
+        The Card to match
+    table : List(Card)
+        The list of Cards on the table
+
+    Returns
+    -------
+    bool
+        True if a card in the hand matches one in the table by rank, False otherwise
     """
     return any(card.rank == x.rank for x in table)
 

@@ -31,7 +31,7 @@ class Card:
 
     def __str__(self):
         """
-        Returns the card as a string
+        Implements str function for Card
 
         Returns
         -------
@@ -54,8 +54,13 @@ def create_comparator(dank_suit):
 
     Parameters
     ----------
-    dank_suit: Card.suit
+    dank_suit : Card.suit
         The suit of the dank card
+
+    Returns
+        -------
+        function
+            A comparator function
     """
 
     def compare(card1, card2):
@@ -64,9 +69,9 @@ def create_comparator(dank_suit):
 
         Parameters
         ----------
-        card1: Card
+        card1 : Card
             The first card to compare
-        card2: Card
+        card2 : Card
             The second card to compare
 
         Returns
@@ -101,9 +106,9 @@ def suited(card, suit):
 
     Parameters
         ----------
-        card: Card
+        card : Card
             The card to check
-        suit: Card.suit
+        suit : Card.suit
             The suit to check
 
     Returns
@@ -120,9 +125,9 @@ def rank_matches(cards, rank):
 
     Parameters
         ----------
-        cards: list
+        cards : list(Card)
             A list of cards
-        rank: int
+        rank : int
             The rank to check for
 
     Returns

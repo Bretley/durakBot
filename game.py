@@ -20,7 +20,7 @@ class Game:
 
     Attributes
     ----------
-    players : list
+    players : list(Player)
         The list of players
     table_card : Card
         The card on the table
@@ -30,13 +30,21 @@ class Game:
         A card comparator function
     turns : int
         A count of turns that have passed
-    table : list
+    table : list(Card)
         The cards on the table
     attacker : int
         The player that is attacking
 
     Methods
     -------
+    add_mod(start, offset)
+        Returns the player that is offset after the start
+    draw()
+        Handles the logic of giving players cards in the right order
+    get_players()
+        Returns players involved in a turn
+    inc_attacker(increment)
+        Updates the attacker value mod number of players
     play()
         Begins and runs the game
     turn()
@@ -99,43 +107,39 @@ class Game:
         # FOR DEBUGGING
         # print(held_danks[0][0], held_danks[0][1])
 
+    def add_mod(self, start, offset):
+        """
+        Returns the player that is offset after the start
+
+        Parameters
+        ----------
+        start : int
+            The starting position
+        offset : int
+            The amount to offset by
+
+        Returns
+        -------
+        int
+            The player that is offset after the start
+        """
+
+        return (start + offset) % len(self.players)
+
     def draw(self):
         """
         Handles the logic of giving players cards in the right order
         Attacker first, then attacker + 2, then defender, then defender + 2
         """
         # if len(self.players) == 2:
-            # # Attacker then defender
-            # a, d, n = self.get_players()
-            # if self.deck.is_empty():
+        # # Attacker then defender
+        # a, d, n = self.get_players()
+        # if self.deck.is_empty():
 
-            # for _ in range(6-len(a)):
-                # a.take(self.deck.draw())
+        # for _ in range(6-len(a)):
+        # a.take(self.deck.draw())
         # else:
-            # pass
-
-    def play(self):
-        """
-        Begins and runs the game
-        """
-        while len(self.players) > 1:
-            self.turn()
-            # self.draw()
-            self.turns += 1
-
-            if self.turns > 100:
-                break
-
-
-            # right to left removal of empty players
-
-            # for p_num in range(-len(self.players), -1):
-            #     if len(self.players[p_num]) == 0 and self.deck.is_empty():
-            #         self.players.pop()
-
-            # Probably shouldn't take over 100
-            # if self.turns > 2:
-            #     break
+        # pass
 
     def get_players(self):
         """
@@ -151,35 +155,39 @@ class Game:
         next_player = self.players[self.add_mod(self.attacker, 2)]
         return attacker, defender, next_player
 
-    def add_mod(self, start, offset):
-        """
-        Returns the player that is offset after the start
-
-        Parameters
-        ----------
-        start: int
-            The starting position
-        offset: int
-            The amount to offset by
-
-        Returns
-        -------
-        int
-            The player that is offset after the start
-        """
-
-        return (start + offset) % len(self.players)
-
     def inc_attacker(self, increment):
         """
         Updates the attacker value mod number of players
 
         Parameters
         ----------
-        increment: int
+        increment : int
+        increment : int
             The amount to increment by
         """
         self.attacker = (self.attacker + increment) % len(self.players)
+
+    def play(self):
+        """
+        Begins and runs the game
+        """
+        while len(self.players) > 1:
+            self.turn()
+            # self.draw()
+            self.turns += 1
+
+            if self.turns > 100:
+                break
+
+            # Right to left removal of empty players
+
+            # for p_num in range(-len(self.players), -1):
+            #     if len(self.players[p_num]) == 0 and self.deck.is_empty():
+            #         self.players.pop()
+
+            # Probably shouldn't take over 100
+            # if self.turns > 2:
+            #     break
 
     def turn(self):
         """
@@ -218,12 +226,9 @@ class Game:
         # print(self.dank)
         print('Player ' + str(attacker.num) + ' Attacks with: ' + str(atk[1]))
 
-        attacker = None
-
         # Pass phase
         pass_count = 0
         attack_count = 0
-        defense = None
         while True:
             pass_is_legal = (len(next_player) >= len(table) + 1)
             defense = defender.defend(table, pass_is_legal, len(table))
@@ -242,7 +247,8 @@ class Game:
                 defender.take_table(table)
                 table = []
                 self.inc_attacker(2)
-                attacker, defender, next_player = self.get_players()
+                # attacker, defender, next_player = self.get_players()
+                # TODO (Bretley) use these
                 break
 
             if defense[0] == Defense.defend:
@@ -253,58 +259,58 @@ class Game:
             print("Bug in game.turn, pass_count > 3")
 
         # Defense phase
-        lastMove = None # used to check for 2 passes in a row
+        # Used to check for 2 passes in a row
+        # last_move = None
+        # TODO (Bretley) use last_move
         attacker, defender, next_player = self.get_players()
         while attack_count < 6 and len(defender) > 0 and defense[1] != Defense.take:
-            # Loop until table reaches 12 (fully attacked)
-            # or len(defender) == 0 (defender is out of cards) 
+            # Loop until table reaches 12 (fully attacked) or len(defender) == 0 (defender is out of cards)
             atk = attacker.attack(table)
             if atk[0] == Attack.play:
                 print('Player ' + str(attacker.num) + ' Attacks with: ' + str(atk[1]))
                 attack_count += 1
-                # defender must defend then try again until defender takes or
-                # player is done
+                # Defender must defend then try again until defender takes or player is done
                 table.append(atk[1])
                 defense = defender.defend(table, False, len(table))
                 if defense[0] == Defense.defend:
-                    # Attack-defense continues until one gives up or cards have
-                    # reached min(6, len(defender))
+                    # Attack-defense continues until one gives up or cards have reached min(6, len(defender))
                     table += defense[1]
                     print('Player ' + str(defender.num) + ' defends with ' + ', '.join([str(x) for x in defense[1]]))
                     continue
-                elif defense[0] == Defense.take:
+
+                if defense[0] == Defense.take:
                     # Defender has to take cards
-                    # move to shed then draw
+                    # Move to shed then draw
                     print('Player ' + str(defender.num) + ' takes ' + ', '.join([str(x) for x in table]))
                     defender.take_table(table)
-                    table = []
+                    # table = []
+                    # TODO (Bretley) use table
                     break
 
             elif atk[0] == Attack.done:
-                print( 'Player ' + str(attacker.num) + ' has ceased attack')
+                print('Player ' + str(attacker.num) + ' has ceased attack')
                 if len(self.players) == 2:
                     break
-                else:
-                    # TODO (Bretley)
-                    # Add logic for other players to join in on the attack
-                    break
+
+                # TODO (Bretley) Add logic for other players to join in on the attack
+                break
 
             # shed phase
             if defense[0] == Defense.take:
                 table += attacker.shed()
                 defender.take_table(table)
-                print( 'defender picks up shed')
+                print('Defender picks up shed')
                 table = []
             else:
                 pass
-                # success for attacker
-        return
+                # Success for attacker
+
 
 def main():
     """
     The main function for the game
     """
-    for i in range(pow(10,5)):
+    for _ in range(pow(10, 5)):
         game = Game(2)
         game.play()
         break
