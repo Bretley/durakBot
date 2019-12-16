@@ -9,6 +9,7 @@ Card
 
 import functools
 import itertools
+import logging
 
 
 class Card:
@@ -26,6 +27,11 @@ class Card:
     def __init__(self, rank, suit):
         """
         """
+        if rank not in RANKS:
+            logging.error("Invalid rank %s for initialized card!", rank)
+        if suit not in SUITS:
+            logging.error("Invalid suit %s for initialized card!", suit)
+
         self.rank = rank
         self.suit = suit
 
@@ -90,7 +96,7 @@ def create_comparator(dank_suit):
 
             return 0
 
-        # Only one is a dank, if x then x > y else y > x
+        # Only one is a dank, if card1 then card1 > card2 else card2 > card1
         return 1 if card1.suit == dank_suit else -1
 
     return compare

@@ -7,6 +7,7 @@ Player
     The representation of a game
 """
 
+import logging
 import sys
 
 from card import CARD_COMPARATORS, RANK_NUM
@@ -69,6 +70,10 @@ class Game:
         deck = Deck()
         deck.shuffle_deck()
 
+        if num_players == 0:
+            logging.error("Number of players is 0!")
+            sys.exit()
+
         self.players = [Player(x) for x in range(num_players)]
         for _ in range(6):
             for player in self.players:
@@ -76,22 +81,17 @@ class Game:
 
         self.table_card = deck.flip()
         if self.table_card is None:
-            # TODO
-            sys.exit()
+            logging.error("Table Card is None upon game instantiation!")
         self.dank = self.table_card.suit  # Determine Dank suit
         self.cmp = CARD_COMPARATORS[self.dank]
         self.turns = 0
         self.table = []
         self.attacker = 0
 
-        # FOR DEBUGGING
-        # print('Table Card:')
-        # print(self.table_card)
+        logging.debug('Table Card:')
+        logging.debug("%s", self.table_card)
 
-        # Check danks at start of round
-        # Whoever has the lowest one goes first
-        # Else we default to 0
-
+        # Check danks at start of round, whoever has the lowest one goes first, else we default to 0
         min_rank = 9
         min_start = None
         for player in self.players:
@@ -104,8 +104,6 @@ class Game:
                     min_rank = RANK_NUM[card.rank]
         if min_start is not None:
             self.attacker = min_start[0]
-        # FOR DEBUGGING
-        # print(held_danks[0][0], held_danks[0][1])
 
     def add_mod(self, start, offset):
         """
@@ -215,15 +213,16 @@ class Game:
 
         # It definitely does, this is to catch errors
         if atk[0] == Attack.play:
-            pass
+            logging.error("Atk[0] == Attack.play")
 
         table.append(atk[1])
-        # FOR DEBUGGING
-        # print(self.dank
-        # print(attacker)
-        # print("\n\n\n\n")
-        # print(defender)
-        # print(self.dank)
+
+        logging.debug("%s", self.dank)
+        logging.debug("%s", attacker)
+        logging.debug("\n\n\n\n")
+        logging.debug("%s", defender)
+        logging.debug("%s", self.dank)
+
         print('Player ' + str(attacker.num) + ' Attacks with: ' + str(atk[1]))
 
         # Pass phase
@@ -248,7 +247,7 @@ class Game:
                 table = []
                 self.inc_attacker(2)
                 # attacker, defender, next_player = self.get_players()
-                # TODO (Bretley) use these
+                # TODO (Bretley) use these?
                 break
 
             if defense[0] == Defense.defend:
@@ -256,7 +255,7 @@ class Game:
                 break
 
         if pass_count > 3:
-            print("Bug in game.turn, pass_count > 3")
+            logging.warning("Bug in game.turn, pass_count > 3")
 
         # Defense phase
         # Used to check for 2 passes in a row
@@ -284,7 +283,7 @@ class Game:
                     print('Player ' + str(defender.num) + ' takes ' + ', '.join([str(x) for x in table]))
                     defender.take_table(table)
                     # table = []
-                    # TODO (Bretley) use table
+                    # TODO (Bretley) use table?
                     break
 
             elif atk[0] == Attack.done:
@@ -295,7 +294,7 @@ class Game:
                 # TODO (Bretley) Add logic for other players to join in on the attack
                 break
 
-            # shed phase
+            # Shed phase
             if defense[0] == Defense.take:
                 table += attacker.shed()
                 defender.take_table(table)

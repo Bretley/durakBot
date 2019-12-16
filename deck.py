@@ -26,7 +26,7 @@ class Deck:
     draw()
         Takes a card from the top of the deck
     flip()
-        Reveals the top card of the deck
+        Reveals the bottom card of the deck
     is_empty()
         Returns whether deck is empty
     shuffle_deck()
@@ -77,7 +77,7 @@ class Deck:
 
     def flip(self):
         """
-        Reveals the top card of the deck
+        Reveals the bottom card of the deck
 
         Returns
         -------
@@ -104,8 +104,3 @@ class Deck:
         Randomizes the order of the deck
         """
         shuffle(self.cards)
-
-# FOR DEBUGGING
-# for i in range(1, pow(10,7)):
-#     d = Deck()
-# Runs in ~4.6s

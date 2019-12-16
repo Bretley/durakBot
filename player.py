@@ -12,6 +12,7 @@ Defense
 """
 
 import enum
+import logging
 
 from card import CARD_COMPARATORS, rank_matches, RANK_NUM
 
@@ -102,8 +103,7 @@ class Player:
             return Attack.play, self.hand.pop(0)
             # Must play, 1st attack
 
-        # Default bot logic: play lowest first,
-        # don't pass to other player until out of matches
+        # Default bot logic: play lowest first, don't pass to other player until out of matches
         # Assumes sorted hand
         matches = [card for card in self.hand if rank_in_table(card, table)]
         if matches:
@@ -162,10 +162,11 @@ class Player:
 
         attack = table[-1]
         current_defense = lowest_defense(attack, self.hand, self.dank)
-        # print('defense logic')
-        # print(attack)
-        # print(self)
-        # print(current_defense)
+
+        logging.debug('Defense Logic:')
+        logging.debug("%s", attack)
+        logging.debug("%s", self)
+        logging.debug("%s", current_defense)
 
         if current_defense is None:
             return Defense.take, None
@@ -226,6 +227,7 @@ class Player:
         list
             A list of Cards
         """
+
         if max_shed_allowed == 0:
             return []
 
