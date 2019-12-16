@@ -97,7 +97,7 @@ class Deck:
         bool
             True if the deck is empty, False otherwise
         """
-        return len(self.cards) > 0
+        return len(self.cards) == 0
 
     def shuffle_deck(self):
         """
