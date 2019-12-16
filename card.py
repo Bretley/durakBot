@@ -24,6 +24,9 @@ class Card:
         The Suit of the card
     """
 
+    def __hash__(self):
+        return hash(self.suit + self.rank)
+    
     def __init__(self, rank, suit):
         """
         """
@@ -45,6 +48,9 @@ class Card:
             The card as a string
         """
         return self.rank + ' of ' + self.suit
+
+    def __eq__(self, o):
+        return self.rank == o.rank and self.suit == o.suit
 
 
 RANKS = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6']

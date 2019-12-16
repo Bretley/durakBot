@@ -84,6 +84,12 @@ class Player:
             ret += str(card) + '\n'
         return ret
 
+    def verify_hand(self):
+        """
+        Method to ensure that the hand contains 0 duplicates
+        """
+        return len(self.hand) == len(set(self.hand))
+
     def attack(self, table):
         """
         Does an attack action
@@ -191,12 +197,14 @@ class Player:
             The card to add to the hand
         """
 
-        if self.dank is not None:
-            # This might be more efficient than constantly iterating over hands over and over to find least valuable card
-            self.sort()
 
         if card is not None:
             self.hand.append(card)
+
+        if self.dank is not None:
+            # This might be more efficient than constantly iterating over 
+            # hands over and over to find least valuable card
+            self.sort()
 
     def take_table(self, cards):
         """
@@ -233,8 +241,11 @@ class Player:
 
         card_list = []
         for card in self.hand:
-            if card.suit != self.dank and len(card_list) < max_shed_allowed and rank_in_table(card, table):
+            if len(card_list) < max_shed_allowed and rank_in_table(card, table):
                 card_list.append(card)
+        for x in card_list:
+            self.hand.remove(x)
+
         return card_list
 
 
