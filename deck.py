@@ -1,22 +1,15 @@
 """
-A module used to store classes related to the functioning of a deck
+A module used to store the deck class
 
 Classes
 -------
 Deck
     The representation of a deck
-Card
-    The representation of a card
 """
-
-import itertools
 
 from random import shuffle
 
-import functools
-
-from card import *
-
+from card import CARDS
 
 
 class Deck:
@@ -34,6 +27,8 @@ class Deck:
         Takes a card from the top of the deck
     flip()
         Reveals the top card of the deck
+    is_empty()
+        Returns whether deck is empty
     shuffle()
         Randomizes the order of the deck
 
@@ -43,7 +38,7 @@ class Deck:
     def __init__(self):
         """
         """
-        self.cards = [card for card in CARDS]
+        self.cards = CARDS.copy()
 
     def __len__(self):
         """
@@ -71,20 +66,19 @@ class Deck:
         """
         return self.cards[0]
 
+    def is_empty(self):
+        """
+        Returns whether deck is empty
+        """
+        return len(self.cards) > 0
+
     def shuffle(self):
         """
         Randomizes the order of the deck
         """
         shuffle(self.cards)
 
-    def isEmpty(self):
-        """
-        Returns whether deck is empty
-        """
-        return len(self.cards) > 0
-
-
-
+# FOR DEBUGGING
 # for i in range(1, pow(10,7)):
 #     d = Deck()
 # runs in ~4.6s
