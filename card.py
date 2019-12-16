@@ -1,3 +1,12 @@
+"""
+A module used to store the card class
+
+Classes
+-------
+Card
+    The representation of a card
+"""
+
 import functools
 import itertools
 
@@ -34,24 +43,37 @@ RANK_NUM = {rank: index for index, rank in enumerate(reversed(RANKS))}
 CARD_COMPARATORS = {}
 
 
-def create_comparator(dank):
-    def compare(x, y):
-        if x.suit == dank and y.suit == dank:
-            if RANK_NUM[x.rank] > RANK_NUM[y.rank]:
+def create_comparator(dank_suit):
+    """
+    Creates a comparator
+
+    Parameters
+    ----------
+    dank_suit: Card.suit
+        The suit of the dank card
+    """
+    def compare(card1, card2):
+        """
+        Compares two cards
+
+        Parameters
+        ----------
+        card1: Card
+            The first card to compare
+        card2: Card
+            The second card to compare
+        """
+        if (card1.suit == dank_suit and card2.suit == dank_suit) or (dank_suit not in (card1.suit, card2.suit)):
+            if RANK_NUM[card1.rank] > RANK_NUM[card2.rank]:
                 return 1
-            elif RANK_NUM[x.rank] < RANK_NUM[y.rank]:
+
+            if RANK_NUM[card1.rank] < RANK_NUM[card2.rank]:
                 return -1
-            else:
-                return 0
-        elif x.suit != dank and y.suit != dank:
-            if RANK_NUM[x.rank] > RANK_NUM[y.rank]:
-                return 1
-            elif RANK_NUM[x.rank] < RANK_NUM[y.rank]:
-                return -1
-            else:
-                return 0
-        else:  # Only one is a dank, if x then x > y else y > x
-            return 1 if x.suit == dank else -1
+
+            return 0
+
+        # Only one is a dank, if x then x > y else y > x
+        return 1 if card1.suit == dank_suit else -1
     return compare
 
 
@@ -61,13 +83,27 @@ for dank in SUITS:
 
 def suited(card, suit):
     """
-    tell if card matches suit
+    Tell if card matches suit
+
+    Parameters
+        ----------
+        card: Card
+            The card to check
+        suit: Card.suit
+            The suit to check
     """
     return card.suit == suit
 
 
 def rank_matches(cards, rank):
     """
-    return all rank matches in a set of cards
+    Return all rank matches in a set of cards
+
+    Parameters
+        ----------
+        cards: list
+            A list of cards
+        rank: int
+            The rank to check for
     """
     return [card for card in cards if card.rank == rank]
