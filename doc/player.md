@@ -26,7 +26,7 @@ Classes
     :   Does an attack action.
         
         Args:
-            table : The cards on the table.
+            table: The cards on the table.
             ranks: TODO(Bretley)
         
         Returns:
