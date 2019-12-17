@@ -58,6 +58,17 @@ Classes
             Card matches ranks in table.
             Card is in hand.
 
+    `legal_defense(self, move)`
+    :   Determines whether a defense is a legal action or not.
+        
+        Args:
+            move: The defense to check.
+        
+        Returns:
+            True if defense is legal.
+            Defense is legal if it is higher rank same suit,or any dank,
+            or higher dank in the case that a dank was played.
+
     `legal_shed(self, move)`
     :   Determines whether a shed is a legal action or not.
         

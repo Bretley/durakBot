@@ -39,7 +39,7 @@ print(36, OPTIONS_DICT[36])
 print(71, OPTIONS_DICT[71])
 print(72, OPTIONS_DICT[72])
 print(108, OPTIONS_DICT[108])
-print(109, OPTIONS_DICT[109
+print(109, OPTIONS_DICT[109])
 
 
 class Model:
@@ -149,36 +149,36 @@ class DurakEnv(gym.Env):
         self.model = Model()
 
     def legal_defense(self, move):
-        """
+        """Determines whether a defense is a legal action or not.
 
         Args:
-            move: the defense to check
+            move: The defense to check.
 
-        Returns
-        -------
-            True if defense is legal
-            defense is legal if it is higher rank same suit,
-            or any dank,
-            or higher dank in the case that a dank was played
+        Returns:
+            True if defense is legal.
+            Defense is legal if it is higher rank same suit,or any dank,
+            or higher dank in the case that a dank was played.
 
         """
+
         if move == 109:
-            # Take is always legal in defense
+            # Take is always legal in defense.
             return True
-        elif 36 <= move < 72:
-            # made a defense move
+
+        if 36 <= move < 72:
+            # Made a defense move.
             _, card = OPTIONS_DICT[move]
-            # defend against attack
+            # Defend against attack.
             attack = self.table[-1]
             if card in self.model.hand:
                 if card.suit == attack.suit and RANK_NUM[card.rank] > RANK_NUM[attack.rank]:
-                    # higher in same suit, dank or non
+                    # Higher in same suit, dank or non.
                     return True
-                elif attack.suit != self.dank and card.suit == self.dank
-                    # or defense is dank suit and attack is not
+
+                if attack.suit != self.dank and card.suit == self.dank:
+                    # Or defense is dank suit and attack is not.
                     return True
         return False
-
 
     def legal_shed(self, move):
         """Determines whether a shed is a legal action or not.
@@ -354,7 +354,7 @@ class DurakEnv(gym.Env):
             if self.legal_defense(action):
                 pass
             else:
-                # return and punish
+                # Return and punish.
                 return None, -1, True, None
 
         # Shed state logic.
