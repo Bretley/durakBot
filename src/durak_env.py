@@ -11,18 +11,18 @@ import gym
 from gym import spaces
 import logging
 
-from card import Card, RANKS, SUITS, Cards
+from card import Card, RANKS, SUITS, CARDS
 from player import Player
 from strategy import Attack, Defense, S0, S1, S2
 
-poducts = ['a', 'd', 's']
-sums = ['done']
-total_options = len(CARDS) * len(['a', 'd', 's']) + len(['done'])
+PRODUCTS = ['a', 'd', 's']
+SUMS = ['done']
+TOTAL_OPTIONS = len(CARDS) * len(['a', 'd', 's']) + len(['done'])
 
 options_dict = {}
 total = 0
 for c in CARDS:
-    for p in products:
+    for p in PRODUCTS:
         options_dict[total] = (p, c)
         total += 1
 
@@ -70,10 +70,10 @@ class DurakEnv(gym.Env):
         self.table_card = None
         self.opponent = Player("Bot", S0())
 
-
         class AI:
             def __init__(self):
                 self.hand = []
+
             def take(self, card):
                 """
                 Adds card to the player's hand
@@ -157,7 +157,7 @@ class DurakEnv(gym.Env):
             elif False:  # AI is done
                 pass
         elif self.state == "d":
-            if True:  # Bot 
+            if True:  # Bot
                 pass
         elif self.state == "s":
             pass
