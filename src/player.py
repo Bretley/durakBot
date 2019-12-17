@@ -29,6 +29,9 @@ class Player:
     dank : Card.suit
         The suit of the Dank card
 
+    strategy:
+        class that implements attack, defend, and shed methods
+
     Methods
     -------
     attack(table)
@@ -45,20 +48,19 @@ class Player:
         Sheds cards to the player's hand
     """
 
-    def __init__(self, num):
+    def __init__(self, num, strategy):
         """
         Parameters
         ----------
         num : int
             The Player's ID
+        strategy: Class
+            class must implement shed, attack, and defend for the bot
         """
         self.hand = []
         self.num = num
         self.dank = None
-        if num == 0:
-            self.strategy =S0()
-        else:
-            self.strategy = S1()
+        self.strategy = strategy 
 
     def __len__(self):
         """
