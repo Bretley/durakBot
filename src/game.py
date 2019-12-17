@@ -414,7 +414,6 @@ def main():
             s1_wins += 1
         elif isinstance(wp.strategy, S2):
             s2_wins += 1
-            
 
     print('Finished ' + str(numGames) + ' averaging ' + str(sum(turns)/len(turns)) + ' turns')
     print('s0 wins: ' + str(s0_wins))
