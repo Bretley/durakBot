@@ -34,7 +34,7 @@ class Worker:
         Args:
             genome: The genome to be tested.
             config: The configuration specifications for NEAT.
-    """
+        """
 
         self.genome = genome
         self.config = config
