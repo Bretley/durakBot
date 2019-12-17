@@ -5,15 +5,16 @@ Implements all of the functions necessary to play through a game of Durak and
 train a machine learning model to play it.
 """
 
+import logging
+
 # TODO Figure this out.
 # pylint: disable=import-error
 import gym
 from gym import spaces
-import logging
 
-from card import Card, RANKS, SUITS, CARDS
+from card import CARDS
 from player import Player
-from strategy import Attack, Defense, S0, S1, S2
+from strategy import Attack, S0
 from deck import Deck
 
 PRODUCTS = ['a', 'd', 's']
@@ -34,6 +35,45 @@ print(TOTAL_OPTIONS)
 print(OPTIONS_DICT[TOTAL_OPTIONS-1])
 
 
+class Model:
+    """Model is a wrapper for the AI hand.
+
+        Attributes:
+            hand: TODO(Bretley)
+    """
+
+    def __init__(self):
+        """Inits Model.
+        """
+        self.hand = []
+
+    def take(self, card):
+        """
+        Adds card to the model's hand.
+
+        Args:
+            card: The card to add to the hand.
+        """
+
+        if card is not None:
+            self.hand.append(card)
+
+    def take_table(self, cards):
+        """Adds cards to the model's hand.
+
+        Args:
+        cards: The list of cards to add to the model's hand.
+        """
+        self.hand += cards
+
+    def remove_card(self, card):
+        """Removes a card from the model's hand.
+
+        Args:
+            card: The card to remove from the model's hand.
+        """
+        self.hand.remove(card)
+
 
 class DurakEnv(gym.Env):
     """The environment that represents a game of Durak.
@@ -43,19 +83,20 @@ class DurakEnv(gym.Env):
     Attributes:
         action_space: The set of available actions.
         observation_space: The set of variables in the environment.
-        game_started: Boolean
-        deck: Deck object containing cards
-        out_pile: List of cards that are out of the game
-        players: number of players
-        turns: number of turns so far
-        table: cards on the current attack/defense
-        ranks: hash table of ranks of cards in table
-        attack_count: count of attacks this turn
-        state: String representing the state of the game dfa
-        dank: string representing dank suit
-        table_card: card at the bottom of the deck
-        opponent: Bot that plays against the Model
-        model: Model object wrapper, mostly manages Model's hand
+        game_started: Whether or not the game has been started.
+        deck: Deck object containing cards.
+        out_pile: List of cards that are out of the game.
+        players: The number of players.
+        turns: The number of turns taken so far.
+        table: The cards on the current attack/defense.
+        ranks: Hash table of ranks of cards in table.
+        attack_count: Count of attacks this turn.
+        state: String representing the state of the game DFA.
+        dank: String representing the dank suit.
+        table_card: Card at the bottom of the deck.
+        opponent: Bot that plays against the Model.
+        print_trace: TODO(Bretley) with capitalization and punctuation.
+        model: Model object wrapper, mostly manages Model's hand.
     """
 
     def __init__(self):
@@ -87,72 +128,29 @@ class DurakEnv(gym.Env):
         self.opponent = Player("Bot", S0())
         self.print_trace = True
 
-        class Model:
-            """
-                Model is a wrapper for the AI hand
-
-                Attributes:
-                    hand: TODO
-            """
-
-            def __init__(self):
-                """Inits Model.
-                """
-                self.hand = []
-
-            def take(self, card):
-                """
-                Adds card to the model's hand.
-
-                Args:
-                    card: The card to add to the hand.
-                """
-
-                if card is not None:
-                    self.hand.append(card)
-
-            def take_table(self, cards):
-                """Adds cards to the model's hand.
-
-                Args:
-                cards: The list of cards to add to the model's hand.
-                """
-                self.hand += cards
-
-            def remove_card(self, card):
-                """Removes a card from the model's hand.
-
-                Args:
-                    card: The card to remove from the model's hand.
-                """
-                self.hand.remove(card)
-
         self.model = Model()
 
     def legal_attack(self, attack):
-        """
+        """Determines whether an attack is a legal action or not.
 
-        Parameters
-        ----------
-        attack: int
+        Args:
+            attack: The attack to check.
 
-        Returns
-        -------
+        Returns:
             Attack is legal if:
-            action < 36 or 108
-            card matches ranks in table
-            card is in hand
+            Action < 36 or 108.
+            Card matches ranks in table.
+            Card is in hand.
         """
+
         if attack < 36:
-            move, card = OPTIONS_DICT[attack]
+            _, card = OPTIONS_DICT[attack]
             if card in self.model.hand and card.rank in self.ranks:
                 return True
         elif attack == 108:
             if len(self.table) != 0:
                 return True
         return False
-
-
 
     def step(self, action):
         """Proceeds through a single step in the game.
@@ -190,18 +188,19 @@ class DurakEnv(gym.Env):
                 print('int works')
                 self.state = "a"
                 return obs, reward, done, info
-            else:  # Bot attacks first
-                atk = self.opponent.attack(self.table, self.ranks)
-                if self.print_trace:
-                    print('Opponent starts attack with ' + str(atk[1]))
-                if atk[0] != Attack.play:
-                    logging.error("Atk[0] != Attack.play, bot is attacking at start")
 
-                self.table.append(atk[1])
-                self.ranks.update({atk[1].rank:0})
-                return obs, reward, done, info
+            # Bot attacks first
+            atk = self.opponent.attack(self.table, self.ranks)
+            if self.print_trace:
+                print('Opponent starts attack with ' + str(atk[1]))
+            if atk[0] != Attack.play:
+                logging.error("Atk[0] != Attack.play, bot is attacking at start")
 
-        elif self.state == 'a':
+            self.table.append(atk[1])
+            self.ranks.update({atk[1].rank: 0})
+            return obs, reward, done, info
+
+        if self.state == 'a':
             if m_type == 'a':  # AI plays a card
                 if self.legal_attack(action):
                     self.model.remove_card(card)
@@ -215,7 +214,8 @@ class DurakEnv(gym.Env):
             else:  # Punish and end
                 return None, -1, True, None
         elif self.state == "d":
-            if True:  # Bot
+            temp = True
+            if temp:  # Bot
                 pass
         elif self.state == "s":
             pass
@@ -226,8 +226,6 @@ class DurakEnv(gym.Env):
 
     def reset(self):
         """Resets the game to the starting state.
-
-        TODO more detail about what gets reset.
         """
         self.game_started = False
         self.deck = Deck()
