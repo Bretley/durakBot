@@ -2,6 +2,8 @@ import gym
 import neat
 import os
 
+from src.durak_env import DurakEnv
+
 
 class Worker:
     def __init__(self, genome, config):
@@ -10,8 +12,14 @@ class Worker:
         self.env = None
 
     def work(self):
-        self.env = gym.make("Durak")
+        self.env = DurakEnv()
         self.env.reset()
+
+        done = False
+
+        while not done:
+            actions = None
+            _, _, done, _ = self.env.step(actions)
 
         fitness = 0
         return fitness

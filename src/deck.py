@@ -9,7 +9,7 @@ Deck
 
 from random import shuffle
 
-from card import CARDS
+from src.card import CARDS
 
 
 class Deck:
