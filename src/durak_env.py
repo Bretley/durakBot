@@ -193,8 +193,8 @@ class DurakEnv(gym.Env):
                 player.take(self.deck.draw())
             if len(player) == 0:
                 return True
-            else:
-                return False
+
+        return False
 
     def legal_defense(self, move):
         """Determines whether a defense is a legal action or not.
@@ -422,36 +422,33 @@ class DurakEnv(gym.Env):
                         # if game hasn't ended, the turn is over and the bot succesfully defends
                         self.state = "a"
                         return None, None, None, None
+
+                    atk = self.opponent.attack(self.table, self.ranks)
+                    if atk[0] == Attack.play:
+                        self.add_attack(card)
+                        self.state = "d"
+                        return None, None, None, None
+
+                    if atk[0] == Attack.done:
+                        self.clear_table()
+                        # Players get to draw, attacker first.
+                        # It shouldn't be possible for a win condition here
+                        if self.player_draw(self.opponent):
+                            logging.error('Win condition in defense phase')
+                            logging.error('Opponent has won after ceasing attack')
+
+                        if self.player_draw(self.model):
+                            logging.error('Win condition in defense phase')
+                            logging.error('Model has won after ceasing attack')
+
                     else:
-                        atk = self.opponent.attack(self.table, self.rank)
-                        if atk[0] == Attack.play:
-                            self.add_attack(card)
-                            self.state = "d"
-                            return None, None, None, None
-
-                        elif atk[0] == Attack.done:
-                            self.clear_table()
-                            # Players get to draw, attacker first.
-                            # It shouldn't be possible for a win condition here
-                            if self.player_draw(self.opponent):
-                                logging.error('Win condition in defense phase')
-                                logging.error('Opponent has won after ceasing attack')
-
-                            if self.player_draw(self.model):
-                                logging.error('Win condition in defense phase')
-                                logging.error('Model has won after ceasing attack')
-
-                        else:
-                            logging.error('in defense phase, opponent has not chosen play or done')
-
-
+                        logging.error('in defense phase, opponent has not chosen play or done')
 
                 elif move == 'take':
                     # Bot gets to shed
                     shed = self.opponent.shed(self.table, min((6 - self.attack_count, len(self.model))), self.ranks)
                     if self.print_trace:
                         print("opponent sheds: " + ", ".join([str(x) for x in shed]))
-
 
                     if self.player_draw(self.opponent):
                         # TODO: Opponent (bot) has won by shedding last cards
@@ -468,7 +465,7 @@ class DurakEnv(gym.Env):
                     self.attack_count = 0
                     # get Bot Attack
 
-                    atk = self.opponent.attack(self.table)
+                    atk = self.opponent.attack(self.table, self.ranks)
                     if atk[0] != Attack.play:
                         logging.error('in defense state')
                         logging.error('opponent is not attacking on first attack')

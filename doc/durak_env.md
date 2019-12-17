@@ -46,6 +46,21 @@ Classes
 
     ### Methods
 
+    `add_attack(self, card)`
+    :   Args:
+            card: Card to be added to the tablae
+        
+        Returns
+        -------
+            None
+
+    `clear_table(self)`
+    :   Method to clean up variables related to the table
+        
+        Returns
+        -------
+            None
+
     `legal_attack(self, move)`
     :   Determines whether an attack is a legal action or not.
         
@@ -79,6 +94,16 @@ Classes
             Whether or not the shed is legal.
             'Done' is always a legal shed.
             Shed card is legal if card is in hand and rank matches table.
+
+    `player_draw(self, player)`
+    :   players draw and report win condition
+        
+        Args:
+            player: Model or Player
+        
+        Returns:
+            True if player is out of cards after draw
+            False otherwise
 
     `render(self, mode='human')`
     :   Will not be used.
