@@ -189,7 +189,6 @@ class Game:
                 break
             self.turns += 1
 
-
         if winningPlayer is None:
             logging.error('ERROR: nobody has won')
         elif len(self.deck) > 0:
@@ -240,19 +239,18 @@ class Game:
                 self.inc_attacker(1)
                 attacker, defender, next_player = self.get_players()
                 table += defense[1]
-                ranks.update({x.rank:0 for x in defense[1]})
+                ranks.update({x.rank: 0 for x in defense[1]})
                 continue
 
             if defense[0] == Defense.take:
                 break
-            
+
             if defense[0] == Defense.defend:
                 if self.print_trace:
                     print('Player ' + str(defender.num) + ' defends with ' + ', '.join([str(x) for x in defense[1]]))
                 table += defense[1]
-                ranks.update({x.rank:0 for x in defense[1]})
+                ranks.update({x.rank: 0 for x in defense[1]})
                 break
-
 
         if pass_count > 3:
             logging.error("Bug in game.turn, pass_count > 3")
@@ -274,7 +272,7 @@ class Game:
                     if defense[0] == Defense.defend:
                         # Attack-defense continues until one gives up or cards have reached min(6, len(defender))
                         table += defense[1]
-                        ranks.update({x.rank:0 for x in defense[1]})
+                        ranks.update({x.rank: 0 for x in defense[1]})
                         if self.print_trace:
                             print('Player ' + str(defender.num) + ' defends with ' + ', '.join([str(x) for x in defense[1]]))
                         continue
@@ -290,13 +288,13 @@ class Game:
 
         # Shed phase
         if defense[0] == Defense.take:
-            shed =  attacker.shed(table, min((6-attack_count, len(defender))), ranks)
+            shed = attacker.shed(table, min((6-attack_count, len(defender))), ranks)
             if self.print_trace:
                 print('Player ' + str(attacker.num) + ' sheds: ' + ', '.join([str(x) for x in shed]))
             table += shed
             defender.take_table(table)
             if self.print_trace:
-                print('Player : '+ str(defender.num) + ' picks up: ' + ', '.join([str(x) for x in table]))
+                print('Player : ' + str(defender.num) + ' picks up: ' + ', '.join([str(x) for x in table]))
             if len(table) > len(set(table)):
                 logging.error('ERROR: Duplicates in the table')
                 logging.error([str(x) for x in table])
@@ -308,7 +306,7 @@ class Game:
                 logging.error('ERROR: Duplicates in the table')
                 logging.error([str(x) for x in table])
             pass
-        
+
         elif len(attacker) == 0:
             # print( 'attacker')
             # print('Player ' + str(attacker.num) + ' has run out of cards')
@@ -330,15 +328,13 @@ class Game:
 
         del table
         del ranks
-            
-        
+
         for player in self.players:
             if not player.verify_hand():
                 logging.error("Player : " + str(player.num) + ' has duplicate cards')
 
         if (len(self.out_pile) > len(set(self.out_pile))):
             logging.error('out pile has duplicates')
-
 
         # Draw: Win condition
         # Player is definitely a winner if, after drawing, they have zero cards

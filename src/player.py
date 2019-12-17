@@ -60,7 +60,7 @@ class Player:
         self.hand = []
         self.num = num
         self.dank = None
-        self.strategy = strategy 
+        self.strategy = strategy
 
     def __len__(self):
         """
@@ -146,12 +146,11 @@ class Player:
             The card to add to the hand
         """
 
-
         if card is not None:
             self.hand.append(card)
 
         if self.dank is not None:
-            # This might be more efficient than constantly iterating over 
+            # This might be more efficient than constantly iterating over
             # hands over and over to find least valuable card
             self.sort()
 
@@ -185,6 +184,3 @@ class Player:
         list
             A list of Cards
         """
-
-
-
