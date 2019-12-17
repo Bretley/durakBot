@@ -1,4 +1,4 @@
-from src.card import RANK_NUM
+from card import RANK_NUM
 
 import enum
 

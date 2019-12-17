@@ -1,10 +1,7 @@
-"""
-A module used to store the card class
+"""A module used to store the Card class.
 
-Classes
--------
-Card
-    The representation of a card
+Represents a playing card from a Durak deck, which is a standard deck but with
+the cards 2-5 removed.
 """
 
 import functools
@@ -13,22 +10,22 @@ import logging
 
 
 class Card:
-    """
-    A class used to represent a card
+    """A class used to represent a card.
 
     Attributes
-    ----------
-    rank : str
-        The value of a card
-    suit : str
-        The Suit of the card
+        rank: The value of a card.
+        suit: The suit of the card.
     """
 
     def __hash__(self):
         return hash(self.suit + self.rank)
 
     def __init__(self, rank, suit):
-        """
+        """Inits Cards with a rank and suit.
+
+        Args:
+            rank: The rank of the card 6-A.
+            suit: The suit of the card, Diamonds, Spades, Clubs, or Hearts.
         """
         if rank not in RANKS:
             logging.error("Invalid rank %s for initialized card!", rank)
@@ -39,14 +36,6 @@ class Card:
         self.suit = suit
 
     def __str__(self):
-        """
-        Implements str function for Card
-
-        Returns
-        -------
-        str
-            The card as a string
-        """
         return self.rank + ' of ' + self.suit
 
     def __eq__(self, o):
@@ -61,37 +50,27 @@ CARD_COMPARATORS = {}
 
 
 def create_comparator(dank_suit):
-    """
-    Creates a comparator
+    """Creates a comparator to compare two cards.
 
-    Parameters
-    ----------
-    dank_suit : Card.suit
-        The suit of the dank card
+    Args:
+    dank_suit: The suit of the dank card.
 
-    Returns
-        -------
-        function
-            A comparator function
+    Returns:
+        A comparator function.
     """
 
     def compare(card1, card2):
-        """
-        Compares two cards
+        """Compares two cards
 
-        Parameters
-        ----------
-        card1 : Card
-            The first card to compare
-        card2 : Card
-            The second card to compare
+        Args:
+        card1: The first card to compare.
+        card2: The second card to compare.
 
-        Returns
-        -------
-        int
-            -1 if the first card is smaller
-            0 if they are the same
-            1 if the first card is bigger
+        Returns:
+            An int with the following values:
+            -1 if the first card is smaller.
+            0 if they are the same.
+            1 if the first card is bigger.
         """
         if (card1.suit == dank_suit and card2.suit == dank_suit) or (dank_suit not in (card1.suit, card2.suit)):
             if RANK_NUM[card1.rank] > RANK_NUM[card2.rank]:
@@ -113,19 +92,13 @@ for dank in SUITS:
 
 
 def suited(card, suit):
-    """
-    Tell if card matches suit
+    """Tells if the card matches the suit.
 
-    Parameters
-        ----------
-        card : Card
-            The card to check
-        suit : Card.suit
-            The suit to check
+    Args
+        card: The card to check.
+        suit: The suit to check.
 
     Returns
-    -------
-    bool
-        True if they are the same suit, false otherwise
+        True if they are the same suit, false otherwise.
     """
     return card.suit == suit

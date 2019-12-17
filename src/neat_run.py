@@ -16,7 +16,7 @@ import os
 
 import neat
 
-from src.durak_env import DurakEnv
+from durak_env import DurakEnv
 
 
 class Worker:

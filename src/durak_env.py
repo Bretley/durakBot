@@ -5,6 +5,8 @@ Implements all of the functions necessary to play through a game of Durak and
 train a machine learning model to play it.
 """
 
+# TODO Figure this out.
+# pylint: disable=import-error
 import gym
 from gym import spaces
 
@@ -34,6 +36,8 @@ class DurakEnv(gym.Env):
         # 1 Discrete observation for now just to set it up
         self.observation_space = spaces.Discrete(1)
 
+    # TODO Remove once self use.
+    # pylint: disable=no-self-use
     def step(self, action):
         """Proceeds through a single step in the game.
 
