@@ -12,7 +12,8 @@ import sys
 
 from card import CARD_COMPARATORS, RANK_NUM
 from deck import Deck
-from player import Attack, Defense, Player
+from player import Player
+from strategy import Attack, Defense, S0, S1
 
 def padAfter(s):
     return s + ' '*(15-len(s))
@@ -178,17 +179,19 @@ class Game:
             # print('====== Turn ' + str(self.turns) + '===========')
             # print( 'Dank: ' + self.dank, ' Deck: ' + str(len(self.deck)))
             # self.print_hands()
-            turn = self.turn2()
-            if turn is not None:
+            winningPlayer = self.turn2()
+            if winningPlayer is not None:
                 break
             self.turns += 1
 
 
-        if turn is None:
+        if winningPlayer is None:
             logging.error('ERROR: nobody has won')
         elif len(self.deck) > 0:
             logging.error('someone has won with cards in the dack')
-            logging.error('Player ' + str(turn.num) + ' has won!')
+            logging.error('Player ' + str(winningPlayer.num) + ' has won!')
+
+        return winningPlayer
 
     def turn2(self):
         """
@@ -478,12 +481,20 @@ def main():
     The main function for the game
     """
     turns = []
-    numGames = pow(10,4)
+    s0_wins = 0
+    s1_wins = 0
+    numGames = pow(10, 4)
     for _ in range(numGames):
         game = Game(2)
-        game.play()
+        wp = game.play()
         turns.append(float(game.turns))
-    print( 'Finished ' + str(numGames) + ' averaging ' + str(sum(turns)/len(turns)))
+        if isinstance(wp.strategy, S0):
+            s0_wins += 1
+        else:
+            s1_wins += 1
+    print('Finished ' + str(numGames) + ' averaging ' + str(sum(turns)/len(turns)))
+    print('s0 wins: ' + str(s0_wins))
+    print('s1 wins: ' + str(s1_wins))
 
 
 if __name__ == "__main__":

@@ -131,20 +131,3 @@ def suited(card, suit):
     return card.suit == suit
 
 
-def rank_matches(cards, rank):
-    """
-    Return all rank matches in a set of cards
-
-    Parameters
-        ----------
-        cards : list(Card)
-            A list of cards
-        rank : int
-            The rank to check for
-
-    Returns
-    -------
-    list
-        The list of cards that match the rank
-    """
-    return [card for card in cards if card.rank == rank]
