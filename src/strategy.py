@@ -237,6 +237,7 @@ class S2:
         does not shed if card rank > 10
         does not pass if it requires a dank to do so
     """
+
     def __init__(self):
         pass
 
