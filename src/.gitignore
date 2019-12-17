@@ -1,0 +1,8 @@
+__pycache__
+
+*.orig
+*.pyc
+*_BACKUP_*
+*_BASE_*
+*_LOCAL_*
+*_REMOTE_*

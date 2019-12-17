@@ -11,13 +11,9 @@ Defense
     Enum for defending
 """
 
+from src.card import CARD_COMPARATORS
 
-
-import logging
-
-from card import CARD_COMPARATORS
-
-from strategy import S0, S1
+from src.strategy import S0, S1
 
 
 class Player:

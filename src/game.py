@@ -10,10 +10,11 @@ Player
 import logging
 import sys
 
-from card import CARD_COMPARATORS, RANK_NUM
-from deck import Deck
-from player import Player
-from strategy import Attack, Defense, S0, S1
+from src.card import CARD_COMPARATORS, RANK_NUM
+from src.deck import Deck
+from src.player import Player
+from src.strategy import Attack, Defense, S0
+
 
 def padAfter(s):
     return s + ' '*(15-len(s))
