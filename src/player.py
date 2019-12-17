@@ -95,8 +95,8 @@ class Player:
         """
         return len(self.hand) == len(set(self.hand))
 
-    def attack(self, table):
-        return self.strategy.attack(self.hand, table, self.dank)
+    def attack(self, table, ranks):
+        return self.strategy.attack(self.hand, table, self.dank, ranks)
         """
         Does an attack action
         ----------
@@ -168,8 +168,8 @@ class Player:
         self.hand += cards
         self.sort()
 
-    def shed(self, table, max_shed_allowed):
-        return self.strategy.shed(self.hand, table, self.dank, max_shed_allowed)
+    def shed(self, table, max_shed_allowed, ranks):
+        return self.strategy.shed(self.hand, table, self.dank, max_shed_allowed, ranks)
         """
         Sheds cards to the player's hand
 

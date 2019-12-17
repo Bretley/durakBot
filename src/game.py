@@ -207,7 +207,8 @@ class Game:
         """
         attacker, defender, next_player = self.get_players()
         table = []
-        atk = attacker.attack(self.table)
+        ranks = {}
+        atk = attacker.attack(table, ranks)
 
         # It definitely does, this is to catch errors
         if atk[0] != Attack.play:
@@ -239,6 +240,7 @@ class Game:
                 self.inc_attacker(1)
                 attacker, defender, next_player = self.get_players()
                 table += defense[1]
+                ranks.update({x.rank:0 for x in defense[1]})
                 continue
 
             if defense[0] == Defense.take:
@@ -248,6 +250,7 @@ class Game:
                 if self.print_trace:
                     print('Player ' + str(defender.num) + ' defends with ' + ', '.join([str(x) for x in defense[1]]))
                 table += defense[1]
+                ranks.update({x.rank:0 for x in defense[1]})
                 break
 
 
@@ -260,7 +263,7 @@ class Game:
         if defense[0] != Defense.take:
             while attack_count < 6 and len(defender) > 0 and len(attacker) > 0 and len(table) < 12:
                 # Loop until table reaches 12 (fully attacked) or len(defender) == 0 (defender is out of cards)
-                atk = attacker.attack(table)
+                atk = attacker.attack(table, ranks)
                 if atk[0] == Attack.play:
                     if self.print_trace:
                         print('Player ' + str(attacker.num) + ' Attacks with: ' + str(atk[1]))
@@ -271,6 +274,7 @@ class Game:
                     if defense[0] == Defense.defend:
                         # Attack-defense continues until one gives up or cards have reached min(6, len(defender))
                         table += defense[1]
+                        ranks.update({x.rank:0 for x in defense[1]})
                         if self.print_trace:
                             print('Player ' + str(defender.num) + ' defends with ' + ', '.join([str(x) for x in defense[1]]))
                         continue
@@ -286,23 +290,23 @@ class Game:
 
         # Shed phase
         if defense[0] == Defense.take:
-            shed =  attacker.shed(table, min((6-attack_count, len(defender))))
+            shed =  attacker.shed(table, min((6-attack_count, len(defender))), ranks)
             if self.print_trace:
                 print('Player ' + str(attacker.num) + ' sheds: ' + ', '.join([str(x) for x in shed]))
             table += shed
             defender.take_table(table)
             if self.print_trace:
                 print('Player : '+ str(defender.num) + ' picks up: ' + ', '.join([str(x) for x in table]))
-            # if len(table) > len(set(table)):
-                # logging.error('ERROR: Duplicates in the table')
-                # logging.error([str(x) for x in table])
+            if len(table) > len(set(table)):
+                logging.error('ERROR: Duplicates in the table')
+                logging.error([str(x) for x in table])
         elif atk[0] == Attack.done or len(table) == 12:
             if self.print_trace:
                 print('Player ' + str(attacker.num) + ' has ceased attack')
             self.out_pile += table
-            # if len(table) > len(set(table)):
-                # logging.error('ERROR: Duplicates in the table')
-                # logging.error([str(x) for x in table])
+            if len(table) > len(set(table)):
+                logging.error('ERROR: Duplicates in the table')
+                logging.error([str(x) for x in table])
             pass
         
         elif len(attacker) == 0:
@@ -323,14 +327,17 @@ class Game:
             logging.error(str(atk))
             logging.error(str(defense))
             # Success for defender
+
+        del table
+        del ranks
             
         
-        # for player in self.players:
-            # if not player.verify_hand():
-                # logging.error("Player : " + str(player.num) + ' has duplicate cards')
+        for player in self.players:
+            if not player.verify_hand():
+                logging.error("Player : " + str(player.num) + ' has duplicate cards')
 
-        # if (len(self.out_pile) > len(set(self.out_pile))):
-            # logging.error('out pile has duplicates')
+        if (len(self.out_pile) > len(set(self.out_pile))):
+            logging.error('out pile has duplicates')
 
 
         # Draw: Win condition
@@ -399,7 +406,7 @@ def main():
     turns = []
     s0_wins = 0
     s1_wins = 0
-    numGames = pow(10, 5)
+    numGames = pow(10, 4)
     for _ in range(numGames):
         game = Game([S0(), S1()], False)
         wp = game.play()

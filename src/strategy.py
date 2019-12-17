@@ -59,25 +59,6 @@ def lowest_defense(attack, hand, dank):
     return None
 
 
-def rank_in_table(card, table):
-    """
-    Returns True if a card in the hand matches one in the table by rank
-
-    Parameters
-    ------
-    card : Card
-        The Card to match
-    table : List(Card)
-        The list of Cards on the table
-
-    Returns
-    -------
-    bool
-    True if a card's rank matches a table rank, False otherwise
-    """
-    return any(card.rank == x.rank for x in table)
-
-
 class Defense(enum.Enum):
     """
     A class used to enumerate defense actions
@@ -99,14 +80,14 @@ class S0:
     def __init__(self):
         pass
 
-    def attack(self, hand, table, dank):
+    def attack(self, hand, table, dank, ranks):
         if len(table) == 0:
             return Attack.play, hand.pop(0)
             # Must play, 1st attack
 
         # Default bot logic: play lowest first, don't pass to other player until out of matches
         # Assumes sorted hand
-        matches = [card for card in hand if rank_in_table(card, table)]
+        matches = [card for card in hand if card.rank in ranks]
         if matches:
             hand.remove(matches[0])
             return Attack.play, matches[0]
@@ -154,13 +135,13 @@ class S0:
 
         pass
 
-    def shed(self, hand, table, dank, max_shed_allowed):
+    def shed(self, hand, table, dank, max_shed_allowed, ranks):
         if max_shed_allowed == 0:
             return []
 
         card_list = []
         for card in hand:
-            if len(card_list) < max_shed_allowed and rank_in_table(card, table):
+            if len(card_list) < max_shed_allowed and card.rank in ranks:
                 card_list.append(card)
         for x in card_list:
             hand.remove(x)
@@ -177,14 +158,14 @@ class S1:
     def __init__(self):
         pass
 
-    def attack(self, hand, table, dank):
+    def attack(self, hand, table, dank, ranks):
         if len(table) == 0:
             return Attack.play, hand.pop(0)
             # Must play, 1st attack
 
         # Default bot logic: play lowest first, don't pass to other player until out of matches
         # Assumes sorted hand
-        matches = [card for card in hand if rank_in_table(card, table)]
+        matches = [card for card in hand if card.rank in ranks]
         if matches:
             hand.remove(matches[0])
             return Attack.play, matches[0]
@@ -232,13 +213,13 @@ class S1:
 
         pass
 
-    def shed(self, hand, table, dank, max_shed_allowed):
+    def shed(self, hand, table, dank, max_shed_allowed, ranks):
         if max_shed_allowed == 0:
             return []
 
         card_list = []
         for card in hand:
-            if card.suit != dank and len(card_list) < max_shed_allowed and rank_in_table(card, table):
+            if card.suit != dank and len(card_list) < max_shed_allowed and card.rank in ranks:
                 card_list.append(card)
         for x in card_list:
             hand.remove(x)
