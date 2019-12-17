@@ -1,5 +1,14 @@
-"""
-TODO
+"""Uses NEAT genetic machine learning to teach a machine how to play Durak.
+
+Contains the Worker class, which does the main program loop for the Durak
+emulation. Main initializes the configuration for neat-python and sends it to
+the Worker class, which uses a custom Gym environment to iterate through the
+game until it reaches a completion state.
+
+    Usage:
+
+    python neat_run.py
+    python neat_run.py --config=FILEPATH --restore=FILEPATH
 """
 
 import argparse
@@ -11,22 +20,37 @@ from src.durak_env import DurakEnv
 
 
 class Worker:
-    """
-    TODO
+    """Evaluates the fitness of a genome.
+
+    Attributes:
+        genome: The genome to be tested.
+        config: The configuration specifications for NEAT.
+        env: The game environment.
     """
 
     def __init__(self, genome, config):
-        """
-        TODO
-        """
+        """Inits Worker with NEAT genome and configuration data.
+
+        Args:
+            genome: The genome to be tested.
+            config: The configuration specifications for NEAT.
+    """
 
         self.genome = genome
         self.config = config
         self.env = None
 
     def work(self):
-        """
-        TODO
+        """Evaluates the fitness of a genome.
+
+        Creates the main loop for the evaluation of fitness. Loads in the Durak
+        environment, initializes it, takes the state data, and iterates through
+        states until the environment says that the game is done.
+
+        Returns:
+            A float that represents the fitness of a genome. The higher the
+            number the fitter it is and the more likely the genome is to
+            reproduce.
         """
 
         # Loads in a default Durak state
@@ -52,36 +76,51 @@ class Worker:
 
 
 def eval_genomes(genome, config):
-    """
-    TODO
+    """Evaluates the fitness of a genome.
+
+    Sends the genome and configuration to the Worker class so that the worker
+    can calculate how fit a genome is to reproduce.
+
+    Args:
+        genome: The genome to be tested.
+        config: The configuration specifications for NEAT.
+    Returns:
+        A float that represents the fitness of a genome. The higher the number
+        the fitter it is and the more likely the genome is to reproduce.
     """
 
-    # Use the worker class for simplicity
+    # Uses the worker class for simplicity
     worker = Worker(genome, config)
     return worker.work()
 
 
 def main(config_file, restore_file):
-    """
-    TODO
+    """The main function for the neat_run module.
+
+    Loads in the NEAT configuration and creates the objects necessary for
+    running the NEAT emulation.
+
+    Args:
+        config_file: The location of the configuration file.
+        restore_file: The location of the restore point file.
     """
 
-    # Load configuration.
+    # Loads configuration.
     config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction, neat.DefaultSpeciesSet, neat.DefaultStagnation, config_file)
 
-    # Load Restore file if it is specified
+    # Loads Restore file if it is specified
     if restore_file is None:
         population = neat.Population(config)
     else:
         population = neat.Checkpointer.restore_checkpoint(restore_file)
 
-    # Create reporters
+    # Creates reporters
     population.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     population.add_reporter(stats)
     population.add_reporter(neat.Checkpointer(generation_interval=10, filename_prefix='../restores/neat-checkpoint-'))
 
-    # Run the learning in parallel
+    # Runs the learning in parallel
     evaluator = neat.ParallelEvaluator(10, eval_genomes)
     winner = population.run(evaluator.evaluate)
 
