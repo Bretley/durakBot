@@ -12,8 +12,16 @@ from player import Player
 from strategy import Attack, Defense, S0, S1, S2
 
 
-def pad_after(s):
-    return s + ' '*(15-len(s))
+def pad_after(input_str):
+    """Pads a string with extra spaces.
+
+        Args:
+            input_str: The string to pad
+
+        Returns:
+            A padded string.
+        """
+    return input_str + ' '*(15-len(input_str))
 
 
 class Game:
@@ -139,7 +147,7 @@ class Game:
             logging.error('ERROR: nobody has won')
         elif len(self.deck) > 0:
             logging.error('Someone has won with cards in the deck.')
-            logging.error('Player ' + str(winning_player.num) + ' has won!')
+            logging.error('Player %s has won!', str(winning_player.num))
 
         if self.print_trace:
             print('Player ' + str(winning_player.num) + ' has won!')
@@ -155,7 +163,6 @@ class Game:
             pass
         elif self.state == 'Shed':
             pass
-        pass
 
     def turn2(self):
         """Turn reflecting a guaranteed 2 person game.
@@ -262,7 +269,6 @@ class Game:
             if len(table) > len(set(table)):
                 logging.error('ERROR: Duplicates in the table')
                 logging.error([str(x) for x in table])
-            pass
 
         elif len(attacker) == 0:
             # print( 'attacker')
@@ -275,7 +281,7 @@ class Game:
             pass
         else:
             logging.error([str(x) for x in table])
-            logging.error('table size ' + str(len(table)))
+            logging.error('table size %s', str(len(table)))
             logging.error(str(len(attacker)))
             logging.error(str(len(defender)))
             logging.error('not a defense or done')
@@ -288,7 +294,7 @@ class Game:
 
         for player in self.players:
             if not player.verify_hand():
-                logging.error("Player : " + str(player.num) + ' has duplicate cards')
+                logging.error("Player : %s has duplicate cards", str(player.num))
 
         if len(self.out_pile) > len(set(self.out_pile)):
             logging.error('out pile has duplicates')
@@ -338,18 +344,17 @@ class Game:
         Can't play more than min(6, len(defender.cars)).
         Round is over when either a player runs out of cards.
         """
-        pass
 
     def print_hands(self):
         """Prints the cards in both hands.
         """
-        p1 = str(self.players[0]).split('\n')
-        p2 = str(self.players[1]).split('\n')
-        if len(p1) < len(p2):
-            p1 += ['']*(len(p2) - len(p1))
-        elif len(p2) < len(p1):
-            p2 += ['']*(len(p1) - len(p2))
-        out = '\n'.join([pad_after(x) + y for x, y in zip(p1, p2)])
+        player1 = str(self.players[0]).split('\n')
+        player2 = str(self.players[1]).split('\n')
+        if len(player1) < len(player2):
+            player1 += ['']*(len(player2) - len(player1))
+        elif len(player2) < len(player1):
+            player2 += ['']*(len(player1) - len(player2))
+        out = '\n'.join([pad_after(x) + y for x, y in zip(player1, player2)])
         print(out)
 
 
@@ -363,13 +368,13 @@ def main():
     num_games = pow(10, 4)
     for _ in range(num_games):
         game = Game([S1(), S2()], False)
-        wp = game.play()
+        game_instance = game.play()
         turns.append(float(game.turns))
-        if isinstance(wp.strategy, S0):
+        if isinstance(game_instance.strategy, S0):
             s0_wins += 1
-        elif isinstance(wp.strategy, S1):
+        elif isinstance(game_instance.strategy, S1):
             s1_wins += 1
-        elif isinstance(wp.strategy, S2):
+        elif isinstance(game_instance.strategy, S2):
             s2_wins += 1
 
     print('Finished ' + str(num_games) + ' averaging ' + str(sum(turns)/len(turns)) + ' turns')
