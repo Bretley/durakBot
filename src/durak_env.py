@@ -29,9 +29,12 @@ for p in PRODUCTS:
         OPTIONS_DICT[TOTAL] = (p, c)
         TOTAL += 1
 
+for z in OPTIONS_DICT:
+    print(z , str(OPTIONS_DICT[z][1]))
 OPTIONS_DICT[TOTAL] = ('done', None)
 TOTAL += 1
 OPTIONS_DICT[TOTAL] = ('take', None)
+CARD_TO_OBS = {card: i for i, card in enumerate(CARDS)}
 # print(OPTIONS_DICT[35])
 # print(TOTAL_OPTIONS)
 # print(35, OPTIONS_DICT[35])
@@ -409,16 +412,13 @@ class DurakEnv(gym.Env):
                     if len(self.table) == 12 or len(self.model) == 0 or len(self.opponent) == 0:
                         # Turn is over
                         self.clear_table()
-
                         # Draw cards, attacker (opponent) then defender (model)
                         if self.player_draw(self.opponent):
                             # TODO:  Bot wins defending in attack phase
                             pass
-
                         if self.player_draw(self.model):
                             # TODO: Model wins on attack
                             pass
-
                         # if game hasn't ended, the turn is over and the bot succesfully defends
                         self.state = "a"
                         return None, None, None, None
@@ -441,6 +441,7 @@ class DurakEnv(gym.Env):
                             logging.error('Win condition in defense phase')
                             logging.error('Model has won after ceasing attack')
 
+                        self.state = 'a'
                     else:
                         logging.error('in defense phase, opponent has not chosen play or done')
 
@@ -451,8 +452,8 @@ class DurakEnv(gym.Env):
                         print("opponent sheds: " + ", ".join([str(x) for x in shed]))
 
                     if self.player_draw(self.opponent):
-                        # TODO: Opponent (bot) has won by shedding last cards
-                        pass
+                        # TODO: opponent has won on their shed
+                        return None, None, True, None
 
                     self.table += shed
                     self.model.take_table(self.table)
@@ -460,11 +461,7 @@ class DurakEnv(gym.Env):
                     self.table = []
                     self.clear_table()
 
-                    self.table = []
-                    self.ranks = {}
-                    self.attack_count = 0
                     # get Bot Attack
-
                     atk = self.opponent.attack(self.table, self.ranks)
                     if atk[0] != Attack.play:
                         logging.error('in defense state')
@@ -472,6 +469,7 @@ class DurakEnv(gym.Env):
                     self.add_attack(atk[1])
                     # Model will be defending next turn
                     self.state = 'd'
+                    return None, None, None, None
                 else:
                     logging.error('legal_defense true but not defense or take')
                     logging.error('move = %s', str(move))
@@ -503,7 +501,7 @@ class DurakEnv(gym.Env):
                     # opponent shouldn't have to draw here
                     if self.player_draw(self.model):
                         # TODO: Model has won by shedding last cards
-                        pass
+                        return None, None, None, None
 
                 else:
                     logging.error('legal_shed true but not s or done')
