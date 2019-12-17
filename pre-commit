@@ -2,5 +2,5 @@
 cd src
 autopep8 $(find *.py | grep -v game | grep -v player | grep -v strategy) -i --max-line-length 256
 pylint $(find *.py | grep -v game | grep -v player | grep -v strategy) --rcfile ../config/.pylintrc && \
-pdoc3 $(find *.py | grep -v game | grep -v player | grep -v strategy) -o ../doc
+pdoc3 $(find *.py | grep -v game | grep -v player | grep -v strategy) -o ../doc && \
 git add ../doc
