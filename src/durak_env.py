@@ -19,6 +19,7 @@ PRODUCTS = ['a', 'd', 's']
 SUMS = ['done']
 TOTAL_OPTIONS = len(CARDS) * len(['a', 'd', 's']) + len(['done'])
 
+
 OPTIONS_DICT = {}
 TOTAL = 0
 for p in PRODUCTS:
@@ -29,8 +30,6 @@ for p in PRODUCTS:
 OPTIONS_DICT[TOTAL] = ('done', None)
 
 
-print(OPTIONS_DICT)
-
 
 class DurakEnv(gym.Env):
     """The environment that represents a game of Durak.
@@ -40,20 +39,19 @@ class DurakEnv(gym.Env):
     Attributes:
         action_space: The set of available actions.
         observation_space: The set of variables in the environment.
-        game_started: TODO
-        deck: TODO
-        out_pile: TODO
-        players: TODO
-        turns: TODO
-        table: TODO
-        ranks: TODO
-        attacker: TODO
-        attack_count: TODO
-        state: TODO
-        dank: TODO
-        table_card: TODO
-        opponent: TODO
-        model: TODO
+        game_started: Boolean
+        deck: Deck object containing cards
+        out_pile: List of cards that are out of the game
+        players: number of players
+        turns: number of turns so far
+        table: cards on the current attack/defense
+        ranks: hash table of ranks of cards in table
+        attack_count: count of attacks this turn
+        state: String representing the state of the game dfa
+        dank: string representing dank suit
+        table_card: card at the bottom of the deck
+        opponent: Bot that plays against the Model
+        model: Model object wrapper, mostly manages Model's hand
     """
 
     def __init__(self):
@@ -78,7 +76,6 @@ class DurakEnv(gym.Env):
         self.turns = 0
         self.table = []
         self.ranks = {}
-        self.attacker = 0
         self.attack_count = 0
         self.state = False
         self.dank = None
