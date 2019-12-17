@@ -13,7 +13,7 @@ import sys
 from card import CARD_COMPARATORS, RANK_NUM
 from deck import Deck
 from player import Player
-from strategy import Attack, Defense, S0, S1
+from strategy import Attack, Defense, S0, S1, S2
 
 
 def padAfter(s):
@@ -406,19 +406,24 @@ def main():
     turns = []
     s0_wins = 0
     s1_wins = 0
+    s2_wins = 0
     numGames = pow(10, 4)
     for _ in range(numGames):
-        game = Game([S0(), S1()], False)
+        game = Game([S1(), S2()], False)
         wp = game.play()
         turns.append(float(game.turns))
         if isinstance(wp.strategy, S0):
             s0_wins += 1
-        else:
+        elif isinstance(wp.strategy, S1):
             s1_wins += 1
+        elif isinstance(wp.strategy, S2):
+            s2_wins += 1
+            
 
     print('Finished ' + str(numGames) + ' averaging ' + str(sum(turns)/len(turns)) + ' turns')
     print('s0 wins: ' + str(s0_wins))
     print('s1 wins: ' + str(s1_wins))
+    print('s2 wins: ' + str(s2_wins))
 
 
 if __name__ == "__main__":
