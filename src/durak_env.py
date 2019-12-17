@@ -296,6 +296,7 @@ class DurakEnv(gym.Env):
                     self.ranks[card.rank] = 0
                     self.attack_count += 1
                     defense = self.opponent.defend(self.table, False, 1)
+                    # Both players still have cards or drawing potential
                     if defense[0] == Defense.defend:
                         self.table += defense
                         # Check for end of turn conditions.
@@ -305,10 +306,26 @@ class DurakEnv(gym.Env):
                             self.out_pile += self.table
                             self.table = []
                             self.ranks = {}
-                            # Model will be defending next turn.
-                            self.state = 'd'
+
+                            # Draw cards, attacker then defender
+                            if len(self.model) < 6:
+                                for _ in range(6-len(self.model)):
+                                    self.model.take(self.deck.draw())
+                                if len(self.model) == 0:
+                                    # TODO: Model wins on attack
+                                    pass
+                            if len(self.opponent) < 6:
+                                for _ in range(6-len(self.opponent)):
+                                    self.opponent.take(self.deck.draw())
+                                if len(self.opponent) == 0:
+                                    # TODO:  Bot wins defending in attack phase
+                                    pass
+
                             # Bot attacks table.
                             atk = self.opponent.attack(self.table, self.ranks)
+                            # Model will be defending next turn.
+                            self.state = 'd'
+
                             if atk[0] != Attack.play:
                                 logging.error('Opponent is not attacking on first attack')
                                 return None, None, True, None
@@ -332,16 +349,17 @@ class DurakEnv(gym.Env):
                     self.out_pile += self.table
                     self.table = []
                     self.ranks = {}
-                    # Model will be defending next turn
-                    self.state = 'd'
                     # Bot attacks table
                     atk = self.opponent.attack(self.table, self.ranks)
                     if atk[0] != Attack.play:
+                        logging.error('in attack state')
                         logging.error('Opponent is not attacking on first attack')
                         return None, None, True, None
                     self.table.append(atk[1])
                     self.ranks[atk[1].rank] = 0
                     self.attack_count += 1
+                    # Model will be defending next turn
+                    self.state = 'd'
                     return None, None, None, None
                 else:
                     logging.error('legal_attack true but not a or move')
@@ -352,7 +370,73 @@ class DurakEnv(gym.Env):
         elif self.state == "d":
             # Bot has already attacked.
             if self.legal_defense(action):
-                pass
+                if move == 'd':
+                    self.table.append(card)
+                    self.model.remove_card(card)
+                    if len(self.table) == 12 or len(self.model) == 0 or len(self.opponent) == 0:
+                        # Turn is over
+                        self.out_pile += self.table
+                        self.table = []
+                        self.ranks = {}
+                        self.attack_count = 0
+
+                        # Draw cards, attacker then defender
+                        if len(self.opponent) < 6:
+                            for _ in range(6 - len(self.opponent)):
+                                self.opponent.take(self.deck.draw())
+                            if len(self.opponent) == 0:
+                                # TODO:  Bot wins defending in attack phase
+                                pass
+
+                        if len(self.model) < 6:
+                            for _ in range(6 - len(self.model)):
+                                self.model.take(self.deck.draw())
+                            if len(self.model) == 0:
+                                # TODO: Model wins on attack
+                                pass
+
+                        # if game hasn't ended, the turn is over and the bot succesfully defends
+                        self.state = "a"
+                        return None, None, None, None
+                    else:
+                        atk = self.opponent.attack(self.table)
+
+
+                elif move == 'take':
+                    # Bot gets to shed
+                    shed = self.opponent.shed(self.table, min((6 - self.attack_count, len(self.model))), self.ranks)
+                    if self.print_trace:
+                        print("opponent sheds: " + ", ".join([str(x) for x in shed]))
+
+                    # check if bot won from shedding:
+                    if len(self.opponent) < 6:
+                        for _ in range(6 - len(self.opponent)):
+                            self.opponent.take(self.deck.draw())
+                        if len(self.opponent) == 0:
+                            # TODO: Opponent (bot) has won by shedding last cards
+                            pass
+
+                    self.table += shed
+                    self.model.take_table(self.table)
+
+                    self.table = []
+                    self.ranks = {}
+                    self.attack_count = 0
+                    # get Bot Attack
+
+                    atk = self.opponent.attack(self.table)
+                    if atk[0] != Attack.play:
+                        logging.error('in defense state')
+                        logging.error('opponent is not attacking on first attack')
+                    self.table.append(atk[1])
+                    self.attack_count = 1
+                    # Model will be defending next turn
+                    self.state = 'd'
+                else:
+                    logging.error('legal_defense true but not defense or take')
+                    logging.error('move = ' + str(move))
+                    return None, -1, True, None
+
             else:
                 # return and punish
                 return None, -1, True, None
