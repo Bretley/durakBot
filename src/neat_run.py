@@ -19,48 +19,28 @@ import neat
 from durak_env import DurakEnv
 
 
-class Worker:
+def eval_genomes(genomes, config):
     """Evaluates the fitness of a genome.
 
-    Attributes:
-        genome: The genome to be tested.
+    Args:
+        genomes: The genomes to be tested.
         config: The configuration specifications for NEAT.
-        env: The game environment.
+    Returns:
+        A float that represents the fitness of a genome. The higher the number
+        the fitter it is and the more likely the genome is to reproduce.
     """
 
-    def __init__(self, genome, config):
-        """Inits Worker with NEAT genome and configuration data.
+    env = DurakEnv()
 
-        Args:
-            genome: The genome to be tested.
-            config: The configuration specifications for NEAT.
-        """
-
-        self.genome = genome
-        self.config = config
-        self.env = None
-
-    def work(self):
-        """Evaluates the fitness of a genome.
-
-        Creates the main loop for the evaluation of fitness. Loads in the Durak
-        environment, initializes it, takes the state data, and iterates through
-        states until the environment says that the game is done.
-
-        Returns:
-            A float that represents the fitness of a genome. The higher the
-            number the fitter it is and the more likely the genome is to
-            reproduce.
-        """
+    for genome_id, genome in genomes:
 
         # Loads in a default Durak state
-        self.env = DurakEnv()
-        self.env.reset()
+        env.reset()
 
-        net = neat.nn.FeedForwardNetwork.create(self.genome, self.config)
+        net = neat.nn.FeedForwardNetwork.create(genome, config)
 
         # Takes the first step to get an observation ofn the current state
-        observation, _, _, _ = self.env.step(self.env.action_space.sample())
+        observation, _, _, _ = env.step(env.action_space.sample())
         reward = 0
         done = False
         info = None
@@ -68,30 +48,13 @@ class Worker:
         # Loops through the game until the game is finished or the machine makes an unforgivable mistake
         while not done:
             actions = net.activate(observation)
-            observation, reward, done, info = self.env.step(actions)
+            observation, reward, done, info = env.step(actions)
+
+            genome.fitness = reward
+
+        print(genome_id, reward)
 
         del info
-
-        return reward
-
-
-def eval_genomes(genome, config):
-    """Evaluates the fitness of a genome.
-
-    Sends the genome and configuration to the Worker class so that the worker
-    can calculate how fit a genome is to reproduce.
-
-    Args:
-        genome: The genome to be tested.
-        config: The configuration specifications for NEAT.
-    Returns:
-        A float that represents the fitness of a genome. The higher the number
-        the fitter it is and the more likely the genome is to reproduce.
-    """
-
-    # Uses the worker class for simplicity
-    worker = Worker(genome, config)
-    return worker.work()
 
 
 def main(config_file, restore_file):

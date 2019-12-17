@@ -32,14 +32,14 @@ for p in PRODUCTS:
 OPTIONS_DICT[TOTAL] = ('done', None)
 TOTAL += 1
 OPTIONS_DICT[TOTAL] = ('take', None)
-print(OPTIONS_DICT[35])
-print(TOTAL_OPTIONS)
-print(35, OPTIONS_DICT[35])
-print(36, OPTIONS_DICT[36])
-print(71, OPTIONS_DICT[71])
-print(72, OPTIONS_DICT[72])
-print(108, OPTIONS_DICT[108])
-print(109, OPTIONS_DICT[109])
+# print(OPTIONS_DICT[35])
+# print(TOTAL_OPTIONS)
+# print(35, OPTIONS_DICT[35])
+# print(36, OPTIONS_DICT[36])
+# print(71, OPTIONS_DICT[71])
+# print(72, OPTIONS_DICT[72])
+# print(108, OPTIONS_DICT[108])
+# print(109, OPTIONS_DICT[109])
 
 
 class Model:
@@ -366,9 +366,9 @@ class DurakEnv(gym.Env):
                             if atk[0] != Attack.play:
                                 logging.error('Opponent is not attacking on first attack')
                                 return None, None, True, None
-
-                            self.add_attack(atk[1])
-                            # TODO: Should be a return here?
+                            self.table.append(atk[1])
+                            self.ranks[atk[1].rank] = 0
+                            self.attack_count += 1
                         else:  # Turn is not over, Model is attacking again
                             self.state = 'a'
                             return None, None, None, None
@@ -423,7 +423,7 @@ class DurakEnv(gym.Env):
                         self.state = "a"
                         return None, None, None, None
                     else:
-                        atk = self.opponent.attack(self.table)
+                        atk = self.opponent.attack(self.table, self.rank)
                         if atk[0] == Attack.play:
                             self.add_attack(card)
                             self.state = "d"
@@ -463,6 +463,9 @@ class DurakEnv(gym.Env):
                     self.table = []
                     self.clear_table()
 
+                    self.table = []
+                    self.ranks = {}
+                    self.attack_count = 0
                     # get Bot Attack
 
                     atk = self.opponent.attack(self.table)
@@ -474,7 +477,7 @@ class DurakEnv(gym.Env):
                     self.state = 'd'
                 else:
                     logging.error('legal_defense true but not defense or take')
-                    logging.error('move = ' + str(move))
+                    logging.error('move = %s', str(move))
                     return None, -1, True, None
 
             else:

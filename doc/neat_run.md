@@ -16,14 +16,11 @@ Functions
 ---------
 
     
-`eval_genomes(genome, config)`
+`eval_genomes(genomes, config)`
 :   Evaluates the fitness of a genome.
     
-    Sends the genome and configuration to the Worker class so that the worker
-    can calculate how fit a genome is to reproduce.
-    
     Args:
-        genome: The genome to be tested.
+        genomes: The genomes to be tested.
         config: The configuration specifications for NEAT.
     Returns:
         A float that represents the fitness of a genome. The higher the number
@@ -39,34 +36,3 @@ Functions
     Args:
         config_file: The location of the configuration file.
         restore_file: The location of the restore point file.
-
-Classes
--------
-
-`Worker(genome, config)`
-:   Evaluates the fitness of a genome.
-    
-    Attributes:
-        genome: The genome to be tested.
-        config: The configuration specifications for NEAT.
-        env: The game environment.
-    
-    Inits Worker with NEAT genome and configuration data.
-    
-    Args:
-        genome: The genome to be tested.
-        config: The configuration specifications for NEAT.
-
-    ### Methods
-
-    `work(self)`
-    :   Evaluates the fitness of a genome.
-        
-        Creates the main loop for the evaluation of fitness. Loads in the Durak
-        environment, initializes it, takes the state data, and iterates through
-        states until the environment says that the game is done.
-        
-        Returns:
-            A float that represents the fitness of a genome. The higher the
-            number the fitter it is and the more likely the genome is to
-            reproduce.
