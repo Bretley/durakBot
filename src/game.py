@@ -10,10 +10,10 @@ Player
 import logging
 import sys
 
-from src.card import CARD_COMPARATORS, RANK_NUM
-from src.deck import Deck
-from src.player import Player
-from src.strategy import Attack, Defense, S0, S1
+from card import CARD_COMPARATORS, RANK_NUM
+from deck import Deck
+from player import Player
+from strategy import Attack, Defense, S0, S1, S2
 
 
 def padAfter(s):
@@ -115,6 +115,9 @@ class Game:
         if min_start is not None:
             self.attacker = min_start[0]
 
+        self.game_started = False
+        self.state = None
+
     def add_mod(self, start, offset):
         """
         Returns the player that is offset after the start
@@ -200,13 +203,21 @@ class Game:
 
         return winningPlayer
 
+    def step(self, action):
+        if self.state == 'Attack':
+            pass
+        elif self.state == 'Defend':
+            pass
+        elif self.state == 'Shed':
+            pass
+        pass
+
     def turn2(self):
         """
         Turn reflecting a guaranteed 2 person game
         """
         attacker, defender, next_player = self.get_players()
         table = []
-        ranks = {}
         atk = attacker.attack(table, ranks)
 
         # It definitely does, this is to catch errors
@@ -221,8 +232,6 @@ class Game:
         logging.debug("%s", defender)
         logging.debug("%s", self.dank)
 
-        if self.print_trace:
-            print('Player ' + str(attacker.num) + ' Attacks with: ' + str(atk[1]))
 
         # Pass phase
         pass_count = 0
