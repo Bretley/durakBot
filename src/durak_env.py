@@ -229,6 +229,19 @@ class DurakEnv(gym.Env):
 
         TODO more detail about what gets reset.
         """
+        self.game_started = False
+        self.deck = Deck()
+        self.out_pile = []
+        self.players = []
+        self.turns = 0
+        self.table = []
+        self.ranks = {}
+        self.attack_count = 0
+        self.state = False
+        self.dank = None
+        self.table_card = None
+        self.opponent = Player("Bot", S0())
+        self.model = Model()
 
     def render(self, mode='human'):
         """Will not be used.
