@@ -10,10 +10,10 @@ Player
 import logging
 import sys
 
-from src.card import CARD_COMPARATORS, RANK_NUM
-from src.deck import Deck
-from src.player import Player
-from src.strategy import Attack, Defense, S0
+from card import CARD_COMPARATORS, RANK_NUM
+from deck import Deck
+from player import Player
+from strategy import Attack, Defense, S0
 
 
 def padAfter(s):
@@ -57,7 +57,7 @@ class Game:
         Method reflecting a single turn
     """
 
-    def __init__(self, num_players):
+    def __init__(self, num_players, strategies, humanPlayer):
         """
         visual:
             2
@@ -72,6 +72,7 @@ class Game:
         num_players : int
             The number of players
         """
+        self.human = humanPlayer
         deck = Deck()
         deck.shuffle_deck()
         self.deck = deck
@@ -177,9 +178,10 @@ class Game:
         Begins and runs the game
         """
         while True:
-            # print('====== Turn ' + str(self.turns) + '===========')
-            # print( 'Dank: ' + self.dank, ' Deck: ' + str(len(self.deck)))
-            # self.print_hands()
+            if self.human:
+                print('====== Turn ' + str(self.turns) + '===========')
+                print('Dank: ' + self.dank, ' Deck: ' + str(len(self.deck)))
+                self.print_hands()
             winningPlayer = self.turn2()
             if winningPlayer is not None:
                 break
