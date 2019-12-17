@@ -12,7 +12,7 @@ import logging
 import gym
 from gym import spaces
 
-from card import CARDS, RANK_NUM
+from card import CARDS, RANK_NUM, Card
 from player import Player
 from strategy import Attack, Defense, S0
 from deck import Deck
@@ -148,6 +148,54 @@ class DurakEnv(gym.Env):
         self.allowed_to_shed = None
         self.model = Model()
 
+    def add_attack(self, card: Card):
+        """
+
+        Args:
+            card: Card to be added to the tablae
+
+        Returns
+        -------
+            None
+
+        """
+        self.table.append(card)
+        self.ranks[card.rank] = 0
+        self.attack_count += 1
+
+    def clear_table(self):
+        """Method to clean up variables related to the table
+
+        Returns
+        -------
+            None
+
+        """
+        self.out_pile += self.table
+        self.table = []
+        self.ranks = {}
+        self.attack_count = 0
+
+    def player_draw(self, player):
+        """ players draw and report win condition
+
+        Args:
+            player: Model or Player
+
+        Returns:
+            True if player is out of cards after draw
+            False otherwise
+
+        """
+
+        if len(player) < 6:
+            for _ in range(6 - len(player)):
+                player.take(self.deck.draw())
+            if len(player) == 0:
+                return True
+            else:
+                return False
+
     def legal_defense(self, move):
         """Determines whether a defense is a legal action or not.
 
@@ -282,19 +330,16 @@ class DurakEnv(gym.Env):
             if atk[0] != Attack.play:
                 logging.error("Atk[0] != Attack.play, bot is attacking at start")
 
-                self.table.append(atk[1])
-                self.ranks[atk[1].rank] = 0
-                del atk
-                return obs, reward, done, info
+            self.add_attack(atk[1])
+            del atk
+            return obs, reward, done, info
 
         if self.state == 'a':
             if self.legal_attack(action):
                 # AI plays a card.
                 if move == 'a':
                     self.model.remove_card(card)
-                    self.table.append(card)
-                    self.ranks[card.rank] = 0
-                    self.attack_count += 1
+                    self.add_attack(card)
                     defense = self.opponent.defend(self.table, False, 1)
                     # Both players still have cards or drawing potential
                     if defense[0] == Defense.defend:
@@ -302,24 +347,16 @@ class DurakEnv(gym.Env):
                         # Check for end of turn conditions.
                         if len(self.table) == 12 or len(self.model) == 0 or len(self.opponent) == 0:
                             # Turn is over, reset table.
-                            self.attack_count = 0
-                            self.out_pile += self.table
-                            self.table = []
-                            self.ranks = {}
+                            self.clear_table()
 
                             # Draw cards, attacker then defender
-                            if len(self.model) < 6:
-                                for _ in range(6-len(self.model)):
-                                    self.model.take(self.deck.draw())
-                                if len(self.model) == 0:
-                                    # TODO: Model wins on attack
-                                    pass
-                            if len(self.opponent) < 6:
-                                for _ in range(6-len(self.opponent)):
-                                    self.opponent.take(self.deck.draw())
-                                if len(self.opponent) == 0:
-                                    # TODO:  Bot wins defending in attack phase
-                                    pass
+                            if self.player_draw(self.model):
+                                # TODO: Model wins on attack
+                                pass
+
+                            if self.player_draw(self.opponent):
+                                # TODO:  Bot wins defending in attack phase
+                                pass
 
                             # Bot attacks table.
                             atk = self.opponent.attack(self.table, self.ranks)
@@ -329,9 +366,9 @@ class DurakEnv(gym.Env):
                             if atk[0] != Attack.play:
                                 logging.error('Opponent is not attacking on first attack')
                                 return None, None, True, None
-                            self.table.append(atk[1])
-                            self.ranks[atk[1].rank] = 0
-                            self.attack_count += 1
+
+                            self.add_attack(atk[1])
+                            # TODO: Should be a return here?
                         else:  # Turn is not over, Model is attacking again
                             self.state = 'a'
                             return None, None, None, None
@@ -345,18 +382,14 @@ class DurakEnv(gym.Env):
                         return None, None, True, None
                     del defense
                 elif move == 'done':  # AI is done in attack context
-                    self.attack_count = 0
-                    self.out_pile += self.table
-                    self.table = []
-                    self.ranks = {}
+                    self.clear_table()
                     # Bot attacks table
                     atk = self.opponent.attack(self.table, self.ranks)
                     if atk[0] != Attack.play:
                         logging.error('in attack state')
                         logging.error('Opponent is not attacking on first attack')
                         return None, None, True, None
-                    self.table.append(atk[1])
-                    self.ranks[atk[1].rank] = 0
+                    self.add_attack(atk[1])
                     self.attack_count += 1
                     # Model will be defending next turn
                     self.state = 'd'
@@ -375,31 +408,42 @@ class DurakEnv(gym.Env):
                     self.model.remove_card(card)
                     if len(self.table) == 12 or len(self.model) == 0 or len(self.opponent) == 0:
                         # Turn is over
-                        self.out_pile += self.table
-                        self.table = []
-                        self.ranks = {}
-                        self.attack_count = 0
+                        self.clear_table()
 
-                        # Draw cards, attacker then defender
-                        if len(self.opponent) < 6:
-                            for _ in range(6 - len(self.opponent)):
-                                self.opponent.take(self.deck.draw())
-                            if len(self.opponent) == 0:
-                                # TODO:  Bot wins defending in attack phase
-                                pass
+                        # Draw cards, attacker (opponent) then defender (model)
+                        if self.player_draw(self.opponent):
+                            # TODO:  Bot wins defending in attack phase
+                            pass
 
-                        if len(self.model) < 6:
-                            for _ in range(6 - len(self.model)):
-                                self.model.take(self.deck.draw())
-                            if len(self.model) == 0:
-                                # TODO: Model wins on attack
-                                pass
+                        if self.player_draw(self.model):
+                            # TODO: Model wins on attack
+                            pass
 
                         # if game hasn't ended, the turn is over and the bot succesfully defends
                         self.state = "a"
                         return None, None, None, None
                     else:
                         atk = self.opponent.attack(self.table)
+                        if atk[0] == Attack.play:
+                            self.add_attack(card)
+                            self.state = "d"
+                            return None, None, None, None
+
+                        elif atk[0] == Attack.done:
+                            self.clear_table()
+                            # Players get to draw, attacker first.
+                            # It shouldn't be possible for a win condition here
+                            if self.player_draw(self.opponent):
+                                logging.error('Win condition in defense phase')
+                                logging.error('Opponent has won after ceasing attack')
+
+                            if self.player_draw(self.model):
+                                logging.error('Win condition in defense phase')
+                                logging.error('Model has won after ceasing attack')
+
+                        else:
+                            logging.error('in defense phase, opponent has not chosen play or done')
+
 
 
                 elif move == 'take':
@@ -408,28 +452,24 @@ class DurakEnv(gym.Env):
                     if self.print_trace:
                         print("opponent sheds: " + ", ".join([str(x) for x in shed]))
 
-                    # check if bot won from shedding:
-                    if len(self.opponent) < 6:
-                        for _ in range(6 - len(self.opponent)):
-                            self.opponent.take(self.deck.draw())
-                        if len(self.opponent) == 0:
-                            # TODO: Opponent (bot) has won by shedding last cards
-                            pass
+
+                    if self.player_draw(self.opponent):
+                        # TODO: Opponent (bot) has won by shedding last cards
+                        pass
 
                     self.table += shed
                     self.model.take_table(self.table)
-
+                    # self.table = [] before clear table to prevent out pile duplicate
                     self.table = []
-                    self.ranks = {}
-                    self.attack_count = 0
+                    self.clear_table()
+
                     # get Bot Attack
 
                     atk = self.opponent.attack(self.table)
                     if atk[0] != Attack.play:
                         logging.error('in defense state')
                         logging.error('opponent is not attacking on first attack')
-                    self.table.append(atk[1])
-                    self.attack_count = 1
+                    self.add_attack(atk[1])
                     # Model will be defending next turn
                     self.state = 'd'
                 else:
@@ -447,16 +487,24 @@ class DurakEnv(gym.Env):
                 if move == 's':
                     # Shed 1 card -> return to shed.
                     self.model.remove_card(card)
-                    self.table.append(card)
-                    self.ranks[card.rank] = 0
+                    self.add_attack(card)
                     self.state = 's'
                 elif move == 'done':
                     # Done -> attack.
                     self.first_shed = True
                     self.opponent.take_table(self.table)
+
+                    # self.table = [] before clear table to prevent duplicates in out pile
                     self.table = []
-                    self.ranks = {}
+                    self.clear_table()
                     self.state = 'a'
+
+                    # check win condition / draw
+                    # opponent shouldn't have to draw here
+                    if self.player_draw(self.model):
+                        # TODO: Model has won by shedding last cards
+                        pass
+
                 else:
                     logging.error('legal_shed true but not s or done')
             # Return and punish.
