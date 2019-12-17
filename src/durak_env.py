@@ -19,17 +19,17 @@ PRODUCTS = ['a', 'd', 's']
 SUMS = ['done']
 TOTAL_OPTIONS = len(CARDS) * len(['a', 'd', 's']) + len(['done'])
 
-options_dict = {}
-total = 0
-for c in CARDS:
-    for p in PRODUCTS:
-        options_dict[total] = (p, c)
-        total += 1
+OPTIONS_DICT = {}
+TOTAL = 0
+for p in PRODUCTS:
+    for c in CARDS:
+        OPTIONS_DICT[TOTAL] = (p, c)
+        TOTAL += 1
 
-options_dict[total] = ('done', None)
+OPTIONS_DICT[TOTAL] = ('done', None)
 
 
-print(options_dict)
+print(OPTIONS_DICT)
 
 
 class DurakEnv(gym.Env):
@@ -40,10 +40,24 @@ class DurakEnv(gym.Env):
     Attributes:
         action_space: The set of available actions.
         observation_space: The set of variables in the environment.
+        game_started: TODO
+        deck: TODO
+        out_pile: TODO
+        players: TODO
+        turns: TODO
+        table: TODO
+        ranks: TODO
+        attacker: TODO
+        attack_count: TODO
+        state: TODO
+        dank: TODO
+        table_card: TODO
+        opponent: TODO
+        model: TODO
     """
 
     def __init__(self):
-        """Inits DurakEnv with default data.
+        """Inits DurakEnv.
         """
 
         metadata = {'render.modes': ['human']}
@@ -51,11 +65,12 @@ class DurakEnv(gym.Env):
 
         super(DurakEnv, self).__init__()
 
-        # Attack(x36 cards), Defend(x36 cards), Shed(x36 Cards), Stop Shedding, Take, Done
-        self.action_space = spaces.Discrete(111)
+        # Attack(x36 cards), Defend(x36 cards), Shed(x36 Cards), Take, Done
+        self.action_space = spaces.Discrete(110)
 
         # 1 Discrete observation for now just to set it up
         self.observation_space = spaces.Discrete(1)
+
         self.game_started = False
         self.deck = None
         self.out_pile = []
@@ -70,41 +85,49 @@ class DurakEnv(gym.Env):
         self.table_card = None
         self.opponent = Player("Bot", S0())
 
-        class AI:
+        class Model:
+            """TODO
+
+                TODO more detail about Model.
+
+                Attributes:
+                    hand: TODO
+            """
+
             def __init__(self):
+                """Inits Model.
+                """
                 self.hand = []
 
             def take(self, card):
                 """
-                Adds card to the player's hand
+                Adds card to the model's hand.
 
-                Parameters
-                ----------
-                card : Card
-                    The card to add to the hand
+                Args:
+                    card: The card to add to the hand.
                 """
 
                 if card is not None:
                     self.hand.append(card)
 
             def take_table(self, cards):
-                """
-                Adds cards to the player's hand
+                """Adds cards to the model's hand.
 
-                Parameters
-                ----------
-                cards : list(Card)
-                    The list of cards to add to the player's hand
+                Args:
+                cards: The list of cards to add to the model's hand.
                 """
                 self.hand += cards
 
             def remove_card(self, card):
+                """Removes a card from the model's hand.
+
+                Args:
+                    card: The card to remove from the model's hand.
+                """
                 self.hand.remove(card)
 
-        self.ai = AI()
+        self.model = Model()
 
-    # TODO Remove once self use.
-    # pylint: disable=no-self-use
     def step(self, action):
         """Proceeds through a single step in the game.
 
@@ -128,7 +151,7 @@ class DurakEnv(gym.Env):
         if not self.game_started:
             for _ in range(6):
                 self.opponent.take(self.deck.draw())
-                self.ai.take(self.deck.draw())
+                self.model.take(self.deck.draw())
 
             self.table_card = self.table.flip()
             self.dank = self.table_card.suit

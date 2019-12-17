@@ -52,7 +52,7 @@ class Player:
         """
         Parameters
         ----------
-        num : int
+        num :
             The Player's ID
         strategy: Class
             class must implement shed, attack, and defend for the bot
