@@ -26,7 +26,7 @@ class Card:
 
     def __hash__(self):
         return hash(self.suit + self.rank)
-    
+
     def __init__(self, rank, suit):
         """
         """
@@ -129,5 +129,3 @@ def suited(card, suit):
         True if they are the same suit, false otherwise
     """
     return card.suit == suit
-
-

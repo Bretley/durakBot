@@ -4,6 +4,7 @@ import enum
 
 import logging
 
+
 def rank_matches(cards, rank):
     """
     Return all rank matches in a set of cards
@@ -21,6 +22,7 @@ def rank_matches(cards, rank):
         The list of cards that match the rank
     """
     return [card for card in cards if card.rank == rank]
+
 
 def lowest_defense(attack, hand, dank):
     """
@@ -155,6 +157,7 @@ class S1:
         does not shed danks
         does not pass if it requires a dank to do so
     """
+
     def __init__(self):
         pass
 
