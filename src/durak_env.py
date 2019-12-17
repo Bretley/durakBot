@@ -32,14 +32,14 @@ for p in PRODUCTS:
 OPTIONS_DICT[TOTAL] = ('done', None)
 TOTAL += 1
 OPTIONS_DICT[TOTAL] = ('take', None)
-print(OPTIONS_DICT[35])
-print(TOTAL_OPTIONS)
-print(35, OPTIONS_DICT[35])
-print(36, OPTIONS_DICT[36])
-print(71, OPTIONS_DICT[71])
-print(72, OPTIONS_DICT[72])
-print(108, OPTIONS_DICT[108])
-print(109, OPTIONS_DICT[109])
+# print(OPTIONS_DICT[35])
+# print(TOTAL_OPTIONS)
+# print(35, OPTIONS_DICT[35])
+# print(36, OPTIONS_DICT[36])
+# print(71, OPTIONS_DICT[71])
+# print(72, OPTIONS_DICT[72])
+# print(108, OPTIONS_DICT[108])
+# print(109, OPTIONS_DICT[109])
 
 
 class Model:
@@ -398,9 +398,8 @@ class DurakEnv(gym.Env):
                         # if game hasn't ended, the turn is over and the bot succesfully defends
                         self.state = "a"
                         return None, None, None, None
-                    else:
-                        atk = self.opponent.attack(self.table)
 
+                    atk = self.opponent.attack(self.table, self.ranks)
 
                 elif move == 'take':
                     # Bot gets to shed
@@ -424,7 +423,7 @@ class DurakEnv(gym.Env):
                     self.attack_count = 0
                     # get Bot Attack
 
-                    atk = self.opponent.attack(self.table)
+                    atk = self.opponent.attack(self.table, self.ranks)
                     if atk[0] != Attack.play:
                         logging.error('in defense state')
                         logging.error('opponent is not attacking on first attack')
@@ -434,7 +433,7 @@ class DurakEnv(gym.Env):
                     self.state = 'd'
                 else:
                     logging.error('legal_defense true but not defense or take')
-                    logging.error('move = ' + str(move))
+                    logging.error('move = %s', str(move))
                     return None, -1, True, None
 
             else:
