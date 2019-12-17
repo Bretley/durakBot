@@ -14,6 +14,7 @@ import logging
 from card import Card, RANKS, SUITS, CARDS
 from player import Player
 from strategy import Attack, Defense, S0, S1, S2
+from deck import Deck
 
 PRODUCTS = ['a', 'd', 's']
 SUMS = ['done']
@@ -28,6 +29,9 @@ for p in PRODUCTS:
         TOTAL += 1
 
 OPTIONS_DICT[TOTAL] = ('done', None)
+print(OPTIONS_DICT[35])
+print(TOTAL_OPTIONS)
+print(OPTIONS_DICT[TOTAL_OPTIONS-1])
 
 
 
@@ -70,7 +74,7 @@ class DurakEnv(gym.Env):
         self.observation_space = spaces.Discrete(1)
 
         self.game_started = False
-        self.deck = None
+        self.deck = Deck()
         self.out_pile = []
         self.players = []
         self.turns = 0
@@ -81,11 +85,11 @@ class DurakEnv(gym.Env):
         self.dank = None
         self.table_card = None
         self.opponent = Player("Bot", S0())
+        self.print_trace = True
 
         class Model:
-            """TODO
-
-                TODO more detail about Model.
+            """
+                Model is a wrapper for the AI hand
 
                 Attributes:
                     hand: TODO
@@ -125,6 +129,31 @@ class DurakEnv(gym.Env):
 
         self.model = Model()
 
+    def legal_attack(self, attack):
+        """
+
+        Parameters
+        ----------
+        attack: int
+
+        Returns
+        -------
+            Attack is legal if:
+            action < 36 or 108
+            card matches ranks in table
+            card is in hand
+        """
+        if attack < 36:
+            move, card = OPTIONS_DICT[attack]
+            if card in self.model.hand and card.rank in self.ranks:
+                return True
+        elif attack == 108:
+            if len(self.table) != 0:
+                return True
+        return False
+
+
+
     def step(self, action):
         """Proceeds through a single step in the game.
 
@@ -139,22 +168,26 @@ class DurakEnv(gym.Env):
             A bool that represents whether or not the game is done.
             A list that contains additional information that may be useful.
         """
+        print(action)
+        m_type, card = OPTIONS_DICT[action]
         obs = None
         reward = 0
-        done = True
+        done = False
         info = {}
-        table = self.table
 
         if not self.game_started:
-            for _ in range(6):
+            self.deck.shuffle_deck()
+            for _ in range(6):  # Deal cards
                 self.opponent.take(self.deck.draw())
                 self.model.take(self.deck.draw())
 
-            self.table_card = self.table.flip()
+            self.table_card = self.deck.flip()
             self.dank = self.table_card.suit
 
             # Start state nonsense
-            if True:  # AI attacks first
+
+            if int(action) % 2 == 0:  # AI attacks first
+                print('int works')
                 self.state = "a"
                 return obs, reward, done, info
             else:  # Bot attacks first
@@ -165,17 +198,22 @@ class DurakEnv(gym.Env):
                     logging.error("Atk[0] != Attack.play, bot is attacking at start")
 
                 self.table.append(atk[1])
+                self.ranks.update({atk[1].rank:0})
                 return obs, reward, done, info
 
-        elif self.state == "a":
-            if True:  # AI plays a card
-
-                if True:  # AI plays a legal move
+        elif self.state == 'a':
+            if m_type == 'a':  # AI plays a card
+                if self.legal_attack(action):
+                    self.model.remove_card(card)
+                    self.table.append(card)
+                    self.ranks[card.rank] = 0
+                else:
+                    # punish and return
                     pass
-                else:  # AI plays an illegal action
-                    pass
-            elif False:  # AI is done
+            elif m_type == 'd':  # AI is done
                 pass
+            else:  # Punish and end
+                return None, -1, True, None
         elif self.state == "d":
             if True:  # Bot
                 pass
