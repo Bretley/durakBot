@@ -12,7 +12,10 @@ Classes
 `DurakEnv()`
 :   The environment that represents a game of Durak.
     
-    TODO more detail about Durak.
+    Durak is a Russian/Slavic/Eastern European card game that
+    exists somewhere in between War and Euchre. Rounds are played with
+    attackers and defenders, the first to go out wins, and the trump 'dank'
+    suit matters. It's a good blend of mechanics, strategy, and luck.
     
     Attributes:
         action_space: The set of available actions.
@@ -29,7 +32,10 @@ Classes
         dank: String representing the dank suit.
         table_card: Card at the bottom of the deck.
         opponent: Bot that plays against the Model.
-        print_trace: TODO(Bretley) with capitalization and punctuation.
+        print_trace: Whether or not to print trace of the game.
+        first_shed: True if first shed of the turn, false otherwise.
+        shed_so_far: Number of cards shed so far.
+        allowed_to_shed: Total number of cards the Model could shed.
         model: Model object wrapper, mostly manages Model's hand.
     
     Inits DurakEnv.
@@ -40,17 +46,28 @@ Classes
 
     ### Methods
 
-    `legal_attack(self, attack)`
+    `legal_attack(self, move)`
     :   Determines whether an attack is a legal action or not.
         
         Args:
-            attack: The attack to check.
+            move: The attack to check.
         
         Returns:
             Attack is legal if:
-            Action < 36 or 108.
+            Move < 36 or 108.
             Card matches ranks in table.
             Card is in hand.
+
+    `legal_shed(self, move)`
+    :   Determines whether a shed is a legal action or not.
+        
+        Args:
+            move: The attack to check.
+        
+        Returns:
+            Whether or not the shed is legal.
+            'Done' is always a legal shed.
+            Shed card is legal if card is in hand and rank matches table.
 
     `render(self, mode='human')`
     :   Will not be used.

@@ -14,12 +14,12 @@ from gym import spaces
 
 from card import CARDS
 from player import Player
-from strategy import Attack, S0
+from strategy import Attack, Defense, S0
 from deck import Deck
 
 PRODUCTS = ['a', 'd', 's']
-SUMS = ['done']
-TOTAL_OPTIONS = len(CARDS) * len(['a', 'd', 's']) + len(['done'])
+SUMS = ['done', 'take']
+TOTAL_OPTIONS = len(CARDS) * len(['a', 'd', 's']) + len(['done', 'take'])
 
 
 OPTIONS_DICT = {}
@@ -30,9 +30,13 @@ for p in PRODUCTS:
         TOTAL += 1
 
 OPTIONS_DICT[TOTAL] = ('done', None)
+TOTAL += 1
+OPTIONS_DICT[TOTAL] = ('take', None)
 print(OPTIONS_DICT[35])
 print(TOTAL_OPTIONS)
-print(OPTIONS_DICT[TOTAL_OPTIONS-1])
+print(71, OPTIONS_DICT[71])
+print(72, OPTIONS_DICT[72])
+print(108, OPTIONS_DICT[108])
 
 
 class Model:
@@ -46,6 +50,9 @@ class Model:
         """Inits Model.
         """
         self.hand = []
+
+    def __len__(self):
+        return len(self.hand)
 
     def take(self, card):
         """
@@ -78,7 +85,10 @@ class Model:
 class DurakEnv(gym.Env):
     """The environment that represents a game of Durak.
 
-    TODO more detail about Durak.
+    Durak is a Russian/Slavic/Eastern European card game that
+    exists somewhere in between War and Euchre. Rounds are played with
+    attackers and defenders, the first to go out wins, and the trump 'dank'
+    suit matters. It's a good blend of mechanics, strategy, and luck.
 
     Attributes:
         action_space: The set of available actions.
@@ -95,7 +105,10 @@ class DurakEnv(gym.Env):
         dank: String representing the dank suit.
         table_card: Card at the bottom of the deck.
         opponent: Bot that plays against the Model.
-        print_trace: TODO(Bretley) with capitalization and punctuation.
+        print_trace: Whether or not to print trace of the game.
+        first_shed: True if first shed of the turn, false otherwise.
+        shed_so_far: Number of cards shed so far.
+        allowed_to_shed: Total number of cards the Model could shed.
         model: Model object wrapper, mostly manages Model's hand.
     """
 
@@ -122,37 +135,72 @@ class DurakEnv(gym.Env):
         self.table = []
         self.ranks = {}
         self.attack_count = 0
-        self.state = False
+        self.state = None
         self.dank = None
         self.table_card = None
         self.opponent = Player("Bot", S0())
         self.print_trace = True
-
+        self.first_shed = True
+        self.shed_so_far = None
+        self.allowed_to_shed = None
         self.model = Model()
 
-    def legal_attack(self, attack):
+    def legal_shed(self, move):
+        """Determines whether a shed is a legal action or not.
+
+        Args:
+            move: The attack to check.
+
+        Returns:
+            Whether or not the shed is legal.
+            'Done' is always a legal shed.
+            Shed card is legal if card is in hand and rank matches table.
+
+        """
+
+        # First shed state of the round.
+        if self.first_shed:
+            self.first_shed = False
+            self.allowed_to_shed = min(6-self.attack_count, len(self.opponent))
+            self.shed_so_far = 0
+        if move == 108:
+            self.first_shed = True
+            self.allowed_to_shed = -1
+            return True
+
+        # Shed action or done.
+        if 71 < move < 108:
+            _, card = OPTIONS_DICT[move]
+            if card in self.model.hand and card.rank in self.ranks and self.shed_so_far < self.allowed_to_shed:
+                self.first_shed = False
+            return True
+
+        return False
+
+    def legal_attack(self, move):
         """Determines whether an attack is a legal action or not.
 
         Args:
-            attack: The attack to check.
+            move: The attack to check.
 
         Returns:
             Attack is legal if:
-            Action < 36 or 108.
+            Move < 36 or 108.
             Card matches ranks in table.
             Card is in hand.
         """
 
-        if attack < 36:
-            _, card = OPTIONS_DICT[attack]
+        if move < 36:
+            _, card = OPTIONS_DICT[move]
             if card in self.model.hand and card.rank in self.ranks:
                 return True
-        elif attack == 108:
+        # ('done', None)
+        elif move == 108:
             if len(self.table) != 0:
                 return True
         return False
 
-    def step(self, action):
+    def step(self, action: int):
         """Proceeds through a single step in the game.
 
         Goes from one state of the game to the next based on the input action
@@ -166,8 +214,9 @@ class DurakEnv(gym.Env):
             A bool that represents whether or not the game is done.
             A list that contains additional information that may be useful.
         """
+
         print(action)
-        m_type, card = OPTIONS_DICT[action]
+        move, card = OPTIONS_DICT[action]
         obs = None
         reward = 0
         done = False
@@ -182,43 +231,117 @@ class DurakEnv(gym.Env):
             self.table_card = self.deck.flip()
             self.dank = self.table_card.suit
 
-            # Start state nonsense
+            # Start state nonsense.
 
-            if int(action) % 2 == 0:  # AI attacks first
-                print('int works')
+            # AI attacks first.
+            if int(action) % 2 == 0:
                 self.state = "a"
                 return obs, reward, done, info
 
-            # Bot attacks first
+            # Bot attacks first.
             atk = self.opponent.attack(self.table, self.ranks)
+
             if self.print_trace:
                 print('Opponent starts attack with ' + str(atk[1]))
+
             if atk[0] != Attack.play:
                 logging.error("Atk[0] != Attack.play, bot is attacking at start")
 
-            self.table.append(atk[1])
-            self.ranks.update({atk[1].rank: 0})
-            return obs, reward, done, info
+                self.table.append(atk[1])
+                self.ranks[atk[1].rank] = 0
+                del atk
+                return obs, reward, done, info
 
         if self.state == 'a':
-            if m_type == 'a':  # AI plays a card
-                if self.legal_attack(action):
+            if self.legal_attack(action):
+                # AI plays a card.
+                if move == 'a':
                     self.model.remove_card(card)
                     self.table.append(card)
                     self.ranks[card.rank] = 0
+                    self.attack_count += 1
+                    defense = self.opponent.defend(self.table, False, 1)
+                    if defense[0] == Defense.defend:
+                        self.table += defense
+                        # Check for end of turn conditions.
+                        if len(self.table) == 12 or len(self.model) == 0 or len(self.opponent) == 0:
+                            # Turn is over, reset table.
+                            self.attack_count = 0
+                            self.out_pile += self.table
+                            self.table = []
+                            self.ranks = {}
+                            # Model will be defending next turn.
+                            self.state = 'd'
+                            # Bot attacks table.
+                            atk = self.opponent.attack(self.table, self.ranks)
+                            if atk[0] != Attack.play:
+                                logging.error('Opponent is not attacking on first attack')
+                                return None, None, True, None
+                            self.table.append(atk[1])
+                            self.ranks[atk[1].rank] = 0
+                            self.attack_count += 1
+                        else:  # Turn is not over, Model is attacking again
+                            self.state = 'a'
+                            return None, None, None, None
+                    elif defense[0] == Defense.take:
+                        self.state = 's'  # Model will be shedding in next step
+                        if self.print_trace:
+                            print('Opponent has chosen to take')
+                        return None, None, None, None
+                    else:
+                        logging.error('opponent has passed cards')
+                        return None, None, True, None
+                    del defense
+                elif move == 'done':  # AI is done in attack context
+                    self.attack_count = 0
+                    self.out_pile += self.table
+                    self.table = []
+                    self.ranks = {}
+                    # Model will be defending next turn
+                    self.state = 'd'
+                    # Bot attacks table
+                    atk = self.opponent.attack(self.table, self.ranks)
+                    if atk[0] != Attack.play:
+                        logging.error('Opponent is not attacking on first attack')
+                        return None, None, True, None
+                    self.table.append(atk[1])
+                    self.ranks[atk[1].rank] = 0
+                    self.attack_count += 1
+                    return None, None, None, None
                 else:
-                    # punish and return
-                    pass
-            elif m_type == 'd':  # AI is done
-                pass
-            else:  # Punish and end
+                    logging.error('legal_attack true but not a or move')
+            # Punish and end.
+            else:
                 return None, -1, True, None
+        # Defend state logic.
         elif self.state == "d":
+            # Bot has already attacked.
             temp = True
-            if temp:  # Bot
+            # Bot.
+            if temp:
                 pass
+
+        # Shed state logic.
         elif self.state == "s":
-            pass
+            if self.legal_shed(action):
+                if move == 's':
+                    # Shed 1 card -> return to shed.
+                    self.model.remove_card(card)
+                    self.table.append(card)
+                    self.ranks[card.rank] = 0
+                    self.state = 's'
+                elif move == 'done':
+                    # Done -> attack.
+                    self.first_shed = True
+                    self.opponent.take_table(self.table)
+                    self.table = []
+                    self.ranks = {}
+                    self.state = 'a'
+                else:
+                    logging.error('legal_shed true but not s or done')
+            # Return and punish.
+            else:
+                return None, None, True, None
 
         del action
 
@@ -235,10 +358,13 @@ class DurakEnv(gym.Env):
         self.table = []
         self.ranks = {}
         self.attack_count = 0
-        self.state = False
+        self.state = None
         self.dank = None
         self.table_card = None
         self.opponent = Player("Bot", S0())
+        self.first_shed = True
+        self.shed_so_far = None
+        self.allowed_to_shed = None
         self.model = Model()
 
     def render(self, mode='human'):
