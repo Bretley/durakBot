@@ -36,7 +36,7 @@ class HumanInterface:
         ret = 'You are currently ' + self.state + '\n'
         ret += ('Table: ' + ', '.join([str(x) for x in self.table])) + '\n'
         ret += 'Dank: ' + self.dank + '\n'
-        ret += ('Hand: ' + ', '.join([str(i) + ': ' + str(x) for i,x in enumerate(self.hand)])) + '\n'
+        ret += ('Hand: ' + ', '.join([str(i) + ': ' + str(x) for i, x in enumerate(self.hand)])) + '\n'
         ret += 'Out: ' + ', '.join([str(x) for i, x in enumerate(self.outs)]) + '\n'
         return ret
 
@@ -63,8 +63,6 @@ class HumanInterface:
                 return self.get_play()
 
 
-
-
 def main():
     h = HumanInterface()
     env = DurakEnv()
@@ -79,6 +77,7 @@ def main():
         h.parse_obs(o)
         print('\t'*10 + str((d)))
         print('\t'*10 + 'reward: ' + str((r)))
+
 
 if __name__ == '__main__':
     main()

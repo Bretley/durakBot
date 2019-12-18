@@ -8,8 +8,6 @@ train a machine learning model to play it.
 import logging
 from math import sqrt, atan
 
-import sys
-
 # pylint: disable=import-error
 import gym
 from gym import spaces
@@ -21,7 +19,7 @@ from player import Player
 from strategy import Attack, Defense, S0
 from deck import Deck
 
-logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO)
 
 PRODUCTS = ['a', 'd', 's']
 SUMS = ['done', 'take']
@@ -33,7 +31,7 @@ for c in CARDS:
     OPTIONS_DICT[TOTAL] = c
     TOTAL += 1
 
-OPTIONS_DICT[TOTAL]= 'done'
+OPTIONS_DICT[TOTAL] = 'done'
 TOTAL += 1
 OPTIONS_DICT[TOTAL] = 'take'
 CARD_TO_OBS = {card: i for i, card in enumerate(CARDS)}
@@ -46,7 +44,7 @@ logging.debug("%s %s", 36, OPTIONS_DICT[36])
 logging.debug("%s %s", 37, OPTIONS_DICT[37])
 
 WIN = 10
-LOSE = -2
+LOSE = 0
 ILLEGAL = -3
 
 
@@ -266,11 +264,10 @@ class DurakEnv(gym.Env):
 
         # Shed action or done.
         if move < 36:
-
             card = OPTIONS_DICT[move]
             if card in self.model.hand and card.rank in self.ranks and self.shed_so_far < self.allowed_to_shed:
                 self.first_shed = False
-            return True
+                return True
 
         return False
 
@@ -352,7 +349,7 @@ class DurakEnv(gym.Env):
             return self.gen_obs(), self.gen_score(), False, None
 
         if self.state == 'a':
-            logging.info('Hand within durakEnv: ' + ' ,'.join([str(x) for x in self.model.hand]))
+            logging.info('Hand within durakEnv: %s', ' ,'.join([str(x) for x in self.model.hand]))
             logging.info('state a')
             if self.legal_attack(action):
                 self.legal_moves += 1
@@ -366,8 +363,8 @@ class DurakEnv(gym.Env):
                     logging.info(defense[0])
                     if defense[0] == Defense.defend:
                         self.table += defense[1]
-                        self.ranks.update({c.rank:0 for c in defense[1]})
-                        print('Table object: ' + ', '.join([str(x) for x in self.table]))
+                        self.ranks.update({c.rank: 0 for c in defense[1]})
+                        logging.info('Table object: %s', ', '.join([str(x) for x in self.table]))
                         # Check for end of turn conditions.
                         if len(self.table) == 12 or len(self.model) == 0 or len(self.opponent) == 0:
                             # Turn is over, reset table.
@@ -542,7 +539,7 @@ class DurakEnv(gym.Env):
 
                 else:
                     logging.info('move %s', move)
-                    logging.info('action %s', action )
+                    logging.info('action %s', action)
                     raise RuntimeError('legal_shed true but not shed or done')
             # Return and punish.
             else:

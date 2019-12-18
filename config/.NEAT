@@ -5,16 +5,6 @@ no_fitness_termination = False
 pop_size               = 250
 reset_on_extinction    = False
 
-[DefaultStagnation]
-species_fitness_func = mean
-max_stagnation       = 35
-species_elitism      = 10
-
-[DefaultReproduction]
-elitism            = 10
-survival_threshold = 0.25
-min_species_size   = 5
-
 [DefaultGenome]
 # Node Activation Options
 activation_default     = random
@@ -90,3 +80,13 @@ weight_replace_rate = 0.1
 
 [DefaultSpeciesSet]
 compatibility_threshold = 0.1
+
+[DefaultStagnation]
+species_fitness_func = mean
+max_stagnation       = 35
+species_elitism      = 10
+
+[DefaultReproduction]
+elitism            = 10
+survival_threshold = 0.25
+min_species_size   = 5
