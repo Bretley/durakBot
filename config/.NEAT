@@ -1,80 +1,89 @@
 [NEAT]
-fitness_criterion     = max
-fitness_threshold     = 10000000
-pop_size              = 100
-reset_on_extinction   = False
-
-[DefaultGenome]
-# node activation options
-activation_default      = sigmoid
-activation_mutate_rate  = 0.1
-activation_options      = sigmoid gauss
-#abs clamped cube exp gauss hat identity inv log relu sigmoid sin softplus square tanh
-
-# node aggregation options
-aggregation_default     = random
-aggregation_mutate_rate = 0.05
-aggregation_options     = sum product min max mean median maxabs
-
-# node bias options
-bias_init_mean          = 0.05
-bias_init_stdev         = 1.0
-bias_max_value          = 30.0
-bias_min_value          = -30.0
-bias_mutate_power       = 0.5
-bias_mutate_rate        = 0.7
-bias_replace_rate       = 0.1
-
-# genome compatibility options
-compatibility_disjoint_coefficient = 1.0
-compatibility_weight_coefficient   = 0.5
-
-# connection add/remove rates
-conn_add_prob           = 0.5
-conn_delete_prob        = 0.5
-
-# connection enable options
-enabled_default         = True
-enabled_mutate_rate     = 0.5
-
-feed_forward            = False
-initial_connection      = unconnected
-
-# node add/remove rates
-node_add_prob           = 0.5
-node_delete_prob        = 0.15
-
-# network parameters
-num_hidden              = 0
-num_inputs              = 37
-num_outputs             = 38
-
-# node response options
-response_init_mean      = 1.0
-response_init_stdev     = 0.05
-response_max_value      = 30.0
-response_min_value      = -30.0
-response_mutate_power   = 0.1
-response_mutate_rate    = 0.75
-response_replace_rate   = 0.1
-
-# connection weight options
-weight_init_mean        = 0.1
-weight_init_stdev       = 1.0
-weight_max_value        = 30
-weight_min_value        = -30
-weight_mutate_power     = 0.5
-weight_mutate_rate      = 0.8
-weight_replace_rate     = 0.1
-
-[DefaultSpeciesSet]
-compatibility_threshold = 2.5
+fitness_criterion      = mean
+fitness_threshold      = 15
+no_fitness_termination = False
+pop_size               = 250
+reset_on_extinction    = False
 
 [DefaultStagnation]
 species_fitness_func = mean
-max_stagnation       = 25
-species_elitism      = 3
+max_stagnation       = 35
+species_elitism      = 10
 
 [DefaultReproduction]
-elitism            = 3
-survival_threshold = 0.3
+elitism            = 10
+survival_threshold = 0.25
+min_species_size   = 5
+
+[DefaultGenome]
+# Node Activation Options
+activation_default     = random
+activation_mutate_rate = 0.1
+activation_options     = abs clamped cube exp gauss hat identity inv log relu elu lelu selu sigmoid sin softplus square tanh
+
+# Node Aggregation Options
+aggregation_default     = random
+aggregation_mutate_rate = 0.1
+aggregation_options     = sum product min max mean median maxabs
+
+# Node Bias Options
+bias_init_mean    = 0
+bias_init_stdev   = 1.0
+bias_init_type    = gaussian
+bias_max_value    = 30.0
+bias_min_value    = -30.0
+bias_mutate_power = 0.5
+bias_mutate_rate  = 0.25
+bias_replace_rate = 0.1
+
+# Genome Compatibility Options
+compatibility_threshold            = 0.1
+compatibility_disjoint_coefficient = 1.0
+compatibility_weight_coefficient   = 0.5
+
+# Connection Add/Remove Rates
+conn_add_prob    = 0.5
+conn_delete_prob = 0.2
+
+# Connection Enable Options
+enabled_default           = True
+enabled_mutate_rate       = 0.2
+enabled_rate_to_false_add = 0.1
+enabled_rate_to_true_add  = 0.3
+
+# Recurrence Options
+feed_forward       = False
+initial_connection = partial_direct 0.05
+
+# Node Add/Remove Rates
+node_add_prob    = 0.5
+node_delete_prob = 0.2
+
+# Network Parameters
+num_hidden  = 0
+num_inputs  = 37
+num_outputs = 38
+
+# Node Response Options
+response_init_mean    = 0
+response_init_stdev   = 1
+response_init_type    = gaussian
+response_max_value    = 30.0
+response_min_value    = -30.0
+response_mutate_power = 0.5
+response_mutate_rate  = 0.25
+response_replace_rate = 0.1
+
+# Structural Mutation Options
+single_structural_mutation = False
+structural_mutation_surer  = True
+
+# connection weight options
+weight_init_mean    = 0
+weight_init_stdev   = 1.0
+weight_init_type    = gaussian
+weight_max_value    = 30
+weight_min_value    = -30
+weight_mutate_power = 0.5
+weight_mutate_rate  = 0.25
+weight_replace_rate = 0.1

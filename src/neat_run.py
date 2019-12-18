@@ -106,7 +106,7 @@ def main(config_file, restore_file):
     population.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     population.add_reporter(stats)
-    population.add_reporter(neat.Checkpointer(generation_interval=100, filename_prefix='../restores/neat-checkpoint-'))
+    population.add_reporter(neat.Checkpointer(generation_interval=500, filename_prefix='../restores/neat-checkpoint-'))
 
     # Runs the learning in parallel
     evaluator = neat.ParallelEvaluator(10, eval_genomes)
