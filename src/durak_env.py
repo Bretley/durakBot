@@ -564,7 +564,7 @@ class DurakEnv(gym.Env):
 
         """
 
-        ret = [0] * 36
+        ret = [0] * 37
         # 1 if on table
         for card in self.table:
             ret[CARD_TO_OBS[card]] = 1

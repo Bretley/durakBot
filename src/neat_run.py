@@ -22,42 +22,64 @@ import numpy as np
 from durak_env import DurakEnv
 
 
-def eval_genomes(genomes, config):
-    """Evaluates the fitness of a genome.
+class Worker:
+    """A worker for multi-threaded evolution.
+
+    Attributes:
+        genome: The genome to be tested.
+        config: The configuration specifications for NEAT.
+        env: The Durak environment.
+    """
+
+    def __init__(self, genome, config):
+        """Inits a worker with a genome and the config.
+        """
+        self.genome = genome
+        self.config = config
+        self.env = None
+
+    def work(self):
+        """Evaluates the fitness of a genome.
+
+        Returns:
+            A float that represents the fitness of a genome. The higher the number
+            the fitter it is and the more likely the genome is to reproduce.
+        """
+        self.env = DurakEnv()
+
+        # Loads in a default Durak state
+        self.env.reset()
+
+        net = neat.nn.RecurrentNetwork.create(self.genome, self.config)
+
+        # Takes the first step to get an observation ofn the current state
+        observation, _, _, _ = self.env.step(self.env.action_space.sample())
+        reward = 0
+        done = False
+
+        # Loops through the game until the game is finished or the machine makes an unforgivable mistake
+        while not done:
+            actions = net.activate(observation)
+            observation, reward, done, _ = self.env.step(np.argmax(actions).flat[0])
+
+        logging.info("%s", reward)
+
+        return reward
+
+
+def eval_genomes(genome, config):
+    """Evaluates the fitness of a genome by sending it to the worker.
 
     Args:
-        genomes: The genomes to be tested.
+        genome: The genome to be tested.
         config: The configuration specifications for NEAT.
     Returns:
         A float that represents the fitness of a genome. The higher the number
         the fitter it is and the more likely the genome is to reproduce.
     """
 
-    env = DurakEnv()
-
-    for genome_id, genome in genomes:
-
-        # Loads in a default Durak state
-        env.reset()
-
-        net = neat.nn.FeedForwardNetwork.create(genome, config)
-
-        # Takes the first step to get an observation ofn the current state
-        observation, _, _, _ = env.step(env.action_space.sample())
-        reward = 0
-        done = False
-        info = None
-
-        # Loops through the game until the game is finished or the machine makes an unforgivable mistake
-        while not done:
-            actions = net.activate(observation)
-            observation, reward, done, info = env.step(np.argmax(actions).flat[0])
-
-            genome.fitness = reward
-
-        logging.info("%s %s", genome_id, reward)
-
-        del info
+    worker = Worker(genome, config)
+    return worker.work()
 
 
 def main(config_file, restore_file):
@@ -84,13 +106,13 @@ def main(config_file, restore_file):
     population.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     population.add_reporter(stats)
-    population.add_reporter(neat.Checkpointer(generation_interval=100, filename_prefix='../restores/neat-checkpoint-'))
+    population.add_reporter(neat.Checkpointer(generation_interval=500, filename_prefix='../restores/neat-checkpoint-'))
 
     # Runs the learning in parallel
-    # evaluator = neat.ParallelEvaluator(10, eval_genomes)
-    # winner = population.run(evaluator.evaluate)
+    evaluator = neat.ParallelEvaluator(10, eval_genomes)
+    winner = population.run(evaluator.evaluate)
 
-    winner = population.run(eval_genomes)
+    # winner = population.run(eval_genomes)
 
     print(winner)
 
