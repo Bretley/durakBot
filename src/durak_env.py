@@ -12,6 +12,8 @@ import logging
 import gym
 from gym import spaces
 
+import numpy as np
+
 from card import CARDS, RANK_NUM, Card
 from player import Player
 from strategy import Attack, Defense, S0
@@ -131,7 +133,7 @@ class DurakEnv(gym.Env):
         self.action_space = spaces.Discrete(110)
 
         # 1 Discrete observation for now just to set it up
-        self.observation_space = spaces.Discrete(1)
+        self.observation_space = spaces.Box(low=np.array([0]*36), high=np.array([3]*36), dtype=np.int)
 
         self.game_started = False
         self.deck = Deck()
@@ -155,7 +157,7 @@ class DurakEnv(gym.Env):
         """
 
         Args:
-            card: Card to be added to the tablae
+            card: Card to be added to the table
 
         Returns
         -------
