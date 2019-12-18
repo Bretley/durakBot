@@ -370,21 +370,21 @@ class DurakEnv(gym.Env):
 
                             if atk[0] != Attack.play:
                                 logging.error('Opponent is not attacking on first attack')
-                                return None, None, True, None
+                                return self.gen_obs(), None, True, None
                             self.table.append(atk[1])
                             self.ranks[atk[1].rank] = 0
                             self.attack_count += 1
                         else:  # Turn is not over, Model is attacking again
                             self.state = 'a'
-                            return None, None, None, None
+                            return self.gen_obs, None, None, None
                     elif defense[0] == Defense.take:
                         self.state = 's'  # Model will be shedding in next step
                         if self.print_trace:
                             print('Opponent has chosen to take')
-                        return None, None, None, None
+                        return self.gen_obs(), None, None, None
                     else:
                         logging.error('opponent has passed cards')
-                        return None, None, True, None
+                        return self.gen_obs(), None, True, None
                     del defense
                 elif move == 'done':  # AI is done in attack context
                     self.clear_table()
@@ -393,17 +393,17 @@ class DurakEnv(gym.Env):
                     if atk[0] != Attack.play:
                         logging.error('in attack state')
                         logging.error('Opponent is not attacking on first attack')
-                        return None, None, True, None
+                        return self.gen_obs(), None, True, None
                     self.add_attack(atk[1])
                     self.attack_count += 1
                     # Model will be defending next turn
                     self.state = 'd'
-                    return None, None, None, None
+                    return self.gen_obs(), None, None, None
                 else:
                     logging.error('legal_attack true but not a or move')
             # Punish and end.
             else:
-                return None, -1, True, None
+                return self.gen_obs(), -1, True, None
         # Defend state logic.
         elif self.state == "d":
             # Bot has already attacked.
@@ -423,13 +423,13 @@ class DurakEnv(gym.Env):
                             pass
                         # if game hasn't ended, the turn is over and the bot succesfully defends
                         self.state = "a"
-                        return None, None, None, None
+                        return self.gen_obs(), None, None, None
 
                     atk = self.opponent.attack(self.table, self.ranks)
                     if atk[0] == Attack.play:
                         self.add_attack(card)
                         self.state = "d"
-                        return None, None, None, None
+                        return self.gen_obs(), None, None, None
 
                     if atk[0] == Attack.done:
                         self.clear_table()
@@ -455,7 +455,7 @@ class DurakEnv(gym.Env):
 
                     if self.player_draw(self.opponent):
                         # TODO: opponent has won on their shed
-                        return None, None, True, None
+                        return self.gen_obs(), None, True, None
 
                     self.table += shed
                     self.model.take_table(self.table)
@@ -471,15 +471,15 @@ class DurakEnv(gym.Env):
                     self.add_attack(atk[1])
                     # Model will be defending next turn
                     self.state = 'd'
-                    return None, None, None, None
+                    return self.gen_obs(), None, None, None
                 else:
                     logging.error('legal_defense true but not defense or take')
                     logging.error('move = %s', str(move))
-                    return None, -1, True, None
+                    return self.gen_obs(), -1, True, None
 
             else:
                 # Return and punish.
-                return None, -1, True, None
+                return self.gen_obs(), -1, True, None
 
         # Shed state logic.
         elif self.state == "s":
@@ -503,13 +503,14 @@ class DurakEnv(gym.Env):
                     # opponent shouldn't have to draw here
                     if self.player_draw(self.model):
                         # TODO: Model has won by shedding last cards
-                        return None, None, None, None
+                        return self.gen_obs(), None, +1, None
+                    return self.gen_obs(), None, None, None
 
                 else:
                     logging.error('legal_shed true but not s or done')
             # Return and punish.
             else:
-                return None, None, True, None
+                return self.gen_obs(), -1, True, None
 
         del action
 
