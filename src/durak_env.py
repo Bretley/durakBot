@@ -133,7 +133,7 @@ class DurakEnv(gym.Env):
         self.action_space = spaces.Discrete(38)
 
         # 1 Discrete observation for now just to set it up
-        self.observation_space = spaces.Box(low=np.array([0] * 36), high=np.array([3] * 36), dtype=int)
+        self.observation_space = spaces.Box(low=np.array([0] * 37), high=np.array(([4] * 36) + [2]), dtype=int)
 
         self.game_started = False
         self.deck = Deck()
@@ -541,14 +541,23 @@ class DurakEnv(gym.Env):
 
         # 3 if in out pile
         for card in self.out_pile:
-            ret[CARD_TO_OBS[card]] = 2
+            ret[CARD_TO_OBS[card]] = 3
+
+        ret[CARD_TO_OBS[self.table_card]] = 4
+
+        if self.state == "d":
+            ret[-1] = 0
+        elif self.state == "a":
+            ret[-1] = 1
+        else:
+            ret[-1] = 2
 
         return np.array(ret)
 
     def gen_score(self):
         """TODO
         """
-        # base reward for not messsing up
+        # base reward for not messing up
         legal_moves_reward = 2 * 5 * atan(self.legal_moves)/3.1415
         # ratio of bot making opponent take vs opponent making bot take
         attack_success_reward = sqrt(self.successful_attacks/(self.takes+1)) - 0.8
