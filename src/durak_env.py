@@ -513,6 +513,32 @@ class DurakEnv(gym.Env):
 
         return obs, reward, done, info
 
+    def gen_obs(self):
+        """
+
+        -------
+        Returns an observation based on game state
+            0 unknown
+            1 on table
+            2 in hand
+            3 in out pile
+
+        """
+        ret = [0]*36
+        # 1 if on table
+        for card in self.table:
+            ret[CARD_TO_OBS[card]] = 1
+        # 2 if in hand
+        for card in self.model.hand:
+            ret[CARD_TO_OBS[card]] = 2
+
+        # 3 if in out pile
+        for card in self.out_pile:
+            ret[CARD_TO_OBS[card]] = 2
+
+        return np.array(ret)
+
+
     def reset(self):
         """Resets the game to the starting state.
         """
