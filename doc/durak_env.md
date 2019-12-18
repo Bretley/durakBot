@@ -61,6 +61,17 @@ Classes
         -------
             None
 
+    `gen_obs(self)`
+    :   -------
+        Returns an observation based on game state
+            0 unknown
+            1 on table
+            2 in hand
+            3 in out pile
+
+    `gen_score(self)`
+    :   TODO
+
     `legal_attack(self, move)`
     :   Determines whether an attack is a legal action or not.
         

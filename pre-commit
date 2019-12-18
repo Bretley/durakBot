@@ -1,2 +1,6 @@
 #!/bin/bash
 cd src
+autopep8 $(find *.py) -i --max-line-length 256
+pylint $(find *.py) --rcfile ../config/.pylintrc && \
+pdoc3 $(find *.py) -f -o ../doc && \
+git add ../doc

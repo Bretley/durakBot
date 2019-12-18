@@ -525,7 +525,7 @@ max-parents=7
 max-public-methods=20
 
 # Maximum number of return / yield for function / method body.
-max-returns=20
+max-returns=25
 
 # Maximum number of statements in function / method body.
 max-statements=150

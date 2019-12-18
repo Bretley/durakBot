@@ -54,7 +54,7 @@ def eval_genomes(genomes, config):
 
             genome.fitness = reward
 
-        #print(genome_id, reward)
+        # print(genome_id, reward)
 
         del info
 
