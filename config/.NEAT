@@ -14,7 +14,7 @@ activation_options      = sigmoid gauss
 # node aggregation options
 aggregation_default     = random
 aggregation_mutate_rate = 0.05
-aggregation_options     = sum product min maFx mean median maxabs
+aggregation_options     = sum product min max mean median maxabs
 
 # node bias options
 bias_init_mean          = 0.05
@@ -46,7 +46,7 @@ node_delete_prob        = 0.15
 
 # network parameters
 num_hidden              = 0
-num_inputs              = 36
+num_inputs              = 37
 num_outputs             = 38
 
 # node response options
