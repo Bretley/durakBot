@@ -48,7 +48,7 @@ Classes
 
     `add_attack(self, card)`
     :   Args:
-            card: Card to be added to the tablae
+            card: Card to be added to the table
         
         Returns
         -------
