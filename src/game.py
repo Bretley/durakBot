@@ -75,8 +75,8 @@ class Game:
         self.table = []
         self.attacker = 0
 
-        logging.debug('Table Card:')
-        logging.debug("%s", self.table_card)
+        logging.info('Table Card:')
+        logging.info("%s", self.table_card)
 
         # Checks danks at start of round, whoever has the lowest one goes first, else we default to 0.
         min_rank = 9
@@ -269,12 +269,12 @@ class Game:
                 raise RuntimeError('ERROR: Duplicates in the table')
 
         elif len(attacker) == 0:
-            logging.debug('attacker')
+            logging.info('attacker')
             if self.print_trace:
                 print('Player ' + str(attacker.num) + ' has run out of cards')
 
         elif len(defender) == 0:
-            logging.debug('defender')
+            logging.info('defender')
             if self.print_trace:
                 print('Player ' + str(defender.num) + ' has run out of cards')
         else:

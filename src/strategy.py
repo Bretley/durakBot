@@ -183,10 +183,10 @@ class S0(Strategy):
         attack = table[-1]
         current_defense = lowest_defense(attack, hand, dank)
 
-        logging.debug('Defense Logic:')
-        logging.debug("%s", attack)
-        logging.debug("%s", self)
-        logging.debug("%s", current_defense)
+        logging.info('Defense Logic:')
+        logging.info("%s", attack)
+        logging.info("%s", self)
+        logging.info("%s", current_defense)
 
         if current_defense is None:
             return Defense.take, None
@@ -296,10 +296,10 @@ class S1(Strategy):
         attack = table[-1]
         current_defense = lowest_defense(attack, hand, dank)
 
-        logging.debug('Defense Logic:')
-        logging.debug("%s", attack)
-        logging.debug("%s", self)
-        logging.debug("%s", current_defense)
+        logging.info('Defense Logic:')
+        logging.info("%s", attack)
+        logging.info("%s", self)
+        logging.info("%s", current_defense)
 
         if current_defense is None:
             return Defense.take, None
@@ -410,10 +410,10 @@ class S2(Strategy):
         attack = table[-1]
         current_defense = lowest_defense(attack, hand, dank)
 
-        logging.debug('Defense Logic:')
-        logging.debug("%s", attack)
-        logging.debug("%s", self)
-        logging.debug("%s", current_defense)
+        logging.info('Defense Logic:')
+        logging.info("%s", attack)
+        logging.info("%s", self)
+        logging.info("%s", current_defense)
 
         if current_defense is None:
             return Defense.take, None

@@ -322,10 +322,10 @@ class DurakEnv(gym.Env):
             # AI attacks first.
             if int(action) % 2 == 0:
                 self.state = "a"
-                logging.debug('Model attacks first')
+                logging.info('Model attacks first')
                 return self.gen_obs(), self.gen_score(), False, None
 
-            logging.debug('bot attacks first')
+            logging.info('bot attacks first')
             # Bot attacks first.
             atk = self.opponent.attack(self.table, self.ranks)
 
@@ -341,9 +341,9 @@ class DurakEnv(gym.Env):
             return self.gen_obs(), self.gen_score(), False, None
 
         if self.state == 'a':
-            logging.debug('state a')
+            logging.info('state a')
             if self.legal_attack(action):
-                logging.debug('legal card action')
+                logging.info('legal card action')
                 # AI plays a card.
                 if isinstance(move, Card):
                     self.model.remove_card(move)
@@ -399,7 +399,7 @@ class DurakEnv(gym.Env):
             return self.gen_obs(), -1, True, None
         # Defend state logic.
         if self.state == "d":
-            logging.debug('state d')
+            logging.info('state d')
             # Bot has already attacked.
             if self.legal_defense(action):
                 if isinstance(move, Card):
@@ -471,7 +471,7 @@ class DurakEnv(gym.Env):
 
         # Shed state logic.
         elif self.state == "s":
-            logging.debug('state s')
+            logging.info('state s')
             if self.legal_shed(action):
                 if isinstance(move, Card):
                     # Shed 1 card -> return to shed.
@@ -501,7 +501,7 @@ class DurakEnv(gym.Env):
             else:
                 return self.gen_obs(), -1, True, None
 
-        logging.debug("%s", self.state)
+        logging.info("%s", self.state)
 
         return self.gen_obs(), self.gen_score(), False, None
 
