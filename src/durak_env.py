@@ -10,6 +10,7 @@ import logging
 # pylint: disable=import-error
 import gym
 from gym import spaces
+from math import sqrt, atan
 
 import numpy as np
 
@@ -150,7 +151,10 @@ class DurakEnv(gym.Env):
         self.shed_so_far = None
         self.allowed_to_shed = None
         self.model = Model()
-        self.legal_moves = 0
+        self.legal_moves = 0.
+        self.successful_attacks = 0.
+        self.successful_defenses = 0.
+        self.takes = 0.
 
     def add_attack(self, card: Card):
         """
@@ -385,7 +389,8 @@ class DurakEnv(gym.Env):
                     if defense[0] == Defense.take:
                         self.state = 's'  # Model will be shedding in next step
                         # if self.print_trace:
-                        # 'Opponent has chosen to take')
+                        # 'Opponent has chosen to take'
+                        self.successful_attacks += 1
                         return self.gen_obs(), self.gen_score(), False, None
                     raise RuntimeError('Opponent has passed cards')
                 if move == 'done':  # AI is done in attack context
@@ -440,12 +445,14 @@ class DurakEnv(gym.Env):
                         if self.player_draw(self.model):
                             raise RuntimeError('Win condition in defense phase:\nModel has won after ceasing attack.')
 
+                        self.successful_defenses += 1
                         self.state = 'a'
                     else:
                         raise RuntimeError('In defense phase, opponent has not chosen play or done.')
 
                 elif move == 'take':
                     # Bot gets to shed
+                    self.takes  += 1
                     shed = self.opponent.shed(self.table, min((6 - self.attack_count, len(self.model))), self.ranks)
                     if self.print_trace:
                         print("opponent sheds: " + ", ".join([str(x) for x in shed]))
@@ -540,9 +547,12 @@ class DurakEnv(gym.Env):
     def gen_score(self):
         """TODO
         """
-        atk_cnt = self.attack_count
-        del atk_cnt
-        return 0
+        # base reward for not messsing up
+        legal_moves_reward = 2 * 5 * atan(self.legal_moves)/3.1415
+        # ratio of bot making opponent take vs opponent making bot take
+        attack_success_reward = sqrt(self.successful_attacks/(self.takes+1)) - 0.8
+        taking_reward = 2/3.1415 * 3.5 * atan(4-self.takes)
+        return legal_moves_reward + attack_success_reward + taking_reward
 
     def reset(self):
         """Resets the game to the starting state.
@@ -563,7 +573,10 @@ class DurakEnv(gym.Env):
         self.shed_so_far = None
         self.allowed_to_shed = None
         self.model = Model()
-        self.legal_moves = 0
+        self.legal_moves = 0.
+        self.successful_attacks = 0.
+        self.successful_defenses = 0.
+        self.takes = 0.
 
     def render(self, mode='human'):
         """Will not be used.
