@@ -20,7 +20,7 @@ def pad_after(input_str):
         Returns:
             A padded string.
         """
-    return input_str + ' '*(15-len(input_str))
+    return input_str + ' ' * (15 - len(input_str))
 
 
 class Game:
@@ -250,7 +250,7 @@ class Game:
 
         # Shed phase.
         if defense[0] == Defense.take:
-            shed = attacker.shed(table, min((6-attack_count, len(defender))), ranks)
+            shed = attacker.shed(table, min((6 - attack_count, len(defender))), ranks)
             if self.print_trace:
                 print('Player ' + str(attacker.num) + ' sheds: ' + ', '.join([str(x) for x in shed]))
             table += shed
@@ -303,7 +303,7 @@ class Game:
         # Payer draws up to 6 cards.
 
         if len(attacker) < 6:
-            for _ in range(6-len(attacker)):
+            for _ in range(6 - len(attacker)):
                 attacker.take(self.deck.draw())
 
         if len(attacker) == 0:
@@ -311,7 +311,7 @@ class Game:
             # Attacker has won.
 
         if len(defender) < 6:
-            for _ in range(6-len(defender)):
+            for _ in range(6 - len(defender)):
                 defender.take(self.deck.draw())
 
         if len(defender) == 0:
@@ -349,9 +349,9 @@ class Game:
         player1 = str(self.players[0]).split('\n')
         player2 = str(self.players[1]).split('\n')
         if len(player1) < len(player2):
-            player1 += ['']*(len(player2) - len(player1))
+            player1 += [''] * (len(player2) - len(player1))
         elif len(player2) < len(player1):
-            player2 += ['']*(len(player1) - len(player2))
+            player2 += [''] * (len(player1) - len(player2))
         out = '\n'.join([pad_after(x) + y for x, y in zip(player1, player2)])
         print(out)
 
@@ -375,7 +375,7 @@ def main():
         elif isinstance(game_instance.strategy, S2):
             s2_wins += 1
 
-    print('Finished ' + str(num_games) + ' averaging ' + str(sum(turns)/len(turns)) + ' turns')
+    print('Finished ' + str(num_games) + ' averaging ' + str(sum(turns) / len(turns)) + ' turns')
     print('s0 wins: ' + str(s0_wins))
     print('s1 wins: ' + str(s1_wins))
     print('s2 wins: ' + str(s2_wins))

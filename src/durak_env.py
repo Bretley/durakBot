@@ -22,13 +22,11 @@ PRODUCTS = ['a', 'd', 's']
 SUMS = ['done', 'take']
 TOTAL_OPTIONS = len(CARDS) + len(['done', 'take'])
 
-
 OPTIONS_DICT = {}
 TOTAL = 0
 for c in CARDS:
     OPTIONS_DICT[TOTAL] = c
     TOTAL += 1
-
 
 OPTIONS_DICT[TOTAL] = ('done', None)
 TOTAL += 1
@@ -129,7 +127,7 @@ class DurakEnv(gym.Env):
         self.action_space = spaces.Discrete(38)
 
         # 1 Discrete observation for now just to set it up
-        self.observation_space = spaces.Box(low=np.array([0]*36), high=np.array([3]*36), dtype=int)
+        self.observation_space = spaces.Box(low=np.array([0] * 36), high=np.array([3] * 36), dtype=int)
 
         self.game_started = False
         self.deck = Deck()
@@ -245,7 +243,7 @@ class DurakEnv(gym.Env):
         # First shed state of the round.
         if self.first_shed:
             self.first_shed = False
-            self.allowed_to_shed = min(6-self.attack_count, len(self.opponent))
+            self.allowed_to_shed = min(6 - self.attack_count, len(self.opponent))
             self.shed_so_far = 0
         # done is always legal during a shed
         if move == 36:
@@ -360,7 +358,7 @@ class DurakEnv(gym.Env):
                             # Draw cards, attacker then defender
                             if self.player_draw(self.model):
                                 # TODO: Model wins on attack
-                                return self.gen_obs(), self.gen_score()+1, True, None
+                                return self.gen_obs(), self.gen_score() + 1, True, None
 
                             if self.player_draw(self.opponent):
                                 # TODO:  Bot wins defending in attack phase
@@ -414,7 +412,7 @@ class DurakEnv(gym.Env):
                             return self.gen_obs(), self.gen_score(), True, None
                         if self.player_draw(self.model):
                             # TODO: Model wins on attack
-                            return self.gen_obs(), self.gen_score()+1, True, None
+                            return self.gen_obs(), self.gen_score() + 1, True, None
                         # if game hasn't ended, the turn is over and the bot successfully defends
                         self.state = "a"
                         return self.gen_obs(), self.gen_score(), False, None
@@ -516,7 +514,8 @@ class DurakEnv(gym.Env):
             3 in out pile
 
         """
-        ret = [0]*36
+
+        ret = [0] * 36
         # 1 if on table
         for card in self.table:
             ret[CARD_TO_OBS[card]] = 1
