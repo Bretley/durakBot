@@ -6,11 +6,12 @@ train a machine learning model to play it.
 """
 
 import logging
+from math import sqrt, atan
+
 
 # pylint: disable=import-error
 import gym
 from gym import spaces
-from math import sqrt, atan
 
 import numpy as np
 
@@ -42,8 +43,8 @@ logging.debug("%s %s", 36, OPTIONS_DICT[36])
 logging.debug("%s %s", 37, OPTIONS_DICT[37])
 
 WIN = 10
-LOSE = -1
-ILLEGAL = -5
+LOSE = -2
+ILLEGAL = -3
 
 
 class Model:
@@ -452,7 +453,7 @@ class DurakEnv(gym.Env):
 
                 elif move == 'take':
                     # Bot gets to shed
-                    self.takes  += 1
+                    self.takes += 1
                     shed = self.opponent.shed(self.table, min((6 - self.attack_count, len(self.model))), self.ranks)
                     if self.print_trace:
                         print("opponent sheds: " + ", ".join([str(x) for x in shed]))
