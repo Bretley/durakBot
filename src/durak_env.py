@@ -373,9 +373,7 @@ class DurakEnv(gym.Env):
 
                             if atk[0] != Attack.play:
                                 raise RuntimeError('Opponent is not attacking on first attack.')
-                            self.table.append(atk[1])
-                            self.ranks[atk[1].rank] = 0
-                            self.attack_count += 1
+                            self.add_attack(atk[1])
                             return self.gen_obs(), self.gen_score(), False, None
                         # Turn is not over, Model is attacking again
                         self.state = 'a'
@@ -393,7 +391,6 @@ class DurakEnv(gym.Env):
                     if atk[0] != Attack.play:
                         raise RuntimeError('Opponent is not attacking on first attack.')
                     self.add_attack(atk[1])
-                    self.attack_count += 1
                     # Model will be defending next turn
                     self.state = 'd'
                     return self.gen_obs(), self.gen_score(), False, None
