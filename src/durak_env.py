@@ -40,6 +40,10 @@ logging.debug("%s %s", 35, OPTIONS_DICT[35])
 logging.debug("%s %s", 36, OPTIONS_DICT[36])
 logging.debug("%s %s", 37, OPTIONS_DICT[37])
 
+WIN = 10
+LOSE = -1
+ILLEGAL = -5
+
 
 class Model:
     """Model is a wrapper for the AI hand.
@@ -146,6 +150,7 @@ class DurakEnv(gym.Env):
         self.shed_so_far = None
         self.allowed_to_shed = None
         self.model = Model()
+        self.legal_moves = 0
 
     def add_attack(self, card: Card):
         """
@@ -341,6 +346,7 @@ class DurakEnv(gym.Env):
         if self.state == 'a':
             logging.info('state a')
             if self.legal_attack(action):
+                self.legal_moves += 1
                 logging.info('legal card action')
                 # AI plays a card.
                 if isinstance(move, Card):
@@ -358,11 +364,11 @@ class DurakEnv(gym.Env):
                             # Draw cards, attacker then defender
                             if self.player_draw(self.model):
                                 # TODO: Model wins on attack
-                                return self.gen_obs(), self.gen_score() + 1, True, None
+                                return self.gen_obs(), self.gen_score() + WIN, True, None
 
                             if self.player_draw(self.opponent):
                                 # TODO:  Bot wins defending in attack phase
-                                return self.gen_obs(), self.gen_score(), True, None
+                                return self.gen_obs(), self.gen_score() + LOSE, True, None
 
                             # Bot attacks table.
                             atk = self.opponent.attack(self.table, self.ranks)
@@ -394,10 +400,11 @@ class DurakEnv(gym.Env):
                     return self.gen_obs(), self.gen_score(), False, None
                 raise RuntimeError('Legal_attack true but not attack or move.')
             # Punish and end.
-            return self.gen_obs(), -1, True, None
+            return self.gen_obs(), self.gen_score() + ILLEGAL, True, None
         # Defend state logic.
         if self.state == "d":
             logging.info('state d')
+            self.legal_moves += 1
             # Bot has already attacked.
             if self.legal_defense(action):
                 if isinstance(move, Card):
@@ -409,10 +416,10 @@ class DurakEnv(gym.Env):
                         # Draw cards, attacker (opponent) then defender (model)
                         if self.player_draw(self.opponent):
                             # TODO:  Bot wins defending in attack phase
-                            return self.gen_obs(), self.gen_score(), True, None
+                            return self.gen_obs(), self.gen_score() + LOSE, True, None
                         if self.player_draw(self.model):
                             # TODO: Model wins on attack
-                            return self.gen_obs(), self.gen_score() + 1, True, None
+                            return self.gen_obs(), self.gen_score() + WIN, True, None
                         # if game hasn't ended, the turn is over and the bot successfully defends
                         self.state = "a"
                         return self.gen_obs(), self.gen_score(), False, None
@@ -445,7 +452,7 @@ class DurakEnv(gym.Env):
 
                     if self.player_draw(self.opponent):
                         # TODO: opponent has won on their shed
-                        return self.gen_obs(), self.gen_score(), True, None
+                        return self.gen_obs(), self.gen_score() + LOSE, True, None
 
                     self.table += shed
                     self.model.take_table(self.table)
@@ -465,12 +472,13 @@ class DurakEnv(gym.Env):
                     raise RuntimeError('legal_defense true but not defense or take: move = {}'.format(str(move)))
             else:
                 # Return and punish.
-                return self.gen_obs(), -1, True, None
+                return self.gen_obs(), self.gen_score() + ILLEGAL, True, None
 
         # Shed state logic.
         elif self.state == "s":
             logging.info('state s')
             if self.legal_shed(action):
+                self.legal_moves += 1
                 if isinstance(move, Card):
                     # Shed 1 card -> return to shed.
                     self.model.remove_card(move)
@@ -490,14 +498,14 @@ class DurakEnv(gym.Env):
                     # opponent shouldn't have to draw here
                     if self.player_draw(self.model):
                         # TODO: Model has won by shedding last cards
-                        return self.gen_obs(), self.gen_score() + 1, True, None
+                        return self.gen_obs(), self.gen_score() + WIN, True, None
                     return self.gen_obs(), self.gen_score(), False, None
 
                 else:
                     raise RuntimeError('legal_shed true but not shed or done')
             # Return and punish.
             else:
-                return self.gen_obs(), -1, True, None
+                return self.gen_obs(), self.gen_score() + ILLEGAL, True, None
 
         logging.info("%s", self.state)
 
@@ -555,6 +563,7 @@ class DurakEnv(gym.Env):
         self.shed_so_far = None
         self.allowed_to_shed = None
         self.model = Model()
+        self.legal_moves = 0
 
     def render(self, mode='human'):
         """Will not be used.
