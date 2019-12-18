@@ -4,7 +4,6 @@ Mostly used for playing bots against each other and developing strategies.
 """
 
 import logging
-import sys
 
 from card import CARD_COMPARATORS, RANK_NUM, RANKS
 from deck import Deck
@@ -59,8 +58,7 @@ class Game:
         self.out_pile = []
 
         if len(strategies) == 0:
-            logging.error("Number of players is 0!")
-            sys.exit()
+            raise RuntimeError("Number of players is 0!")
 
         self.players = [Player(i, x) for i, x in enumerate(strategies)]
         for _ in range(6):
@@ -69,7 +67,7 @@ class Game:
 
         self.table_card = self.deck.flip()
         if self.table_card is None:
-            logging.error("Table Card is None upon game instantiation!")
+            raise RuntimeError("Table Card is None upon game instantiation!")
         # Determines Dank suit.
         self.dank = self.table_card.suit
         self.cmp = CARD_COMPARATORS[self.dank]
@@ -144,10 +142,10 @@ class Game:
             self.turns += 1
 
         if winning_player is None:
-            logging.error('ERROR: nobody has won')
-        elif len(self.deck) > 0:
-            logging.error('Someone has won with cards in the deck.')
-            logging.error('Player %s has won!', str(winning_player.num))
+            raise RuntimeError('ERROR: nobody has won')
+        if len(self.deck) > 0:
+            logging.debug('Player %s has won!', str(winning_player.num))
+            raise RuntimeError('Someone has won with cards in the deck.')
 
         if self.print_trace:
             print('Player ' + str(winning_player.num) + ' has won!')
@@ -178,7 +176,7 @@ class Game:
 
         # It definitely does, this is to catch errors.
         if atk[0] != Attack.play:
-            logging.error("Atk[0] != Attack.play, bot is attacking at start.")
+            raise RuntimeError("Atk[0] != Attack.play, bot is attacking at start.")
 
         table.append(atk[1])
 
@@ -217,7 +215,7 @@ class Game:
                 break
 
         if pass_count > 3:
-            logging.error("Bug in game.turn, pass_count > 3")
+            raise RuntimeError("Bug in game.turn, pass_count > 3")
 
         # Defense phase.
         # Used to check for 2 passes in a row.
@@ -260,15 +258,15 @@ class Game:
             if self.print_trace:
                 print('Player : ' + str(defender.num) + ' picks up: ' + ', '.join([str(x) for x in table]))
             if len(table) > len(set(table)):
-                logging.error('ERROR: Duplicates in the table')
-                logging.error([str(x) for x in table])
+                logging.debug([str(x) for x in table])
+                raise RuntimeError('ERROR: Duplicates in the table')
         elif atk[0] == Attack.done or len(table) == 12:
             if self.print_trace:
                 print('Player ' + str(attacker.num) + ' has ceased attack')
             self.out_pile += table
             if len(table) > len(set(table)):
-                logging.error('ERROR: Duplicates in the table')
-                logging.error([str(x) for x in table])
+                logging.debug([str(x) for x in table])
+                raise RuntimeError('ERROR: Duplicates in the table')
 
         elif len(attacker) == 0:
             logging.debug('attacker')
@@ -280,13 +278,13 @@ class Game:
             if self.print_trace:
                 print('Player ' + str(defender.num) + ' has run out of cards')
         else:
-            logging.error([str(x) for x in table])
-            logging.error('table size %s', str(len(table)))
-            logging.error(str(len(attacker)))
-            logging.error(str(len(defender)))
-            logging.error('not a defense or done')
-            logging.error(str(atk))
-            logging.error(str(defense))
+            logging.debug([str(x) for x in table])
+            logging.debug('table size %s', str(len(table)))
+            logging.debug(str(len(attacker)))
+            logging.debug(str(len(defender)))
+            logging.debug(str(atk))
+            logging.debug(str(defense))
+            raise RuntimeError("Not a defense or done.")
             # Success for defender.
 
         del table
@@ -294,10 +292,10 @@ class Game:
 
         for player in self.players:
             if not player.verify_hand():
-                logging.error("Player : %s has duplicate cards", str(player.num))
+                raise RuntimeError("Player {} has duplicate cards".format(str(player.num)))
 
         if len(self.out_pile) > len(set(self.out_pile)):
-            logging.error('out pile has duplicates')
+            raise RuntimeError('Out pile has duplicates.')
 
         # Draw: Win condition.
         # Player is definitely a winner if, after drawing, they have zero cards.

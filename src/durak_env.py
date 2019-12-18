@@ -333,7 +333,7 @@ class DurakEnv(gym.Env):
                 print('Opponent starts attack with ' + str(atk[1]))
 
             if atk[0] != Attack.play:
-                logging.error("Atk[0] != Attack.play, bot is attacking at start")
+                raise RuntimeError("Atk[0] != Attack.play, bot is attacking at start.")
 
             self.add_attack(atk[1])
             self.state = 'd'
@@ -372,8 +372,7 @@ class DurakEnv(gym.Env):
                             self.state = 'd'
 
                             if atk[0] != Attack.play:
-                                logging.error('Opponent is not attacking on first attack')
-                                return self.gen_obs(), self.gen_score(), True, None
+                                raise RuntimeError('Opponent is not attacking on first attack.')
                             self.table.append(atk[1])
                             self.ranks[atk[1].rank] = 0
                             self.attack_count += 1
@@ -386,27 +385,23 @@ class DurakEnv(gym.Env):
                         # if self.print_trace:
                         # 'Opponent has chosen to take')
                         return self.gen_obs(), self.gen_score(), False, None
-                    logging.error('opponent has passed cards')
-                    return self.gen_obs(), self.gen_score(), True, None
+                    raise RuntimeError('Opponent has passed cards')
                 if move == 'done':  # AI is done in attack context
                     self.clear_table()
                     # Bot attacks table
                     atk = self.opponent.attack(self.table, self.ranks)
                     if atk[0] != Attack.play:
-                        logging.error('in attack state')
-                        logging.error('Opponent is not attacking on first attack')
-                        return self.gen_obs(), self.gen_score(), True, None
+                        raise RuntimeError('Opponent is not attacking on first attack.')
                     self.add_attack(atk[1])
                     self.attack_count += 1
                     # Model will be defending next turn
                     self.state = 'd'
                     return self.gen_obs(), self.gen_score(), False, None
-                logging.error('legal_attack true but not a or move')
+                raise RuntimeError('Legal_attack true but not attack or move.')
             # Punish and end.
-            else:
-                return self.gen_obs(), -1, True, None
+            return self.gen_obs(), -1, True, None
         # Defend state logic.
-        elif self.state == "d":
+        if self.state == "d":
             logging.debug('state d')
             # Bot has already attacked.
             if self.legal_defense(action):
@@ -438,16 +433,14 @@ class DurakEnv(gym.Env):
                         # Players get to draw, attacker first.
                         # It shouldn't be possible for a win condition here
                         if self.player_draw(self.opponent):
-                            logging.error('Win condition in defense phase')
-                            logging.error('Opponent has won after ceasing attack')
+                            raise RuntimeError('Win condition in defense phase:\nOpponent has won after ceasing attack.')
 
                         if self.player_draw(self.model):
-                            logging.error('Win condition in defense phase')
-                            logging.error('Model has won after ceasing attack')
+                            raise RuntimeError('Win condition in defense phase:\nModel has won after ceasing attack.')
 
                         self.state = 'a'
                     else:
-                        logging.error('in defense phase, opponent has not chosen play or done')
+                        raise RuntimeError('In defense phase, opponent has not chosen play or done.')
 
                 elif move == 'take':
                     # Bot gets to shed
@@ -468,17 +461,13 @@ class DurakEnv(gym.Env):
                     # get Bot Attack
                     atk = self.opponent.attack(self.table, self.ranks)
                     if atk[0] != Attack.play:
-                        logging.error('in defense state')
-                        logging.error('opponent is not attacking on first attack')
+                        raise RuntimeError('opponent is not attacking on first attack')
                     self.add_attack(atk[1])
                     # Model will be defending next turn
                     self.state = 'd'
                     return self.gen_obs(), self.gen_score(), False, None
                 else:
-                    logging.error('legal_defense true but not defense or take')
-                    logging.error('move = %s', str(move))
-                    return self.gen_obs(), -1, True, None
-
+                    raise RuntimeError('legal_defense true but not defense or take: move = {}'.format(str(move)))
             else:
                 # Return and punish.
                 return self.gen_obs(), -1, True, None
@@ -510,7 +499,7 @@ class DurakEnv(gym.Env):
                     return self.gen_obs(), self.gen_score(), False, None
 
                 else:
-                    logging.error('legal_shed true but not s or done')
+                    raise RuntimeError('legal_shed true but not shed or done')
             # Return and punish.
             else:
                 return self.gen_obs(), -1, True, None
