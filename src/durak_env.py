@@ -305,6 +305,7 @@ class DurakEnv(gym.Env):
         move, card = OPTIONS_DICT[action]
 
         if not self.game_started:
+            self.game_started = True
             self.deck.shuffle_deck()
             for _ in range(6):  # Deal cards
                 self.opponent.take(self.deck.draw())
