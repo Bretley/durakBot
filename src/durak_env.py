@@ -128,10 +128,10 @@ class DurakEnv(gym.Env):
         super(DurakEnv, self).__init__()
 
         # Attack(x36 cards), Defend(x36 cards), Shed(x36 Cards), Take, Done
-        self.action_space = spaces.Discrete(110)
+        self.action_space = spaces.Box(low=np.array([0]), high=np.array([109]), dtype=int)
 
         # 1 Discrete observation for now just to set it up
-        self.observation_space = spaces.Box(low=np.array([0]*36), high=np.array([3]*36), dtype=np.int)
+        self.observation_space = spaces.Box(low=np.array([0]*36), high=np.array([3]*36), dtype=int)
 
         self.game_started = False
         self.deck = Deck()

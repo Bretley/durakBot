@@ -15,6 +15,7 @@ import argparse
 import os
 
 import neat
+import numpy as np
 
 from durak_env import DurakEnv
 
@@ -40,7 +41,7 @@ def eval_genomes(genomes, config):
         net = neat.nn.FeedForwardNetwork.create(genome, config)
 
         # Takes the first step to get an observation ofn the current state
-        observation, _, _, _ = env.step(env.action_space.sample())
+        observation, _, _, _ = env.step(env.action_space.sample()[0])
         reward = 0
         done = False
         info = None
@@ -48,7 +49,7 @@ def eval_genomes(genomes, config):
         # Loops through the game until the game is finished or the machine makes an unforgivable mistake
         while not done:
             actions = net.activate(observation)
-            observation, reward, done, info = env.step(actions)
+            observation, reward, done, info = env.step(actions[0])
 
             genome.fitness = reward
 
