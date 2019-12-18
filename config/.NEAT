@@ -19,7 +19,7 @@ min_species_size   = 5
 # Node Activation Options
 activation_default     = random
 activation_mutate_rate = 0.1
-activation_options     = abs clamped cube exp gauss hat identity inv log relu elu lelu selu sigmoid sin softplus square tanh
+activation_options     = abs clamped cube exp gauss hat identity inv log relu sigmoid sin softplus square tanh
 
 # Node Aggregation Options
 aggregation_default     = random
