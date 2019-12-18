@@ -34,14 +34,14 @@ OPTIONS_DICT[TOTAL] = ('done', None)
 TOTAL += 1
 OPTIONS_DICT[TOTAL] = ('take', None)
 CARD_TO_OBS = {card: i for i, card in enumerate(CARDS)}
-# print(OPTIONS_DICT[35])
-# print(TOTAL_OPTIONS)
-# print(35, OPTIONS_DICT[35])
-# print(36, OPTIONS_DICT[36])
-# print(71, OPTIONS_DICT[71])
-# print(72, OPTIONS_DICT[72])
-# print(108, OPTIONS_DICT[108])
-# print(109, OPTIONS_DICT[109])
+logging.debug("%s", OPTIONS_DICT[35])
+logging.debug("%s", TOTAL_OPTIONS)
+logging.debug("%s %s", 35, OPTIONS_DICT[35])
+logging.debug("%s %s", 36, OPTIONS_DICT[36])
+logging.debug("%s %s", 71, OPTIONS_DICT[71])
+logging.debug("%s %s", 72, OPTIONS_DICT[72])
+logging.debug("%s %s", 108, OPTIONS_DICT[108])
+logging.debug("%s %s", 109, OPTIONS_DICT[109])
 
 
 class Model:
@@ -144,7 +144,7 @@ class DurakEnv(gym.Env):
         self.dank = None
         self.table_card = None
         self.opponent = Player("Bot", S0())
-        self.print_trace = True
+        self.print_trace = False
         self.first_shed = True
         self.shed_so_far = None
         self.allowed_to_shed = None
@@ -300,10 +300,10 @@ class DurakEnv(gym.Env):
             A list that contains additional information that may be useful.
         """
 
-        # print(action)
-        # print('f')
+        logging.debug("%s", action)
+        logging.debug('f')
         move, card = OPTIONS_DICT[action]
-        # print(move,card)
+        logging.debug("%s %s", move, card)
 
         if not self.game_started:
             self.game_started = True
@@ -320,15 +320,15 @@ class DurakEnv(gym.Env):
             # AI attacks first.
             if int(action) % 2 == 0:
                 self.state = "a"
-                # print('Model attacks first')
+                logging.debug('Model attacks first')
                 return self.gen_obs(), self.gen_score(), False, None
 
-            # print('bot attacks first')
+            logging.debug('bot attacks first')
             # Bot attacks first.
             atk = self.opponent.attack(self.table, self.ranks)
 
-            # if self.print_trace:
-            # print('Opponent starts attack with ' + str(atk[1]))
+            if self.print_trace:
+                print('Opponent starts attack with ' + str(atk[1]))
 
             if atk[0] != Attack.play:
                 logging.error("Atk[0] != Attack.play, bot is attacking at start")
@@ -339,9 +339,9 @@ class DurakEnv(gym.Env):
             return self.gen_obs(), self.gen_score(), False, None
 
         if self.state == 'a':
-            # print('state a')
+            logging.debug('state a')
             if self.legal_attack(action):
-                # print('legal card action')
+                logging.debug('legal card action')
                 # AI plays a card.
                 if move == 'a':
                     self.model.remove_card(card)
@@ -405,7 +405,7 @@ class DurakEnv(gym.Env):
                 return self.gen_obs(), -1, True, None
         # Defend state logic.
         elif self.state == "d":
-            # print('state d')
+            logging.debug('state d')
             # Bot has already attacked.
             if self.legal_defense(action):
                 if move == 'd':
@@ -450,8 +450,8 @@ class DurakEnv(gym.Env):
                 elif move == 'take':
                     # Bot gets to shed
                     shed = self.opponent.shed(self.table, min((6 - self.attack_count, len(self.model))), self.ranks)
-                    # if self.print_trace:
-                    # print("opponent sheds: " + ", ".join([str(x) for x in shed]))
+                    if self.print_trace:
+                        print("opponent sheds: " + ", ".join([str(x) for x in shed]))
 
                     if self.player_draw(self.opponent):
                         # TODO: opponent has won on their shed
@@ -483,7 +483,7 @@ class DurakEnv(gym.Env):
 
         # Shed state logic.
         elif self.state == "s":
-            # print('state s')
+            logging.debug('state s')
             if self.legal_shed(action):
                 if move == 's':
                     # Shed 1 card -> return to shed.
@@ -513,7 +513,7 @@ class DurakEnv(gym.Env):
             else:
                 return self.gen_obs(), -1, True, None
 
-        # print(self.state)
+        logging.debug("%s", self.state)
 
         return self.gen_obs(), self.gen_score(), False, None
 

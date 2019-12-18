@@ -271,14 +271,14 @@ class Game:
                 logging.error([str(x) for x in table])
 
         elif len(attacker) == 0:
-            # print( 'attacker')
-            # print('Player ' + str(attacker.num) + ' has run out of cards')
-            pass
+            logging.debug('attacker')
+            if self.print_trace:
+                print('Player ' + str(attacker.num) + ' has run out of cards')
 
         elif len(defender) == 0:
-            # print( 'defender' )
-            # print('Player ' + str(defender.num) + ' has run out of cards')
-            pass
+            logging.debug('defender')
+            if self.print_trace:
+                print('Player ' + str(defender.num) + ' has run out of cards')
         else:
             logging.error([str(x) for x in table])
             logging.error('table size %s', str(len(table)))

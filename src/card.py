@@ -6,7 +6,6 @@ the cards 2-5 removed.
 
 import functools
 import itertools
-import logging
 
 
 class Card:
@@ -28,9 +27,9 @@ class Card:
             suit: The suit of the card, Diamonds, Spades, Clubs, or Hearts.
         """
         if rank not in RANKS:
-            logging.error("Invalid rank %s for initialized card!", rank)
+            raise TypeError("Invalid rank {} for initialized card!".format(rank))
         if suit not in SUITS:
-            logging.error("Invalid suit %s for initialized card!", suit)
+            raise TypeError("Invalid suit {} for initialized card!".format(suit))
 
         self.rank = rank
         self.suit = suit

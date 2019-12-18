@@ -12,6 +12,7 @@ game until it reaches a completion state.
 """
 
 import argparse
+import logging
 import os
 
 import neat
@@ -34,7 +35,7 @@ def eval_genomes(genomes, config):
 
     env = DurakEnv()
 
-    for _, genome in genomes:
+    for genome_id, genome in genomes:
 
         # Loads in a default Durak state
         env.reset()
@@ -54,7 +55,7 @@ def eval_genomes(genomes, config):
 
             genome.fitness = reward
 
-        # print(genome_id, reward)
+        logging.info("%s %s", genome_id, reward)
 
         del info
 
