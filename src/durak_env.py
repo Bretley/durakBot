@@ -21,20 +21,22 @@ from deck import Deck
 
 PRODUCTS = ['a', 'd', 's']
 SUMS = ['done', 'take']
-TOTAL_OPTIONS = len(CARDS) * len(['a', 'd', 's']) + len(['done', 'take'])
+TOTAL_OPTIONS = len(CARDS) +  len(['done', 'take'])
 
 
 OPTIONS_DICT = {}
 TOTAL = 0
-for p in PRODUCTS:
-    for c in CARDS:
-        OPTIONS_DICT[TOTAL] = (p, c)
-        TOTAL += 1
+for c in CARDS:
+    OPTIONS_DICT[TOTAL] = c
+    TOTAL += 1
+
 
 OPTIONS_DICT[TOTAL] = ('done', None)
 TOTAL += 1
 OPTIONS_DICT[TOTAL] = ('take', None)
 CARD_TO_OBS = {card: i for i, card in enumerate(CARDS)}
+print(OPTIONS_DICT)
+print(len(OPTIONS_DICT))
 # print(OPTIONS_DICT[35])
 # print(TOTAL_OPTIONS)
 # print(35, OPTIONS_DICT[35])
@@ -212,13 +214,13 @@ class DurakEnv(gym.Env):
 
         """
 
-        if move == 109:
+        if move == 37:
             # Take is always legal in defense.
             return True
 
-        if 36 <= move < 72:
+        if move < 36:
             # Made a defense move.
-            _, card = OPTIONS_DICT[move]
+            card = OPTIONS_DICT[move]
             # Defend against attack.
             attack = self.table[-1]
             if card in self.model.hand:
@@ -249,14 +251,16 @@ class DurakEnv(gym.Env):
             self.first_shed = False
             self.allowed_to_shed = min(6-self.attack_count, len(self.opponent))
             self.shed_so_far = 0
-        if move == 108:
+        # done is always legal during a shed
+        if move == 36:
             self.first_shed = True
             self.allowed_to_shed = -1
             return True
 
         # Shed action or done.
-        if 71 < move < 108:
-            _, card = OPTIONS_DICT[move]
+        elif move < 36:
+
+            card = OPTIONS_DICT(move)
             if card in self.model.hand and card.rank in self.ranks and self.shed_so_far < self.allowed_to_shed:
                 self.first_shed = False
             return True
@@ -276,12 +280,13 @@ class DurakEnv(gym.Env):
             Card is in hand.
         """
 
+        # has chosen to play a card
         if move < 36:
-            _, card = OPTIONS_DICT[move]
+            card = OPTIONS_DICT[move]
             if card in self.model.hand and card.rank in self.ranks:
                 return True
-        # ('done', None)
-        elif move == 108:
+        # 'done'
+        elif move == 36:
             if len(self.table) != 0:
                 return True
         return False
@@ -303,8 +308,8 @@ class DurakEnv(gym.Env):
 
         print(action)
         print('f')
-        move, card = OPTIONS_DICT[action]
-        print(move,card)
+        move = OPTIONS_DICT[action]
+        print(move)
 
         if not self.game_started:
             self.game_started = True
@@ -344,9 +349,9 @@ class DurakEnv(gym.Env):
             if self.legal_attack(action):
                 print('legal card action')
                 # AI plays a card.
-                if move == 'a':
-                    self.model.remove_card(card)
-                    self.add_attack(card)
+                if isinstance(move, Card):
+                    self.model.remove_card(move)
+                    self.add_attack(move)
                     defense = self.opponent.defend(self.table, False, 1)
                     # Both players still have cards or drawing potential
                     if defense[0] == Defense.defend:
@@ -411,9 +416,9 @@ class DurakEnv(gym.Env):
             print('state d')
             # Bot has already attacked.
             if self.legal_defense(action):
-                if move == 'd':
-                    self.table.append(card)
-                    self.model.remove_card(card)
+                if isinstance(move, Card):
+                    self.table.append(move)
+                    self.model.remove_card(move)
                     if len(self.table) == 12 or len(self.model) == 0 or len(self.opponent) == 0:
                         # Turn is over
                         self.clear_table()
@@ -430,7 +435,7 @@ class DurakEnv(gym.Env):
 
                     atk = self.opponent.attack(self.table, self.ranks)
                     if atk[0] == Attack.play:
-                        self.add_attack(card)
+                        self.add_attack(atk[1])
                         self.state = "d"
                         return self.gen_obs(), self.gen_score(), False, None
 
@@ -488,10 +493,10 @@ class DurakEnv(gym.Env):
         elif self.state == "s":
             print('state s')
             if self.legal_shed(action):
-                if move == 's':
+                if isinstance(move, Card):
                     # Shed 1 card -> return to shed.
-                    self.model.remove_card(card)
-                    self.add_attack(card)
+                    self.model.remove_card(move)
+                    self.add_attack(move)
                     self.state = 's'
                 elif move == 'done':
                     # Done -> attack.
