@@ -214,7 +214,7 @@ class DurakEnv(gym.Env):
 
         """
 
-        if move == 37:
+        if move == 109:
             # Take is always legal in defense.
             return True
 
@@ -308,8 +308,8 @@ class DurakEnv(gym.Env):
 
         print(action)
         print('f')
-        move = OPTIONS_DICT[action]
-        print(move)
+        card = OPTIONS_DICT[action]
+        print(move,card)
 
         if not self.game_started:
             self.game_started = True
@@ -326,15 +326,15 @@ class DurakEnv(gym.Env):
             # AI attacks first.
             if int(action) % 2 == 0:
                 self.state = "a"
-                print('Model attacks first')
+                #print('Model attacks first')
                 return self.gen_obs(), self.gen_score(), False, None
 
-            print('bot attacks first')
+            #print('bot attacks first')
             # Bot attacks first.
             atk = self.opponent.attack(self.table, self.ranks)
 
-            if self.print_trace:
-                print('Opponent starts attack with ' + str(atk[1]))
+            # if self.print_trace:
+            #print('Opponent starts attack with ' + str(atk[1]))
 
             if atk[0] != Attack.play:
                 logging.error("Atk[0] != Attack.play, bot is attacking at start")
@@ -345,9 +345,9 @@ class DurakEnv(gym.Env):
             return self.gen_obs(), self.gen_score(), False, None
 
         if self.state == 'a':
-            print('state a')
+            #print('state a')
             if self.legal_attack(action):
-                print('legal card action')
+                #print('legal card action')
                 # AI plays a card.
                 if isinstance(move, Card):
                     self.model.remove_card(move)
@@ -387,8 +387,8 @@ class DurakEnv(gym.Env):
                             return self.gen_obs, self.gen_score(), False, None
                     elif defense[0] == Defense.take:
                         self.state = 's'  # Model will be shedding in next step
-                        if self.print_trace:
-                            print('Opponent has chosen to take')
+                        # if self.print_trace:
+                        # 'Opponent has chosen to take')
                         return self.gen_obs(), self.gen_score(), False, None
                     else:
                         logging.error('opponent has passed cards')
@@ -413,12 +413,12 @@ class DurakEnv(gym.Env):
                 return self.gen_obs(), -1, True, None
         # Defend state logic.
         elif self.state == "d":
-            print('state d')
+            #print('state d')
             # Bot has already attacked.
             if self.legal_defense(action):
-                if isinstance(move, Card):
-                    self.table.append(move)
-                    self.model.remove_card(move)
+                if move == 'd':
+                    self.table.append(card)
+                    self.model.remove_card(card)
                     if len(self.table) == 12 or len(self.model) == 0 or len(self.opponent) == 0:
                         # Turn is over
                         self.clear_table()
@@ -458,8 +458,8 @@ class DurakEnv(gym.Env):
                 elif move == 'take':
                     # Bot gets to shed
                     shed = self.opponent.shed(self.table, min((6 - self.attack_count, len(self.model))), self.ranks)
-                    if self.print_trace:
-                        print("opponent sheds: " + ", ".join([str(x) for x in shed]))
+                    # if self.print_trace:
+                    #print("opponent sheds: " + ", ".join([str(x) for x in shed]))
 
                     if self.player_draw(self.opponent):
                         # TODO: opponent has won on their shed
@@ -491,7 +491,7 @@ class DurakEnv(gym.Env):
 
         # Shed state logic.
         elif self.state == "s":
-            print('state s')
+            #print('state s')
             if self.legal_shed(action):
                 if isinstance(move, Card):
                     # Shed 1 card -> return to shed.
@@ -521,7 +521,7 @@ class DurakEnv(gym.Env):
             else:
                 return self.gen_obs(), -1, True, None
 
-        print(self.state)
+        # print(self.state)
 
         return self.gen_obs(), self.gen_score(), False, None
 

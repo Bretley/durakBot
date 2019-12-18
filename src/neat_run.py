@@ -15,6 +15,7 @@ import argparse
 import os
 
 import neat
+# pylint: disable=import-error
 import numpy as np
 
 from durak_env import DurakEnv
@@ -33,7 +34,7 @@ def eval_genomes(genomes, config):
 
     env = DurakEnv()
 
-    for genome_id, genome in genomes:
+    for _, genome in genomes:
 
         # Loads in a default Durak state
         env.reset()
@@ -41,7 +42,7 @@ def eval_genomes(genomes, config):
         net = neat.nn.FeedForwardNetwork.create(genome, config)
 
         # Takes the first step to get an observation ofn the current state
-        observation, _, _, _ = env.step(env.action_space.sample()[0])
+        observation, _, _, _ = env.step(env.action_space.sample())
         reward = 0
         done = False
         info = None
@@ -49,11 +50,11 @@ def eval_genomes(genomes, config):
         # Loops through the game until the game is finished or the machine makes an unforgivable mistake
         while not done:
             actions = net.activate(observation)
-            observation, reward, done, info = env.step(actions[0])
+            observation, reward, done, info = env.step(np.argmax(actions).flat[0])
 
             genome.fitness = reward
 
-        print(genome_id, reward)
+        #print(genome_id, reward)
 
         del info
 
