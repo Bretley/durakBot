@@ -9,7 +9,7 @@ reset_on_extinction    = False
 # Node Activation Options
 activation_default     = random
 activation_mutate_rate = 0.1
-activation_options     = abs clamped cube exp gauss hat identity inv log relu sigmoid sin softplus square tanh
+activation_options     = sigmoid gauss
 
 # Node Aggregation Options
 aggregation_default     = random
@@ -27,7 +27,7 @@ bias_mutate_rate  = 0.25
 bias_replace_rate = 0.1
 
 # Genome Compatibility Options
-compatibility_threshold            = 0.1
+compatibility_threshold            = 2.5
 compatibility_disjoint_coefficient = 1.0
 compatibility_weight_coefficient   = 0.5
 
@@ -68,7 +68,7 @@ response_replace_rate = 0.1
 single_structural_mutation = False
 structural_mutation_surer  = True
 
-# connection weight options
+# Connection Weight Options
 weight_init_mean    = 0
 weight_init_stdev   = 1.0
 weight_init_type    = gaussian
@@ -79,7 +79,7 @@ weight_mutate_rate  = 0.25
 weight_replace_rate = 0.1
 
 [DefaultSpeciesSet]
-compatibility_threshold = 0.1
+compatibility_threshold = 2.5
 
 [DefaultStagnation]
 species_fitness_func = mean
@@ -87,6 +87,6 @@ max_stagnation       = 35
 species_elitism      = 10
 
 [DefaultReproduction]
-elitism            = 10
-survival_threshold = 0.25
+elitism            = 5
+survival_threshold = 0.2
 min_species_size   = 5
