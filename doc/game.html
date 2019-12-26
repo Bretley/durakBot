@@ -1,0 +1,1148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.2" />
+<title>game API documentation</title>
+<meta name="description" content="A module used to store classes related to the representation of a game …" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>game</code></h1>
+</header>
+<section id="section-intro">
+<p>A module used to store classes related to the representation of a game.</p>
+<p>Mostly used for playing bots against each other and developing strategies.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;A module used to store classes related to the representation of a game.
+
+Mostly used for playing bots against each other and developing strategies.
+&#34;&#34;&#34;
+
+import logging
+
+from card import CARD_COMPARATORS, RANK_NUM
+from deck import Deck
+from player import Player
+from strategy import Attack, Defense, S0, S1, S2
+
+
+def pad_after(input_str):
+    &#34;&#34;&#34;Pads a string with extra spaces.
+
+        Args:
+            input_str: The string to pad.
+
+        Returns:
+            A padded string.
+        &#34;&#34;&#34;
+    return input_str + &#39; &#39; * (15 - len(input_str))
+
+
+class Game:
+    &#34;&#34;&#34;Represents a game.
+
+    Attributes:
+        players: The list of players.
+        table_card: The card on the table.
+        dank: The suit of the trump card.
+        cmp: A card comparator function.
+        turns: A count of turns that have passed.
+        table: The cards on the table.
+        attacker: The player that is attacking.
+    &#34;&#34;&#34;
+
+    def __init__(self, strategies, print_trace):
+        &#34;&#34;&#34;Inits Game with strategy and print trace data.
+
+        Deal 6 to each.
+        Determine who has initial lowest dank. (otherwise default to 0)
+
+        Args:
+            strategies: Contains the instantiated strategies for the players.
+            print_trace: Whether or not to print a human readable trace.
+        &#34;&#34;&#34;
+
+        self.print_trace = print_trace
+        deck = Deck()
+        deck.shuffle_deck()
+        self.deck = deck
+        self.out_pile = []
+
+        if len(strategies) == 0:
+            raise RuntimeError(&#34;Number of players is 0!&#34;)
+
+        self.players = [Player(i, x) for i, x in enumerate(strategies)]
+        for _ in range(6):
+            for player in self.players:
+                player.take(self.deck.draw())
+
+        self.table_card = self.deck.flip()
+        if self.table_card is None:
+            raise RuntimeError(&#34;Table Card is None upon game instantiation!&#34;)
+        # Determines Dank suit.
+        self.dank = self.table_card.suit
+        self.cmp = CARD_COMPARATORS[self.dank]
+        self.turns = 0
+        self.table = []
+        self.attacker = 0
+
+        logging.info(&#39;Table Card:&#39;)
+        logging.info(&#34;%s&#34;, self.table_card)
+
+        # Checks danks at start of round, whoever has the lowest one goes first, else we default to 0.
+        min_rank = 9
+        min_start = None
+        for player in self.players:
+            # Gives player dank suit knowledge.
+            player.dank = self.dank
+            player.sort()
+            for card in player.hand:
+                if card.suit == self.dank and RANK_NUM[card.rank] &lt; min_rank:
+                    min_start = (player.num, card)
+                    min_rank = RANK_NUM[card.rank]
+        if min_start is not None:
+            self.attacker = min_start[0]
+
+        self.game_started = False
+        self.state = None
+
+    def add_mod(self, start, offset):
+        &#34;&#34;&#34;Returns the player that is offset after the start.
+
+        Args:
+            start: The starting position.
+            offset: The amount to offset by.
+
+        Returns:
+            The player that is offset after the start.
+        &#34;&#34;&#34;
+
+        return (start + offset) % len(self.players)
+
+    def get_players(self):
+        &#34;&#34;&#34;Returns players involved in a turn.
+
+        Returns:
+            The Attacker, the Defender, and the next Player.
+        &#34;&#34;&#34;
+
+        attacker = self.players[self.attacker]
+        defender = self.players[self.add_mod(self.attacker, 1)]
+        next_player = self.players[self.add_mod(self.attacker, 2)]
+        return attacker, defender, next_player
+
+    def inc_attacker(self, increment):
+        &#34;&#34;&#34;Updates the attacker value mod number of players.
+
+        Args:
+            increment: The amount to increment by.
+        &#34;&#34;&#34;
+
+        self.attacker = (self.attacker + increment) % len(self.players)
+
+    def play(self):
+        &#34;&#34;&#34;Begins and runs the game.
+        &#34;&#34;&#34;
+
+        while True:
+            if self.print_trace:
+                print(&#39;====== Turn &#39; + str(self.turns) + &#39;===========&#39;)
+                print(&#39;Dank: &#39; + self.dank, &#39; Deck: &#39; + str(len(self.deck)))
+                self.print_hands()
+            winning_player = self.turn2()
+            if winning_player is not None:
+                break
+            self.turns += 1
+
+        if winning_player is None:
+            raise RuntimeError(&#39;ERROR: nobody has won&#39;)
+        if len(self.deck) &gt; 0:
+            logging.debug(&#39;Player %s has won!&#39;, str(winning_player.num))
+            raise RuntimeError(&#39;Someone has won with cards in the deck.&#39;)
+
+        if self.print_trace:
+            print(&#39;Player &#39; + str(winning_player.num) + &#39; has won!&#39;)
+
+        return winning_player
+
+    def turn2(self):
+        &#34;&#34;&#34;Turn reflecting a guaranteed 2 person game.
+        &#34;&#34;&#34;
+
+        ranks = {}
+
+        attacker, defender, next_player = self.get_players()
+        table = []
+        atk = attacker.attack(table, ranks)
+
+        # It definitely does, this is to catch errors.
+        if atk[0] != Attack.play:
+            raise RuntimeError(&#34;Atk[0] != Attack.play, bot is attacking at start.&#34;)
+
+        table.append(atk[1])
+
+        logging.debug(&#34;%s&#34;, self.dank)
+        logging.debug(&#34;%s&#34;, attacker)
+        logging.debug(&#34;\n\n\n\n&#34;)
+        logging.debug(&#34;%s&#34;, defender)
+        logging.debug(&#34;%s&#34;, self.dank)
+
+        # Pass phase.
+        pass_count = 0
+        attack_count = 0
+
+        while True:
+            pass_is_legal = (len(next_player) &gt;= len(table) + 1)
+            defense = defender.defend(table, pass_is_legal, len(table))
+            if defense[0] == Defense.pass_to:
+                if self.print_trace:
+                    print(&#39;Player &#39; + str(defender.num) + &#39; Passes with: &#39; + str(defense[1][0]))
+                pass_count += 1
+                attack_count += 1
+                self.inc_attacker(1)
+                attacker, defender, next_player = self.get_players()
+                table += defense[1]
+                ranks.update({x.rank: 0 for x in defense[1]})
+                continue
+
+            if defense[0] == Defense.take:
+                break
+
+            if defense[0] == Defense.defend:
+                if self.print_trace:
+                    print(&#39;Player &#39; + str(defender.num) + &#39; defends with &#39; + &#39;, &#39;.join([str(x) for x in defense[1]]))
+                table += defense[1]
+                ranks.update({x.rank: 0 for x in defense[1]})
+                break
+
+        if pass_count &gt; 3:
+            raise RuntimeError(&#34;Bug in game.turn, pass_count &gt; 3&#34;)
+
+        # Defense phase.
+        # Used to check for 2 passes in a row.
+        attacker, defender, next_player = self.get_players()
+        if defense[0] != Defense.take:
+            while attack_count &lt; 6 and len(defender) &gt; 0 and len(attacker) &gt; 0 and len(table) &lt; 12:
+                # Loops until table reaches 12 (fully attacked) or len(defender) == 0 (defender is out of cards).
+                atk = attacker.attack(table, ranks)
+                if atk[0] == Attack.play:
+                    if self.print_trace:
+                        print(&#39;Player &#39; + str(attacker.num) + &#39; Attacks with: &#39; + str(atk[1]))
+                    attack_count += 1
+                    # Defender must defend then try again until defender takes or player is done.
+                    table.append(atk[1])
+                    defense = defender.defend(table, False, 1)
+                    if defense[0] == Defense.defend:
+                        # Attack-defense continues until one gives up or cards have reached min(6, len(defender)).
+                        table += defense[1]
+                        ranks.update({x.rank: 0 for x in defense[1]})
+                        if self.print_trace:
+                            print(&#39;Player &#39; + str(defender.num) + &#39; defends with &#39; + &#39;, &#39;.join([str(x) for x in defense[1]]))
+                        continue
+
+                    if defense[0] == Defense.take:
+                        # Break out and drop to shed phase.
+                        break
+
+                elif atk[0] == Attack.done:
+
+                    # TODO (Bretley) Add logic for other players to join in on the attack.
+                    break
+
+        # Shed phase.
+        if defense[0] == Defense.take:
+            shed = attacker.shed(table, min((6 - attack_count, len(defender))), ranks)
+            if self.print_trace:
+                print(&#39;Player &#39; + str(attacker.num) + &#39; sheds: &#39; + &#39;, &#39;.join([str(x) for x in shed]))
+            table += shed
+            defender.take_table(table)
+            if self.print_trace:
+                print(&#39;Player : &#39; + str(defender.num) + &#39; picks up: &#39; + &#39;, &#39;.join([str(x) for x in table]))
+            if len(table) &gt; len(set(table)):
+                logging.debug([str(x) for x in table])
+                raise RuntimeError(&#39;ERROR: Duplicates in the table&#39;)
+        elif atk[0] == Attack.done or len(table) == 12:
+            if self.print_trace:
+                print(&#39;Player &#39; + str(attacker.num) + &#39; has ceased attack&#39;)
+            self.out_pile += table
+            if len(table) &gt; len(set(table)):
+                logging.debug([str(x) for x in table])
+                raise RuntimeError(&#39;ERROR: Duplicates in the table&#39;)
+
+        elif len(attacker) == 0:
+            logging.info(&#39;attacker&#39;)
+            if self.print_trace:
+                print(&#39;Player &#39; + str(attacker.num) + &#39; has run out of cards&#39;)
+
+        elif len(defender) == 0:
+            logging.info(&#39;defender&#39;)
+            if self.print_trace:
+                print(&#39;Player &#39; + str(defender.num) + &#39; has run out of cards&#39;)
+        else:
+            logging.debug([str(x) for x in table])
+            logging.debug(&#39;table size %s&#39;, str(len(table)))
+            logging.debug(str(len(attacker)))
+            logging.debug(str(len(defender)))
+            logging.debug(str(atk))
+            logging.debug(str(defense))
+            raise RuntimeError(&#34;Not a defense or done.&#34;)
+
+        del table
+        del ranks
+
+        for player in self.players:
+            if not player.verify_hand():
+                raise RuntimeError(&#34;Player {} has duplicate cards&#34;.format(str(player.num)))
+
+        if len(self.out_pile) &gt; len(set(self.out_pile)):
+            raise RuntimeError(&#39;Out pile has duplicates.&#39;)
+
+        # Draw: Win condition.
+        # Player is definitely a winner if, after drawing, they have zero cards.
+        # Attacker draws first, so if deck empties then defender wins.
+        # Payer draws up to 6 cards.
+
+        if len(attacker) &lt; 6:
+            for _ in range(6 - len(attacker)):
+                attacker.take(self.deck.draw())
+
+        if len(attacker) == 0:
+            # Attacker has won.
+            return attacker
+
+        if len(defender) &lt; 6:
+            for _ in range(6 - len(defender)):
+                defender.take(self.deck.draw())
+
+        if len(defender) == 0:
+            # Defender has won.
+            return defender
+
+        if defense[0] == Defense.take:
+            self.inc_attacker(2)
+        else:
+            self.inc_attacker(1)
+
+        return None
+
+    def print_hands(self):
+        &#34;&#34;&#34;Prints the cards in both hands.
+        &#34;&#34;&#34;
+
+        player1 = str(self.players[0]).split(&#39;\n&#39;)
+        player2 = str(self.players[1]).split(&#39;\n&#39;)
+        if len(player1) &lt; len(player2):
+            player1 += [&#39;&#39;] * (len(player2) - len(player1))
+        elif len(player2) &lt; len(player1):
+            player2 += [&#39;&#39;] * (len(player1) - len(player2))
+        out = &#39;\n&#39;.join([pad_after(x) + y for x, y in zip(player1, player2)])
+        print(out)
+
+
+def main():
+    &#34;&#34;&#34;The main function for the game.
+    &#34;&#34;&#34;
+
+    turns = []
+    s0_wins = 0
+    s1_wins = 0
+    s2_wins = 0
+    num_games = pow(10, 4)
+    for _ in range(num_games):
+        game = Game([S1(), S2()], False)
+        game_instance = game.play()
+        turns.append(float(game.turns))
+        if isinstance(game_instance.strategy, S0):
+            s0_wins += 1
+        elif isinstance(game_instance.strategy, S1):
+            s1_wins += 1
+        elif isinstance(game_instance.strategy, S2):
+            s2_wins += 1
+
+    print(&#39;Finished &#39; + str(num_games) + &#39; averaging &#39; + str(sum(turns) / len(turns)) + &#39; turns&#39;)
+    print(&#39;s0 wins: &#39; + str(s0_wins))
+    print(&#39;s1 wins: &#39; + str(s1_wins))
+    print(&#39;s2 wins: &#39; + str(s2_wins))
+
+
+if __name__ == &#34;__main__&#34;:
+    main()</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="game.main"><code class="name flex">
+<span>def <span class="ident">main</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>The main function for the game.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def main():
+    &#34;&#34;&#34;The main function for the game.
+    &#34;&#34;&#34;
+
+    turns = []
+    s0_wins = 0
+    s1_wins = 0
+    s2_wins = 0
+    num_games = pow(10, 4)
+    for _ in range(num_games):
+        game = Game([S1(), S2()], False)
+        game_instance = game.play()
+        turns.append(float(game.turns))
+        if isinstance(game_instance.strategy, S0):
+            s0_wins += 1
+        elif isinstance(game_instance.strategy, S1):
+            s1_wins += 1
+        elif isinstance(game_instance.strategy, S2):
+            s2_wins += 1
+
+    print(&#39;Finished &#39; + str(num_games) + &#39; averaging &#39; + str(sum(turns) / len(turns)) + &#39; turns&#39;)
+    print(&#39;s0 wins: &#39; + str(s0_wins))
+    print(&#39;s1 wins: &#39; + str(s1_wins))
+    print(&#39;s2 wins: &#39; + str(s2_wins))</code></pre>
+</details>
+</dd>
+<dt id="game.pad_after"><code class="name flex">
+<span>def <span class="ident">pad_after</span></span>(<span>input_str)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Pads a string with extra spaces.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>input_str</code></strong></dt>
+<dd>The string to pad.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A padded string.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pad_after(input_str):
+    &#34;&#34;&#34;Pads a string with extra spaces.
+
+        Args:
+            input_str: The string to pad.
+
+        Returns:
+            A padded string.
+        &#34;&#34;&#34;
+    return input_str + &#39; &#39; * (15 - len(input_str))</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="game.Game"><code class="flex name class">
+<span>class <span class="ident">Game</span></span>
+<span>(</span><span>strategies, print_trace)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Represents a game.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>players</code></strong></dt>
+<dd>The list of players.</dd>
+<dt><strong><code>table_card</code></strong></dt>
+<dd>The card on the table.</dd>
+<dt><strong><code>dank</code></strong></dt>
+<dd>The suit of the trump card.</dd>
+<dt><strong><code>cmp</code></strong></dt>
+<dd>A card comparator function.</dd>
+<dt><strong><code>turns</code></strong></dt>
+<dd>A count of turns that have passed.</dd>
+<dt><strong><code>table</code></strong></dt>
+<dd>The cards on the table.</dd>
+<dt><strong><code>attacker</code></strong></dt>
+<dd>The player that is attacking.</dd>
+</dl>
+<p>Inits Game with strategy and print trace data.</p>
+<p>Deal 6 to each.
+Determine who has initial lowest dank. (otherwise default to 0)</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>strategies</code></strong></dt>
+<dd>Contains the instantiated strategies for the players.</dd>
+<dt><strong><code>print_trace</code></strong></dt>
+<dd>Whether or not to print a human readable trace.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Game:
+    &#34;&#34;&#34;Represents a game.
+
+    Attributes:
+        players: The list of players.
+        table_card: The card on the table.
+        dank: The suit of the trump card.
+        cmp: A card comparator function.
+        turns: A count of turns that have passed.
+        table: The cards on the table.
+        attacker: The player that is attacking.
+    &#34;&#34;&#34;
+
+    def __init__(self, strategies, print_trace):
+        &#34;&#34;&#34;Inits Game with strategy and print trace data.
+
+        Deal 6 to each.
+        Determine who has initial lowest dank. (otherwise default to 0)
+
+        Args:
+            strategies: Contains the instantiated strategies for the players.
+            print_trace: Whether or not to print a human readable trace.
+        &#34;&#34;&#34;
+
+        self.print_trace = print_trace
+        deck = Deck()
+        deck.shuffle_deck()
+        self.deck = deck
+        self.out_pile = []
+
+        if len(strategies) == 0:
+            raise RuntimeError(&#34;Number of players is 0!&#34;)
+
+        self.players = [Player(i, x) for i, x in enumerate(strategies)]
+        for _ in range(6):
+            for player in self.players:
+                player.take(self.deck.draw())
+
+        self.table_card = self.deck.flip()
+        if self.table_card is None:
+            raise RuntimeError(&#34;Table Card is None upon game instantiation!&#34;)
+        # Determines Dank suit.
+        self.dank = self.table_card.suit
+        self.cmp = CARD_COMPARATORS[self.dank]
+        self.turns = 0
+        self.table = []
+        self.attacker = 0
+
+        logging.info(&#39;Table Card:&#39;)
+        logging.info(&#34;%s&#34;, self.table_card)
+
+        # Checks danks at start of round, whoever has the lowest one goes first, else we default to 0.
+        min_rank = 9
+        min_start = None
+        for player in self.players:
+            # Gives player dank suit knowledge.
+            player.dank = self.dank
+            player.sort()
+            for card in player.hand:
+                if card.suit == self.dank and RANK_NUM[card.rank] &lt; min_rank:
+                    min_start = (player.num, card)
+                    min_rank = RANK_NUM[card.rank]
+        if min_start is not None:
+            self.attacker = min_start[0]
+
+        self.game_started = False
+        self.state = None
+
+    def add_mod(self, start, offset):
+        &#34;&#34;&#34;Returns the player that is offset after the start.
+
+        Args:
+            start: The starting position.
+            offset: The amount to offset by.
+
+        Returns:
+            The player that is offset after the start.
+        &#34;&#34;&#34;
+
+        return (start + offset) % len(self.players)
+
+    def get_players(self):
+        &#34;&#34;&#34;Returns players involved in a turn.
+
+        Returns:
+            The Attacker, the Defender, and the next Player.
+        &#34;&#34;&#34;
+
+        attacker = self.players[self.attacker]
+        defender = self.players[self.add_mod(self.attacker, 1)]
+        next_player = self.players[self.add_mod(self.attacker, 2)]
+        return attacker, defender, next_player
+
+    def inc_attacker(self, increment):
+        &#34;&#34;&#34;Updates the attacker value mod number of players.
+
+        Args:
+            increment: The amount to increment by.
+        &#34;&#34;&#34;
+
+        self.attacker = (self.attacker + increment) % len(self.players)
+
+    def play(self):
+        &#34;&#34;&#34;Begins and runs the game.
+        &#34;&#34;&#34;
+
+        while True:
+            if self.print_trace:
+                print(&#39;====== Turn &#39; + str(self.turns) + &#39;===========&#39;)
+                print(&#39;Dank: &#39; + self.dank, &#39; Deck: &#39; + str(len(self.deck)))
+                self.print_hands()
+            winning_player = self.turn2()
+            if winning_player is not None:
+                break
+            self.turns += 1
+
+        if winning_player is None:
+            raise RuntimeError(&#39;ERROR: nobody has won&#39;)
+        if len(self.deck) &gt; 0:
+            logging.debug(&#39;Player %s has won!&#39;, str(winning_player.num))
+            raise RuntimeError(&#39;Someone has won with cards in the deck.&#39;)
+
+        if self.print_trace:
+            print(&#39;Player &#39; + str(winning_player.num) + &#39; has won!&#39;)
+
+        return winning_player
+
+    def turn2(self):
+        &#34;&#34;&#34;Turn reflecting a guaranteed 2 person game.
+        &#34;&#34;&#34;
+
+        ranks = {}
+
+        attacker, defender, next_player = self.get_players()
+        table = []
+        atk = attacker.attack(table, ranks)
+
+        # It definitely does, this is to catch errors.
+        if atk[0] != Attack.play:
+            raise RuntimeError(&#34;Atk[0] != Attack.play, bot is attacking at start.&#34;)
+
+        table.append(atk[1])
+
+        logging.debug(&#34;%s&#34;, self.dank)
+        logging.debug(&#34;%s&#34;, attacker)
+        logging.debug(&#34;\n\n\n\n&#34;)
+        logging.debug(&#34;%s&#34;, defender)
+        logging.debug(&#34;%s&#34;, self.dank)
+
+        # Pass phase.
+        pass_count = 0
+        attack_count = 0
+
+        while True:
+            pass_is_legal = (len(next_player) &gt;= len(table) + 1)
+            defense = defender.defend(table, pass_is_legal, len(table))
+            if defense[0] == Defense.pass_to:
+                if self.print_trace:
+                    print(&#39;Player &#39; + str(defender.num) + &#39; Passes with: &#39; + str(defense[1][0]))
+                pass_count += 1
+                attack_count += 1
+                self.inc_attacker(1)
+                attacker, defender, next_player = self.get_players()
+                table += defense[1]
+                ranks.update({x.rank: 0 for x in defense[1]})
+                continue
+
+            if defense[0] == Defense.take:
+                break
+
+            if defense[0] == Defense.defend:
+                if self.print_trace:
+                    print(&#39;Player &#39; + str(defender.num) + &#39; defends with &#39; + &#39;, &#39;.join([str(x) for x in defense[1]]))
+                table += defense[1]
+                ranks.update({x.rank: 0 for x in defense[1]})
+                break
+
+        if pass_count &gt; 3:
+            raise RuntimeError(&#34;Bug in game.turn, pass_count &gt; 3&#34;)
+
+        # Defense phase.
+        # Used to check for 2 passes in a row.
+        attacker, defender, next_player = self.get_players()
+        if defense[0] != Defense.take:
+            while attack_count &lt; 6 and len(defender) &gt; 0 and len(attacker) &gt; 0 and len(table) &lt; 12:
+                # Loops until table reaches 12 (fully attacked) or len(defender) == 0 (defender is out of cards).
+                atk = attacker.attack(table, ranks)
+                if atk[0] == Attack.play:
+                    if self.print_trace:
+                        print(&#39;Player &#39; + str(attacker.num) + &#39; Attacks with: &#39; + str(atk[1]))
+                    attack_count += 1
+                    # Defender must defend then try again until defender takes or player is done.
+                    table.append(atk[1])
+                    defense = defender.defend(table, False, 1)
+                    if defense[0] == Defense.defend:
+                        # Attack-defense continues until one gives up or cards have reached min(6, len(defender)).
+                        table += defense[1]
+                        ranks.update({x.rank: 0 for x in defense[1]})
+                        if self.print_trace:
+                            print(&#39;Player &#39; + str(defender.num) + &#39; defends with &#39; + &#39;, &#39;.join([str(x) for x in defense[1]]))
+                        continue
+
+                    if defense[0] == Defense.take:
+                        # Break out and drop to shed phase.
+                        break
+
+                elif atk[0] == Attack.done:
+
+                    # TODO (Bretley) Add logic for other players to join in on the attack.
+                    break
+
+        # Shed phase.
+        if defense[0] == Defense.take:
+            shed = attacker.shed(table, min((6 - attack_count, len(defender))), ranks)
+            if self.print_trace:
+                print(&#39;Player &#39; + str(attacker.num) + &#39; sheds: &#39; + &#39;, &#39;.join([str(x) for x in shed]))
+            table += shed
+            defender.take_table(table)
+            if self.print_trace:
+                print(&#39;Player : &#39; + str(defender.num) + &#39; picks up: &#39; + &#39;, &#39;.join([str(x) for x in table]))
+            if len(table) &gt; len(set(table)):
+                logging.debug([str(x) for x in table])
+                raise RuntimeError(&#39;ERROR: Duplicates in the table&#39;)
+        elif atk[0] == Attack.done or len(table) == 12:
+            if self.print_trace:
+                print(&#39;Player &#39; + str(attacker.num) + &#39; has ceased attack&#39;)
+            self.out_pile += table
+            if len(table) &gt; len(set(table)):
+                logging.debug([str(x) for x in table])
+                raise RuntimeError(&#39;ERROR: Duplicates in the table&#39;)
+
+        elif len(attacker) == 0:
+            logging.info(&#39;attacker&#39;)
+            if self.print_trace:
+                print(&#39;Player &#39; + str(attacker.num) + &#39; has run out of cards&#39;)
+
+        elif len(defender) == 0:
+            logging.info(&#39;defender&#39;)
+            if self.print_trace:
+                print(&#39;Player &#39; + str(defender.num) + &#39; has run out of cards&#39;)
+        else:
+            logging.debug([str(x) for x in table])
+            logging.debug(&#39;table size %s&#39;, str(len(table)))
+            logging.debug(str(len(attacker)))
+            logging.debug(str(len(defender)))
+            logging.debug(str(atk))
+            logging.debug(str(defense))
+            raise RuntimeError(&#34;Not a defense or done.&#34;)
+
+        del table
+        del ranks
+
+        for player in self.players:
+            if not player.verify_hand():
+                raise RuntimeError(&#34;Player {} has duplicate cards&#34;.format(str(player.num)))
+
+        if len(self.out_pile) &gt; len(set(self.out_pile)):
+            raise RuntimeError(&#39;Out pile has duplicates.&#39;)
+
+        # Draw: Win condition.
+        # Player is definitely a winner if, after drawing, they have zero cards.
+        # Attacker draws first, so if deck empties then defender wins.
+        # Payer draws up to 6 cards.
+
+        if len(attacker) &lt; 6:
+            for _ in range(6 - len(attacker)):
+                attacker.take(self.deck.draw())
+
+        if len(attacker) == 0:
+            # Attacker has won.
+            return attacker
+
+        if len(defender) &lt; 6:
+            for _ in range(6 - len(defender)):
+                defender.take(self.deck.draw())
+
+        if len(defender) == 0:
+            # Defender has won.
+            return defender
+
+        if defense[0] == Defense.take:
+            self.inc_attacker(2)
+        else:
+            self.inc_attacker(1)
+
+        return None
+
+    def print_hands(self):
+        &#34;&#34;&#34;Prints the cards in both hands.
+        &#34;&#34;&#34;
+
+        player1 = str(self.players[0]).split(&#39;\n&#39;)
+        player2 = str(self.players[1]).split(&#39;\n&#39;)
+        if len(player1) &lt; len(player2):
+            player1 += [&#39;&#39;] * (len(player2) - len(player1))
+        elif len(player2) &lt; len(player1):
+            player2 += [&#39;&#39;] * (len(player1) - len(player2))
+        out = &#39;\n&#39;.join([pad_after(x) + y for x, y in zip(player1, player2)])
+        print(out)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="game.Game.add_mod"><code class="name flex">
+<span>def <span class="ident">add_mod</span></span>(<span>self, start, offset)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Returns the player that is offset after the start.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>start</code></strong></dt>
+<dd>The starting position.</dd>
+<dt><strong><code>offset</code></strong></dt>
+<dd>The amount to offset by.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>The player that is offset after the start.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_mod(self, start, offset):
+    &#34;&#34;&#34;Returns the player that is offset after the start.
+
+    Args:
+        start: The starting position.
+        offset: The amount to offset by.
+
+    Returns:
+        The player that is offset after the start.
+    &#34;&#34;&#34;
+
+    return (start + offset) % len(self.players)</code></pre>
+</details>
+</dd>
+<dt id="game.Game.get_players"><code class="name flex">
+<span>def <span class="ident">get_players</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Returns players involved in a turn.</p>
+<h2 id="returns">Returns</h2>
+<p>The Attacker, the Defender, and the next Player.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_players(self):
+    &#34;&#34;&#34;Returns players involved in a turn.
+
+    Returns:
+        The Attacker, the Defender, and the next Player.
+    &#34;&#34;&#34;
+
+    attacker = self.players[self.attacker]
+    defender = self.players[self.add_mod(self.attacker, 1)]
+    next_player = self.players[self.add_mod(self.attacker, 2)]
+    return attacker, defender, next_player</code></pre>
+</details>
+</dd>
+<dt id="game.Game.inc_attacker"><code class="name flex">
+<span>def <span class="ident">inc_attacker</span></span>(<span>self, increment)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Updates the attacker value mod number of players.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>increment</code></strong></dt>
+<dd>The amount to increment by.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def inc_attacker(self, increment):
+    &#34;&#34;&#34;Updates the attacker value mod number of players.
+
+    Args:
+        increment: The amount to increment by.
+    &#34;&#34;&#34;
+
+    self.attacker = (self.attacker + increment) % len(self.players)</code></pre>
+</details>
+</dd>
+<dt id="game.Game.play"><code class="name flex">
+<span>def <span class="ident">play</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Begins and runs the game.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def play(self):
+    &#34;&#34;&#34;Begins and runs the game.
+    &#34;&#34;&#34;
+
+    while True:
+        if self.print_trace:
+            print(&#39;====== Turn &#39; + str(self.turns) + &#39;===========&#39;)
+            print(&#39;Dank: &#39; + self.dank, &#39; Deck: &#39; + str(len(self.deck)))
+            self.print_hands()
+        winning_player = self.turn2()
+        if winning_player is not None:
+            break
+        self.turns += 1
+
+    if winning_player is None:
+        raise RuntimeError(&#39;ERROR: nobody has won&#39;)
+    if len(self.deck) &gt; 0:
+        logging.debug(&#39;Player %s has won!&#39;, str(winning_player.num))
+        raise RuntimeError(&#39;Someone has won with cards in the deck.&#39;)
+
+    if self.print_trace:
+        print(&#39;Player &#39; + str(winning_player.num) + &#39; has won!&#39;)
+
+    return winning_player</code></pre>
+</details>
+</dd>
+<dt id="game.Game.print_hands"><code class="name flex">
+<span>def <span class="ident">print_hands</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Prints the cards in both hands.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def print_hands(self):
+    &#34;&#34;&#34;Prints the cards in both hands.
+    &#34;&#34;&#34;
+
+    player1 = str(self.players[0]).split(&#39;\n&#39;)
+    player2 = str(self.players[1]).split(&#39;\n&#39;)
+    if len(player1) &lt; len(player2):
+        player1 += [&#39;&#39;] * (len(player2) - len(player1))
+    elif len(player2) &lt; len(player1):
+        player2 += [&#39;&#39;] * (len(player1) - len(player2))
+    out = &#39;\n&#39;.join([pad_after(x) + y for x, y in zip(player1, player2)])
+    print(out)</code></pre>
+</details>
+</dd>
+<dt id="game.Game.turn2"><code class="name flex">
+<span>def <span class="ident">turn2</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Turn reflecting a guaranteed 2 person game.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def turn2(self):
+    &#34;&#34;&#34;Turn reflecting a guaranteed 2 person game.
+    &#34;&#34;&#34;
+
+    ranks = {}
+
+    attacker, defender, next_player = self.get_players()
+    table = []
+    atk = attacker.attack(table, ranks)
+
+    # It definitely does, this is to catch errors.
+    if atk[0] != Attack.play:
+        raise RuntimeError(&#34;Atk[0] != Attack.play, bot is attacking at start.&#34;)
+
+    table.append(atk[1])
+
+    logging.debug(&#34;%s&#34;, self.dank)
+    logging.debug(&#34;%s&#34;, attacker)
+    logging.debug(&#34;\n\n\n\n&#34;)
+    logging.debug(&#34;%s&#34;, defender)
+    logging.debug(&#34;%s&#34;, self.dank)
+
+    # Pass phase.
+    pass_count = 0
+    attack_count = 0
+
+    while True:
+        pass_is_legal = (len(next_player) &gt;= len(table) + 1)
+        defense = defender.defend(table, pass_is_legal, len(table))
+        if defense[0] == Defense.pass_to:
+            if self.print_trace:
+                print(&#39;Player &#39; + str(defender.num) + &#39; Passes with: &#39; + str(defense[1][0]))
+            pass_count += 1
+            attack_count += 1
+            self.inc_attacker(1)
+            attacker, defender, next_player = self.get_players()
+            table += defense[1]
+            ranks.update({x.rank: 0 for x in defense[1]})
+            continue
+
+        if defense[0] == Defense.take:
+            break
+
+        if defense[0] == Defense.defend:
+            if self.print_trace:
+                print(&#39;Player &#39; + str(defender.num) + &#39; defends with &#39; + &#39;, &#39;.join([str(x) for x in defense[1]]))
+            table += defense[1]
+            ranks.update({x.rank: 0 for x in defense[1]})
+            break
+
+    if pass_count &gt; 3:
+        raise RuntimeError(&#34;Bug in game.turn, pass_count &gt; 3&#34;)
+
+    # Defense phase.
+    # Used to check for 2 passes in a row.
+    attacker, defender, next_player = self.get_players()
+    if defense[0] != Defense.take:
+        while attack_count &lt; 6 and len(defender) &gt; 0 and len(attacker) &gt; 0 and len(table) &lt; 12:
+            # Loops until table reaches 12 (fully attacked) or len(defender) == 0 (defender is out of cards).
+            atk = attacker.attack(table, ranks)
+            if atk[0] == Attack.play:
+                if self.print_trace:
+                    print(&#39;Player &#39; + str(attacker.num) + &#39; Attacks with: &#39; + str(atk[1]))
+                attack_count += 1
+                # Defender must defend then try again until defender takes or player is done.
+                table.append(atk[1])
+                defense = defender.defend(table, False, 1)
+                if defense[0] == Defense.defend:
+                    # Attack-defense continues until one gives up or cards have reached min(6, len(defender)).
+                    table += defense[1]
+                    ranks.update({x.rank: 0 for x in defense[1]})
+                    if self.print_trace:
+                        print(&#39;Player &#39; + str(defender.num) + &#39; defends with &#39; + &#39;, &#39;.join([str(x) for x in defense[1]]))
+                    continue
+
+                if defense[0] == Defense.take:
+                    # Break out and drop to shed phase.
+                    break
+
+            elif atk[0] == Attack.done:
+
+                # TODO (Bretley) Add logic for other players to join in on the attack.
+                break
+
+    # Shed phase.
+    if defense[0] == Defense.take:
+        shed = attacker.shed(table, min((6 - attack_count, len(defender))), ranks)
+        if self.print_trace:
+            print(&#39;Player &#39; + str(attacker.num) + &#39; sheds: &#39; + &#39;, &#39;.join([str(x) for x in shed]))
+        table += shed
+        defender.take_table(table)
+        if self.print_trace:
+            print(&#39;Player : &#39; + str(defender.num) + &#39; picks up: &#39; + &#39;, &#39;.join([str(x) for x in table]))
+        if len(table) &gt; len(set(table)):
+            logging.debug([str(x) for x in table])
+            raise RuntimeError(&#39;ERROR: Duplicates in the table&#39;)
+    elif atk[0] == Attack.done or len(table) == 12:
+        if self.print_trace:
+            print(&#39;Player &#39; + str(attacker.num) + &#39; has ceased attack&#39;)
+        self.out_pile += table
+        if len(table) &gt; len(set(table)):
+            logging.debug([str(x) for x in table])
+            raise RuntimeError(&#39;ERROR: Duplicates in the table&#39;)
+
+    elif len(attacker) == 0:
+        logging.info(&#39;attacker&#39;)
+        if self.print_trace:
+            print(&#39;Player &#39; + str(attacker.num) + &#39; has run out of cards&#39;)
+
+    elif len(defender) == 0:
+        logging.info(&#39;defender&#39;)
+        if self.print_trace:
+            print(&#39;Player &#39; + str(defender.num) + &#39; has run out of cards&#39;)
+    else:
+        logging.debug([str(x) for x in table])
+        logging.debug(&#39;table size %s&#39;, str(len(table)))
+        logging.debug(str(len(attacker)))
+        logging.debug(str(len(defender)))
+        logging.debug(str(atk))
+        logging.debug(str(defense))
+        raise RuntimeError(&#34;Not a defense or done.&#34;)
+
+    del table
+    del ranks
+
+    for player in self.players:
+        if not player.verify_hand():
+            raise RuntimeError(&#34;Player {} has duplicate cards&#34;.format(str(player.num)))
+
+    if len(self.out_pile) &gt; len(set(self.out_pile)):
+        raise RuntimeError(&#39;Out pile has duplicates.&#39;)
+
+    # Draw: Win condition.
+    # Player is definitely a winner if, after drawing, they have zero cards.
+    # Attacker draws first, so if deck empties then defender wins.
+    # Payer draws up to 6 cards.
+
+    if len(attacker) &lt; 6:
+        for _ in range(6 - len(attacker)):
+            attacker.take(self.deck.draw())
+
+    if len(attacker) == 0:
+        # Attacker has won.
+        return attacker
+
+    if len(defender) &lt; 6:
+        for _ in range(6 - len(defender)):
+            defender.take(self.deck.draw())
+
+    if len(defender) == 0:
+        # Defender has won.
+        return defender
+
+    if defense[0] == Defense.take:
+        self.inc_attacker(2)
+    else:
+        self.inc_attacker(1)
+
+    return None</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="game.main" href="#game.main">main</a></code></li>
+<li><code><a title="game.pad_after" href="#game.pad_after">pad_after</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="game.Game" href="#game.Game">Game</a></code></h4>
+<ul class="two-column">
+<li><code><a title="game.Game.add_mod" href="#game.Game.add_mod">add_mod</a></code></li>
+<li><code><a title="game.Game.get_players" href="#game.Game.get_players">get_players</a></code></li>
+<li><code><a title="game.Game.inc_attacker" href="#game.Game.inc_attacker">inc_attacker</a></code></li>
+<li><code><a title="game.Game.play" href="#game.Game.play">play</a></code></li>
+<li><code><a title="game.Game.print_hands" href="#game.Game.print_hands">print_hands</a></code></li>
+<li><code><a title="game.Game.turn2" href="#game.Game.turn2">turn2</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.2</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

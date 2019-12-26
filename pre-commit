@@ -2,5 +2,5 @@
 cd src
 autopep8 $(find *.py) -i --max-line-length 256
 pylint $(find *.py) --rcfile ../config/.pylintrc && \
-pdoc3 $(find *.py) -f -o ../doc && \
+pdoc3 $(find *.py) -f -o ../doc --html && \
 git add ../doc

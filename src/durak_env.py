@@ -10,17 +10,17 @@ from math import atan
 
 # pylint: disable=import-error
 import gym
+import numpy as np
 from gym import spaces
 
-import numpy as np
-
-from card import CARDS, RANK_NUM, Card
+from card import Card, CARDS, RANK_NUM
+from deck import Deck
 from player import Player
 from strategy import Attack, Defense, S0
-from deck import Deck
 
 # logging.basicConfig(level=logging.INFO)
 
+# Constants
 PRODUCTS = ['a', 'd', 's']
 SUMS = ['done', 'take']
 TOTAL_OPTIONS = len(CARDS) + len(['done', 'take'])
@@ -35,6 +35,7 @@ OPTIONS_DICT[TOTAL] = 'done'
 TOTAL += 1
 OPTIONS_DICT[TOTAL] = 'take'
 CARD_TO_OBS = {card: i for i, card in enumerate(CARDS)}
+
 logging.debug("%s", OPTIONS_DICT)
 logging.debug("%s", len(OPTIONS_DICT))
 logging.debug("%s", OPTIONS_DICT[35])
@@ -52,20 +53,20 @@ class Model:
     """Model is a wrapper for the AI hand.
 
         Attributes:
-            hand: TODO(Bretley)
+            hand: The cards in the model's hand.
     """
 
     def __init__(self):
         """Inits Model.
         """
+
         self.hand = []
 
     def __len__(self):
         return len(self.hand)
 
     def take(self, card):
-        """
-        Adds card to the model's hand.
+        """Adds card to the model's hand.
 
         Args:
             card: The card to add to the hand.
@@ -78,8 +79,9 @@ class Model:
         """Adds cards to the model's hand.
 
         Args:
-        cards: The list of cards to add to the model's hand.
+            cards: The list of cards to add to the model's hand.
         """
+
         self.hand += cards
 
     def remove_card(self, card):
@@ -88,6 +90,7 @@ class Model:
         Args:
             card: The card to remove from the model's hand.
         """
+
         self.hand.remove(card)
 
 
@@ -125,16 +128,13 @@ class DurakEnv(gym.Env):
         """Inits DurakEnv.
         """
 
-        metadata = {'render.modes': ['human']}
-        del metadata
-
         super(DurakEnv, self).__init__()
 
-        # x36 Cards, Take, Done
+        # 36 Cards, Take, Done
         self.action_space = spaces.Discrete(38)
 
         # Feature vector option
-        # 1 Discrete observation for now just to set it up
+        # Old observation_space, TODO remove eventually if new is better
         # self.observation_space = spaces.MultiDiscrete(([4] * 36) + [2] + [35])
 
         # Bit vector of valid option
@@ -162,40 +162,35 @@ class DurakEnv(gym.Env):
         self.successful_defenses = 0
         self.takes = 0
 
-    def add_attack(self, card: Card):
-        """
+    def add_attack(self, card):
+        """Adds card to the table and updates ranks.
 
         Args:
             card: Card to be added to the table
 
-        Returns
-        -------
-            None
-
+        Returns:
         """
+
         self.table.append(card)
         self.ranks[card.rank] = 0
         self.attack_count += 1
 
     def clear_table(self):
-        """Method to clean up variables related to the table
-
-        Returns
-        -------
-            None
-
+        """Method to clean up variables related to the table.
         """
+
         self.out_pile += self.table
         self.table = []
         self.ranks = {}
         self.attack_count = 0
 
     def mandatory_opponent_attack(self, info):
-        """Bot's first attack and set state
-            Args:
-                info: Error message to raise
+        """Bot's first attack and set state.
 
+        Args:
+            info: Error message to raise
         """
+
         atk = self.opponent.attack(self.table, self.ranks)
         if self.print_trace:
             print('Opponent starts attack with ' + str(atk[1]))
@@ -206,15 +201,13 @@ class DurakEnv(gym.Env):
         del atk
 
     def player_draw(self, player):
-        """ players draw and report win condition
+        """ Players draw and report win condition.
 
         Args:
-            player: Model or Player
+            player: Model or Player.
 
         Returns:
-            True if player is out of cards after draw
-            False otherwise
-
+            True if player is out of cards after draw, False otherwise.
         """
 
         if len(player) < 6:
@@ -233,9 +226,8 @@ class DurakEnv(gym.Env):
 
         Returns:
             True if defense is legal.
-            Defense is legal if it is higher rank same suit,or any dank,
-            or higher dank in the case that a dank was played.
-
+                Defense is legal if it is higher rank same suit, or any dank, or
+                higher dank in the case that a dank was played.
         """
 
         if move == 37:
@@ -265,9 +257,8 @@ class DurakEnv(gym.Env):
 
         Returns:
             Whether or not the shed is legal.
-            'Done' is always a legal shed.
-            Shed card is legal if card is in hand and rank matches table.
-
+                'Done' is always a legal shed.
+                Shed card is legal if card is in hand and rank matches table.
         """
 
         # First shed state of the round.
@@ -275,7 +266,7 @@ class DurakEnv(gym.Env):
             self.first_shed = False
             self.allowed_to_shed = min(6 - self.attack_count, len(self.opponent))
             self.shed_so_far = 0
-        # done is always legal during a shed
+        # Done is always legal during a shed.
         if move == 36:
             self.first_shed = True
             self.allowed_to_shed = -1
@@ -297,13 +288,14 @@ class DurakEnv(gym.Env):
             move: The attack to check.
 
         Returns:
-            Attack is legal if:
-            Move < 36 or 108.
-            Card matches ranks in table.
-            Card is in hand.
+            True if attack is legal, False otherwise.
+                Attack is legal if:
+                Move < 36 or 108.
+                Card matches ranks in table.
+                Card is in hand.
         """
 
-        # has chosen to play a card
+        # Has chosen to play a card.
         if move < 36:
             card = OPTIONS_DICT[move]
             if card in self.model.hand and (card.rank in self.ranks or len(self.table) == 0):
@@ -318,15 +310,17 @@ class DurakEnv(gym.Env):
         """Proceeds through a single step in the game.
 
         Goes from one state of the game to the next based on the input action
-        that it receives and returns relevant information. TODO more detail.
+        that it receives and returns relevant information. TODO(Bretley) more
+        detail.
 
         Args:
             action: The action to take on this step.
+
         Returns:
-            A gym.space that represents the current state of the game.
-            A float that represents the fitness of this genome.
-            A bool that represents whether or not the game is done.
-            A list that contains additional information that may be useful.
+            A representation of the current state of the game,
+            a representation ofs the fitness of this genome,
+            a representation of whether or not the game is done,
+            additional information that may be useful.
         """
 
         logging.debug("%s", action)
@@ -336,15 +330,14 @@ class DurakEnv(gym.Env):
         if not self.game_started:
             self.game_started = True
             self.deck.shuffle_deck()
-            for _ in range(6):  # Deal cards
+            # Deal cards.
+            for _ in range(6):
                 self.opponent.take(self.deck.draw())
                 self.model.take(self.deck.draw())
 
             self.table_card = self.deck.flip()
             self.dank = self.table_card.suit
             self.opponent.dank = self.dank
-
-            # Start state nonsense.
 
             # AI attacks first.
             if int(action) % 2 == 0:
@@ -368,11 +361,11 @@ class DurakEnv(gym.Env):
                     self.model.remove_card(move)
                     self.add_attack(move)
                     defense = self.opponent.defend(self.table, False, 1)
-                    # Both players still have cards or drawing potential
+                    # Both players still have cards or drawing potential.
                     logging.info(defense[0])
                     if defense[0] == Defense.defend:
                         self.table += defense[1]
-                        self.ranks.update({c.rank: 0 for c in defense[1]})
+                        self.ranks.update({card.rank: 0 for card in defense[1]})
                         logging.info('Table object: %s', ', '.join([str(x) for x in self.table]))
                         # Check for end of turn conditions.
                         if len(self.table) == 12 or len(self.model) == 0 or len(self.opponent) == 0:
@@ -381,11 +374,11 @@ class DurakEnv(gym.Env):
 
                             # Draw cards, attacker then defender
                             if self.player_draw(self.model):
-                                # TODO: Model wins on attack
+                                # Model wins on attack.
                                 return self.gen_return(WIN, True)
 
                             if self.player_draw(self.opponent):
-                                # TODO:  Bot wins defending in attack phase
+                                # Bot wins defending in attack phase.
                                 return self.gen_return(LOSE, True)
 
                             # Bot attacks table.
@@ -396,24 +389,24 @@ class DurakEnv(gym.Env):
                         return self.gen_return(0, False)
                     if defense[0] == Defense.take:
                         self.state = 's'  # Model will be shedding in next step
-                        # if self.print_trace:
-                        # 'Opponent has chosen to take'
+                        if self.print_trace:
+                            print('Opponent has chosen to take')
                         self.successful_attacks += 1
                         return self.gen_return(0, False)
                     raise RuntimeError('Opponent has passed cards')
                 if move == 'done':  # AI is done in attack context
                     self.clear_table()
-                    # Bot attacks table
+                    # Bot attacks table.
                     if self.player_draw(self.model):
-                        # MODEL win, impossible condition
-                        raise RuntimeError("Win condition: ~415, Model won during done")
+                        # MODEL win, impossible condition.
+                        raise RuntimeError("Win condition: Model won during done")
                     if self.player_draw(self.opponent):
-                        raise RuntimeError("Win condition: ~415, Opponent won during done")
-                        # opponent win
+                        # Opponent win, impossible condition.
+                        raise RuntimeError("Win condition: Opponent won during done")
                     self.mandatory_opponent_attack('Opponent is not attacking on first attack.')
                     logging.info('Bot attack after done')
                     logging.info(' '.join([str(x) for x in self.table]))
-                    # Model will be defending next turn
+                    # Model will be defending next turn.
                     return self.gen_return(0, False)
                 raise RuntimeError('Legal_attack true but not attack or move.')
             # Punish and end.
@@ -439,12 +432,12 @@ class DurakEnv(gym.Env):
                         self.clear_table()
                         # Draw cards, attacker (opponent) then defender (model)
                         if self.player_draw(self.opponent):
-                            # TODO:  Bot wins defending in attack phase
+                            # Bot wins defending in attack phase.
                             return self.gen_return(LOSE, True)
                         if self.player_draw(self.model):
-                            # TODO: Model wins on attack
+                            # Model wins on attack.
                             return self.gen_return(WIN, True)
-                        # if game hasn't ended, the turn is over and the bot successfully defends
+                        # If game hasn't ended, the turn is over and the bot successfully defends.
                         self.state = "a"
                         return self.gen_return(0, False)
 
@@ -458,7 +451,7 @@ class DurakEnv(gym.Env):
                     if atk[0] == Attack.done:
                         self.clear_table()
                         # Players get to draw, attacker first.
-                        # It shouldn't be possible for a win condition here
+                        # It shouldn't be possible for a win condition here.
                         if self.player_draw(self.opponent):
                             raise RuntimeError('Win condition in defense phase:\nOpponent has won after ceasing attack.')
 
@@ -472,23 +465,23 @@ class DurakEnv(gym.Env):
                         raise RuntimeError('In defense phase, opponent has not chosen play or done.')
 
                 elif move == 'take':
-                    # Bot gets to shed
+                    # Bot gets to shed.
                     self.takes += 1
                     shed = self.opponent.shed(self.table, min((6 - self.attack_count, len(self.model))), self.ranks)
                     if self.print_trace:
                         print("opponent sheds: " + ", ".join([str(x) for x in shed]))
 
                     if self.player_draw(self.opponent):
-                        # TODO: opponent has won on their shed
+                        # Opponent has won on their shed.
                         return self.gen_return(LOSE, True)
 
                     self.table += shed
                     self.model.take_table(self.table)
-                    # self.table = [] before clear table to prevent out pile duplicate
+                    # self.table = [] before clear table to prevent out pile duplicate.
                     self.table = []
                     self.clear_table()
 
-                    # get Bot Attack
+                    # Get Bot Attack.
                     self.mandatory_opponent_attack('opponent is not attacking on first attack')
                 else:
                     raise RuntimeError('legal_defense true but not defense or take: move = {}'.format(str(move)))
@@ -520,10 +513,10 @@ class DurakEnv(gym.Env):
                     self.clear_table()
                     self.state = 'a'
 
-                    # check win condition / draw
-                    # opponent shouldn't have to draw here
+                    # Check win condition / draw.
+                    # Opponent shouldn't have to draw here.
                     if self.player_draw(self.model):
-                        # TODO: Model has won by shedding last cards
+                        # Model has won by shedding last cards.
                         return self.gen_return(WIN, True)
                     return self.gen_return(0, False)
 
@@ -539,12 +532,14 @@ class DurakEnv(gym.Env):
         logging.info("%s", self.state)
 
         return self.gen_return(0, False)
-    def gen_legal_obs(self):
-        """
-        Returns:
-            boolean vector of legal moves
 
+    def gen_legal_obs(self):
+        """ Generates a set of legal moves.
+
+        Returns:
+            Boolean vector of legal moves.
         """
+
         ret = [0] * 38
         if self.state == 'a':
             ret[36] = 1
@@ -564,30 +559,27 @@ class DurakEnv(gym.Env):
         return ret
 
     def gen_obs(self):
+        """Generates observations to send to the model.
+
+        Returns:
+            An observation based on game state.
         """
 
-        -------
-        Returns an observation based on game state
-            0 unknown
-            1 on table
-            2 in hand
-            3 in out pile
-            4 table card
-
-        """
-
+        # 0 if unknown.
         ret = [0] * 38
-        # 1 if on table
+
+        # 1 if on table.
         for card in self.table:
             ret[CARD_TO_OBS[card]] = 1
-        # 2 if in hand
+        # 2 if in hand.
         for card in self.model.hand:
             ret[CARD_TO_OBS[card]] = 2
 
-        # 3 if in out pile
+        # 3 if in out pile.
         for card in self.out_pile:
             ret[CARD_TO_OBS[card]] = 3
 
+        # 4 if table card.
         ret[CARD_TO_OBS[self.table_card]] = 4
 
         if self.state == "d":
@@ -612,12 +604,7 @@ class DurakEnv(gym.Env):
         """Generates info to return.
         """
 
-        return {
-            'takes': self.takes,
-            'legal_moves': self.legal_moves,
-            'successful_attacks': self.successful_attacks,
-            'successful_defends': self.successful_defenses
-        }
+        return {'takes': self.takes, 'legal_moves': self.legal_moves, 'successful_attacks': self.successful_attacks, 'successful_defends': self.successful_defenses}
 
     def gen_return(self, condition, done):
         """Generates all 4 return objects.
@@ -633,16 +620,21 @@ class DurakEnv(gym.Env):
         """Generates a reward to return.
         """
 
-        # base reward for not messing up
-        legal_moves_reward = min(20, self.legal_moves-self.takes)
-        # ratio of bot making opponent take vs opponent making bot take
+        # Base reward for not messing up.
+        legal_moves_reward = min(20, self.legal_moves - self.takes)
+
+        # Ratio of bot making opponent take vs opponent making bot take.
         # attack_success_reward = sqrt(self.successful_attacks/float((self.takes+1))) - 0.8
-        taking_reward = 2/3.1415 * 3.5 * atan(4-self.takes)
+
+        # Punishes for excessive taking.
+        taking_reward = 2 / 3.1415 * 3.5 * atan(4 - self.takes)
+
         return legal_moves_reward + taking_reward
 
     def reset(self):
         """Resets the game to the starting state.
         """
+
         self.game_started = False
         self.deck = Deck()
         self.out_pile = []

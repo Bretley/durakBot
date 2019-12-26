@@ -1,21 +1,21 @@
 """A module used to simulate Model interaction as a human.
 """
 
-from durak_env import DurakEnv, OPTIONS_DICT, CARD_TO_OBS
+from durak_env import CARD_TO_OBS, DurakEnv, OPTIONS_DICT
 
 
 class HumanInterface:
     """A class used to represent a human interactable way version of the
     information the model receives.
 
-        Attributes:
-            hand: The cards in the player's hand.
-            table: The cards on the table.
-            outs: The cards in the out pile.
-            dank: The dank card.
-            def_card: The card to defend against.
-            state: The state of gameplay.
-        """
+    Attributes:
+        hand: The cards in the player's hand.
+        table: The cards on the table.
+        outs: The cards in the out pile.
+        dank: The dank card.
+        def_card: The card to defend against.
+        state: The state of gameplay.
+    """
 
     def __init__(self):
         """Inits HumanInterface.
@@ -67,10 +67,10 @@ class HumanInterface:
         print(obs)
 
     def get_play(self):
-        """TODO(Bretley)
+        """Gets the input from the human to decide what to play.
 
         Returns:
-            TODO(Bretley)
+            A number representing an action in the action space.
         """
         move = input('Move ->  ')
         if move == 'd':
@@ -86,7 +86,8 @@ class HumanInterface:
                 print('Pl')
                 print('playing ' + str(OPTIONS_DICT[card]))
                 return card
-            return None  # TODO(Bretley)
+            print('not a valid input')
+            return self.get_play()
         except IndexError:
             print('not a valid input')
             return self.get_play()
@@ -107,8 +108,8 @@ def main():
         obs, reward, done, info = env.step(human_inter.get_play())
         print(obs)
         human_inter.parse_obs(obs)
-        print('\t'*10 + str(done))
-        print('\t'*10 + 'reward: ' + str(reward))
+        print('\t' * 10 + str(done))
+        print('\t' * 10 + 'reward: ' + str(reward))
     del info
 
 

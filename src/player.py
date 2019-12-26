@@ -18,7 +18,7 @@ class Player:
         """Inits Player with an ID and strategy.
 
         Args:
-            num: The Player's ID
+            num: The Player's ID.
             strategy: Class must implement shed, attack, and defend for the bot.
         """
 
@@ -38,7 +38,7 @@ class Player:
         return ret
 
     def verify_hand(self):
-        """Method to ensure that the hand contains 0 duplicates
+        """Method to ensure that the hand contains 0 duplicates.
         """
         return len(self.hand) == len(set(self.hand))
 
@@ -47,7 +47,7 @@ class Player:
 
         Args:
             table: The cards on the table.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
 
         Returns:
             The return of the strategy's attack.
@@ -62,13 +62,14 @@ class Player:
             pass_is_legal: Whether or not a pass is legal.
             cards_to_defend: The number of cards to defend against.
 
-            Returns:
-                The return of the strategy's defend.
+        Returns:
+            The return of the strategy's defend.
         """
+
         return self.strategy.defend(self.hand, table, self.dank, pass_is_legal, cards_to_defend)
 
     def sort(self):
-        """Sorts the player's hand
+        """Sorts the player's hand.
         """
 
         self.hand.sort(key=CARD_COMPARATORS[self.dank])
@@ -88,7 +89,7 @@ class Player:
             self.sort()
 
     def take_table(self, cards):
-        """Adds cards to the player's hand
+        """Adds cards to the player's hand.
 
         Args:
             cards: The list of cards to add to the player's hand.
@@ -98,14 +99,14 @@ class Player:
         self.sort()
 
     def shed(self, table, max_shed_allowed, ranks):
-        """Sheds cards to the player's hand
+        """Sheds cards from the player's hand.
 
         Args:
             table: The list of cards on the table.
             max_shed_allowed: The maximum amount of cards to shed.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
 
-            Returns:
-                The return of the strategy's shed.
-            """
+        Returns:
+            The return of the strategy's shed.
+        """
         return self.strategy.shed(self.hand, table, self.dank, max_shed_allowed, ranks)
