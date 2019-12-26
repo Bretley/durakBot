@@ -129,8 +129,12 @@ class DurakEnv(gym.Env):
         # x36 Cards, Take, Done
         self.action_space = spaces.Discrete(38)
 
-        # TODO
-        self.observation_space = spaces.MultiDiscrete(np.array(([4] * 36) + [2] + [35]))
+        # Feature vector option
+        # 1 Discrete observation for now just to set it up
+        # self.observation_space = spaces.MultiDiscrete(([4] * 36) + [2] + [35])
+
+        # Bit vector of valid option
+        self.observation_space = spaces.MultiDiscrete([1]*38)
 
         self.game_started = False
         self.deck = Deck()
@@ -530,16 +534,40 @@ class DurakEnv(gym.Env):
         logging.info("%s", self.state)
 
         return self.gen_return(0, False)
+    def gen_legal_obs(self):
+        """ Generates a set of legal moves.
+        Returns:
+            Boolean vector of legal moves.
+
+        """
+        ret = [0] * 38
+        if self.state == 'a':
+            ret[36] = 1
+            for card in self.model.hand:
+                if self.legal_attack(CARD_TO_OBS[card]):
+                    ret[CARD_TO_OBS[card]] = 1
+
+        if self.state == 'd':
+            ret[37] = 1
+            for card in self.model.hand:
+                if self.legal_defense(CARD_TO_OBS[card]):
+                    ret[CARD_TO_OBS[card]] = 1
+
+        if self.state == 's':
+            ret[36] = 1
+
+        return ret
 
     def gen_obs(self):
         """Generates observations to send to the model.
 
-        Returns an observation based on game state:
-            0 unknown
-            1 on table
-            2 in hand
-            3 in out pile
-            4 table card
+        Returns:
+            An observation based on game state:
+                0 if unknown.
+                1 if on table.
+                2 if in hand.
+                3 if in out pile.
+                4 if table card.
 
         """
 
@@ -589,7 +617,7 @@ class DurakEnv(gym.Env):
             done: Whether a step ends the game.
         """
 
-        return self.gen_obs(), self.gen_score() + condition, done, self.gen_info()
+        return self.gen_legal_obs(), self.gen_score() + condition, done, self.gen_info()
 
     def gen_score(self):
         """Generates a reward to return.

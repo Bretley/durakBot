@@ -159,8 +159,12 @@ class DurakEnv(gym.Env):
         # x36 Cards, Take, Done
         self.action_space = spaces.Discrete(38)
 
-        # TODO
-        self.observation_space = spaces.MultiDiscrete(np.array(([4] * 36) + [2] + [35]))
+        # Feature vector option
+        # 1 Discrete observation for now just to set it up
+        # self.observation_space = spaces.MultiDiscrete(([4] * 36) + [2] + [35])
+
+        # Bit vector of valid option
+        self.observation_space = spaces.MultiDiscrete([1]*38)
 
         self.game_started = False
         self.deck = Deck()
@@ -561,15 +565,40 @@ class DurakEnv(gym.Env):
 
         return self.gen_return(0, False)
 
+    def gen_legal_obs(self):
+        &#34;&#34;&#34; Generates a set of legal moves.
+        Returns:
+            Boolean vector of legal moves.
+
+        &#34;&#34;&#34;
+        ret = [0] * 38
+        if self.state == &#39;a&#39;:
+            ret[36] = 1
+            for card in self.model.hand:
+                if self.legal_attack(CARD_TO_OBS[card]):
+                    ret[CARD_TO_OBS[card]] = 1
+
+        if self.state == &#39;d&#39;:
+            ret[37] = 1
+            for card in self.model.hand:
+                if self.legal_defense(CARD_TO_OBS[card]):
+                    ret[CARD_TO_OBS[card]] = 1
+
+        if self.state == &#39;s&#39;:
+            ret[36] = 1
+
+        return ret
+
     def gen_obs(self):
         &#34;&#34;&#34;Generates observations to send to the model.
 
-        Returns an observation based on game state:
-            0 unknown
-            1 on table
-            2 in hand
-            3 in out pile
-            4 table card
+        Returns:
+            An observation based on game state:
+                0 if unknown.
+                1 if on table.
+                2 if in hand.
+                3 if in out pile.
+                4 if table card.
 
         &#34;&#34;&#34;
 
@@ -619,7 +648,7 @@ class DurakEnv(gym.Env):
             done: Whether a step ends the game.
         &#34;&#34;&#34;
 
-        return self.gen_obs(), self.gen_score() + condition, done, self.gen_info()
+        return self.gen_legal_obs(), self.gen_score() + condition, done, self.gen_info()
 
     def gen_score(self):
         &#34;&#34;&#34;Generates a reward to return.
@@ -764,8 +793,12 @@ suit matters. It's a good blend of mechanics, strategy, and luck.</p>
         # x36 Cards, Take, Done
         self.action_space = spaces.Discrete(38)
 
-        # TODO
-        self.observation_space = spaces.MultiDiscrete(np.array(([4] * 36) + [2] + [35]))
+        # Feature vector option
+        # 1 Discrete observation for now just to set it up
+        # self.observation_space = spaces.MultiDiscrete(([4] * 36) + [2] + [35])
+
+        # Bit vector of valid option
+        self.observation_space = spaces.MultiDiscrete([1]*38)
 
         self.game_started = False
         self.deck = Deck()
@@ -1166,15 +1199,40 @@ suit matters. It's a good blend of mechanics, strategy, and luck.</p>
 
         return self.gen_return(0, False)
 
+    def gen_legal_obs(self):
+        &#34;&#34;&#34; Generates a set of legal moves.
+        Returns:
+            Boolean vector of legal moves.
+
+        &#34;&#34;&#34;
+        ret = [0] * 38
+        if self.state == &#39;a&#39;:
+            ret[36] = 1
+            for card in self.model.hand:
+                if self.legal_attack(CARD_TO_OBS[card]):
+                    ret[CARD_TO_OBS[card]] = 1
+
+        if self.state == &#39;d&#39;:
+            ret[37] = 1
+            for card in self.model.hand:
+                if self.legal_defense(CARD_TO_OBS[card]):
+                    ret[CARD_TO_OBS[card]] = 1
+
+        if self.state == &#39;s&#39;:
+            ret[36] = 1
+
+        return ret
+
     def gen_obs(self):
         &#34;&#34;&#34;Generates observations to send to the model.
 
-        Returns an observation based on game state:
-            0 unknown
-            1 on table
-            2 in hand
-            3 in out pile
-            4 table card
+        Returns:
+            An observation based on game state:
+                0 if unknown.
+                1 if on table.
+                2 if in hand.
+                3 if in out pile.
+                4 if table card.
 
         &#34;&#34;&#34;
 
@@ -1224,7 +1282,7 @@ suit matters. It's a good blend of mechanics, strategy, and luck.</p>
             done: Whether a step ends the game.
         &#34;&#34;&#34;
 
-        return self.gen_obs(), self.gen_score() + condition, done, self.gen_info()
+        return self.gen_legal_obs(), self.gen_score() + condition, done, self.gen_info()
 
     def gen_score(self):
         &#34;&#34;&#34;Generates a reward to return.
@@ -1345,17 +1403,56 @@ suit matters. It's a good blend of mechanics, strategy, and luck.</p>
     return {&#39;takes&#39;: self.takes, &#39;legal_moves&#39;: self.legal_moves, &#39;successful_attacks&#39;: self.successful_attacks, &#39;successful_defends&#39;: self.successful_defenses}</code></pre>
 </details>
 </dd>
+<dt id="durak_env.DurakEnv.gen_legal_obs"><code class="name flex">
+<span>def <span class="ident">gen_legal_obs</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Generates a set of legal moves.</p>
+<h2 id="returns">Returns</h2>
+<p>Boolean vector of legal moves.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def gen_legal_obs(self):
+    &#34;&#34;&#34; Generates a set of legal moves.
+    Returns:
+        Boolean vector of legal moves.
+
+    &#34;&#34;&#34;
+    ret = [0] * 38
+    if self.state == &#39;a&#39;:
+        ret[36] = 1
+        for card in self.model.hand:
+            if self.legal_attack(CARD_TO_OBS[card]):
+                ret[CARD_TO_OBS[card]] = 1
+
+    if self.state == &#39;d&#39;:
+        ret[37] = 1
+        for card in self.model.hand:
+            if self.legal_defense(CARD_TO_OBS[card]):
+                ret[CARD_TO_OBS[card]] = 1
+
+    if self.state == &#39;s&#39;:
+        ret[36] = 1
+
+    return ret</code></pre>
+</details>
+</dd>
 <dt id="durak_env.DurakEnv.gen_obs"><code class="name flex">
 <span>def <span class="ident">gen_obs</span></span>(<span>self)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Generates observations to send to the model.</p>
-<p>Returns an observation based on game state:
-0 unknown
-1 on table
-2 in hand
-3 in out pile
-4 table card</p></section>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>An</code> <code>observation</code> <code>based</code> <code>on</code> <a title="game" href="game.html"><code>game</code></a> <code>state</code>:</dt>
+<dd>0 if unknown.
+1 if on table.
+2 if in hand.
+3 if in out pile.
+4 if table card.</dd>
+</dl></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1363,12 +1460,13 @@ suit matters. It's a good blend of mechanics, strategy, and luck.</p>
 <pre><code class="python">def gen_obs(self):
     &#34;&#34;&#34;Generates observations to send to the model.
 
-    Returns an observation based on game state:
-        0 unknown
-        1 on table
-        2 in hand
-        3 in out pile
-        4 table card
+    Returns:
+        An observation based on game state:
+            0 if unknown.
+            1 if on table.
+            2 if in hand.
+            3 if in out pile.
+            4 if table card.
 
     &#34;&#34;&#34;
 
@@ -1429,7 +1527,7 @@ suit matters. It's a good blend of mechanics, strategy, and luck.</p>
         done: Whether a step ends the game.
     &#34;&#34;&#34;
 
-    return self.gen_obs(), self.gen_score() + condition, done, self.gen_info()</code></pre>
+    return self.gen_legal_obs(), self.gen_score() + condition, done, self.gen_info()</code></pre>
 </details>
 </dd>
 <dt id="durak_env.DurakEnv.gen_score"><code class="name flex">
@@ -2122,6 +2220,7 @@ cards: The list of cards to add to the model's hand.</p></section>
 <li><code><a title="durak_env.DurakEnv.add_attack" href="#durak_env.DurakEnv.add_attack">add_attack</a></code></li>
 <li><code><a title="durak_env.DurakEnv.clear_table" href="#durak_env.DurakEnv.clear_table">clear_table</a></code></li>
 <li><code><a title="durak_env.DurakEnv.gen_info" href="#durak_env.DurakEnv.gen_info">gen_info</a></code></li>
+<li><code><a title="durak_env.DurakEnv.gen_legal_obs" href="#durak_env.DurakEnv.gen_legal_obs">gen_legal_obs</a></code></li>
 <li><code><a title="durak_env.DurakEnv.gen_obs" href="#durak_env.DurakEnv.gen_obs">gen_obs</a></code></li>
 <li><code><a title="durak_env.DurakEnv.gen_return" href="#durak_env.DurakEnv.gen_return">gen_return</a></code></li>
 <li><code><a title="durak_env.DurakEnv.gen_score" href="#durak_env.DurakEnv.gen_score">gen_score</a></code></li>
