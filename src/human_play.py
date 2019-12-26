@@ -1,8 +1,25 @@
+"""A module used to simulate Model interaction as a human.
+"""
+
 from durak_env import DurakEnv, OPTIONS_DICT, CARD_TO_OBS
 
 
 class HumanInterface:
+    """A class used to represent a human interactable way version of the
+    information the model receives.
+
+        Attributes:
+            hand: The cards in the player's hand.
+            table: The cards on the table.
+            outs: The cards in the out pile.
+            dank: The dank card.
+            def_card: The card to defend against.
+            state: The state of gameplay.
+        """
+
     def __init__(self):
+        """Inits HumanInterface.
+        """
         self.hand = []
         self.table = []
         self.outs = []
@@ -10,7 +27,21 @@ class HumanInterface:
         self.def_card = None
         self.state = None
 
+    def __str__(self):
+        ret = 'You are currently ' + self.state + '\n'
+        ret += ('Table: ' + ', '.join([str(x) for x in self.table])) + '\n'
+        ret += 'Dank: ' + self.dank + '\n'
+        ret += ('Hand: ' + ', '.join([str(i) + ': ' + str(x) for i, x in enumerate(self.hand)])) + '\n'
+        ret += 'Out: ' + ', '.join([str(x) for i, x in enumerate(self.outs)]) + '\n'
+        ret += 'Last defense card: ' + str(self.def_card) + '\n'
+        return ret
+
     def parse_obs(self, obs):
+        """Parses the observations into a human readable structure.
+
+        Args:
+            obs: The observations to parse.
+        """
         self.hand = []
         self.table = []
         self.outs = []
@@ -35,53 +66,50 @@ class HumanInterface:
             self.state = 'shedding'
         print(obs)
 
-    def __str__(self):
-
-        ret = 'You are currently ' + self.state + '\n'
-        ret += ('Table: ' + ', '.join([str(x) for x in self.table])) + '\n'
-        ret += 'Dank: ' + self.dank + '\n'
-        ret += ('Hand: ' + ', '.join([str(i) + ': ' + str(x) for i, x in enumerate(self.hand)])) + '\n'
-        ret += 'Out: ' + ', '.join([str(x) for i, x in enumerate(self.outs)]) + '\n'
-        ret += 'Last defense card: ' + str(self.def_card) + '\n'
-        return ret
-
     def get_play(self):
+        """TODO(Bretley)
+
+        Returns:
+            TODO(Bretley)
+        """
         move = input('Move ->  ')
         if move == 'd':
             return 36
-            # done
-            pass
-        elif move == 't':
+
+        if move == 't':
             return 37
-            # take
-            pass
-        else:
-            try:
-                card_index = int(move)
-                if 0 <= card_index < len(self.hand):
-                    g = CARD_TO_OBS[self.hand[card_index]]
-                    print('Pl')
-                    print('playing ' + str(OPTIONS_DICT[g]))
-                    return g
-            except:
-                print('not a valid input')
-                return self.get_play()
+
+        try:
+            card_index = int(move)
+            if 0 <= card_index < len(self.hand):
+                card = CARD_TO_OBS[self.hand[card_index]]
+                print('Pl')
+                print('playing ' + str(OPTIONS_DICT[card]))
+                return card
+            return None  # TODO(Bretley)
+        except IndexError:
+            print('not a valid input')
+            return self.get_play()
 
 
 def main():
-    h = HumanInterface()
+    """The main function that runs.
+    """
+
+    human_inter = HumanInterface()
     env = DurakEnv()
     env.reset()
     obs, reward, done, info = env.step(31)
     print(obs)
-    h.parse_obs(obs)
+    human_inter.parse_obs(obs)
     while not done:
-        print(h)
-        obs, reward, done, info = env.step(h.get_play())
+        print(human_inter)
+        obs, reward, done, info = env.step(human_inter.get_play())
         print(obs)
-        h.parse_obs(obs)
+        human_inter.parse_obs(obs)
         print('\t'*10 + str(done))
         print('\t'*10 + 'reward: ' + str(reward))
+    del info
 
 
 if __name__ == '__main__':
