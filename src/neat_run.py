@@ -14,6 +14,7 @@ game until it reaches a completion state.
 import argparse
 import logging
 import os
+import random
 
 import neat
 # pylint: disable=import-error
@@ -56,11 +57,15 @@ class Worker:
         observation, _, _, _ = self.env.step(self.env.action_space.sample())
         reward = 0
         done = False
+        info = {}
 
         # Loops through the game until the game is finished or the machine makes an unforgivable mistake
         while not done:
             actions = net.activate(observation)
-            observation, reward, done, _ = self.env.step(np.argmax(actions).flat[0])
+            observation, reward, done, info = self.env.step(np.argmax(actions).flat[0])
+
+            if int(random.random() * 1000) == 1:
+                print(info, reward)
 
         logging.info("%s", reward)
 
@@ -106,7 +111,7 @@ def main(config_file, restore_file):
     population.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     population.add_reporter(stats)
-    population.add_reporter(neat.Checkpointer(generation_interval=10, filename_prefix='../restores/neat-checkpoint-'))
+    population.add_reporter(neat.Checkpointer(generation_interval=500, filename_prefix='../restores/neat-checkpoint-'))
 
     # Runs the learning in parallel
     evaluator = neat.ParallelEvaluator(10, eval_genomes)
@@ -130,6 +135,6 @@ if __name__ == '__main__':
     if ARGS.restore is None:
         RESTORE_PATH = None
     else:
-        RESTORE_PATH = os.path.normpath(os.path.join(LOCAL_DIR, ARGS.restore))
+        RESTORE_PATH = os.path.normpath(os.path.join(LOCAL_DIR, "../restores/", ARGS.restore))
 
     main(CONFIG_PATH, RESTORE_PATH)

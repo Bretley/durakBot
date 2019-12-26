@@ -2,24 +2,24 @@
 fitness_criterion      = mean
 fitness_threshold      = 15
 no_fitness_termination = False
-pop_size               = 250
+pop_size               = 20
 reset_on_extinction    = False
 
 [DefaultGenome]
 # Node Activation Options
 activation_default     = random
 activation_mutate_rate = 0.1
-activation_options     = sigmoid gauss
+activation_options     = sigmoid gauss sin tanh
 
 # Node Aggregation Options
 aggregation_default     = random
 aggregation_mutate_rate = 0.1
-aggregation_options     = sum product min max mean median maxabs
+aggregation_options     = sum product min max mean median
 
 # Node Bias Options
 bias_init_mean    = 0
 bias_init_stdev   = 1.0
-bias_init_type    = gaussian
+bias_init_type    = normal
 bias_max_value    = 30.0
 bias_min_value    = -30.0
 bias_mutate_power = 0.5
@@ -42,22 +42,22 @@ enabled_rate_to_false_add = 0.1
 enabled_rate_to_true_add  = 0.3
 
 # Recurrence Options
-feed_forward       = False
-initial_connection = partial_direct 0.05
+feed_forward       = True
+initial_connection = full_nodirect
 
 # Node Add/Remove Rates
 node_add_prob    = 0.5
 node_delete_prob = 0.2
 
 # Network Parameters
-num_hidden  = 0
-num_inputs  = 37
+num_hidden  = 38
+num_inputs  = 38
 num_outputs = 38
 
 # Node Response Options
 response_init_mean    = 0
 response_init_stdev   = 1
-response_init_type    = gaussian
+response_init_type    = normal
 response_max_value    = 30.0
 response_min_value    = -30.0
 response_mutate_power = 0.5
@@ -71,7 +71,7 @@ structural_mutation_surer  = True
 # Connection Weight Options
 weight_init_mean    = 0
 weight_init_stdev   = 1.0
-weight_init_type    = gaussian
+weight_init_type    = normal
 weight_max_value    = 30
 weight_min_value    = -30
 weight_mutate_power = 0.5
@@ -83,10 +83,10 @@ compatibility_threshold = 2.5
 
 [DefaultStagnation]
 species_fitness_func = mean
-max_stagnation       = 35
-species_elitism      = 10
+max_stagnation       = 15
+species_elitism      = 2
 
 [DefaultReproduction]
 elitism            = 5
 survival_threshold = 0.2
-min_species_size   = 5
+min_species_size   = 25

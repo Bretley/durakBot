@@ -38,6 +38,8 @@ class Card:
         return self.rank + ' of ' + self.suit
 
     def __eq__(self, o):
+        if not isinstance(0, Card):
+            return False
         return self.rank == o.rank and self.suit == o.suit
 
 

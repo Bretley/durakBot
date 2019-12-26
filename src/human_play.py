@@ -7,13 +7,16 @@ class HumanInterface:
         self.table = []
         self.outs = []
         self.dank = None
+        self.def_card = None
+        self.state = None
 
     def parse_obs(self, obs):
         self.hand = []
         self.table = []
         self.outs = []
         self.table = []
-        for index, location in enumerate(obs[0:-1]):
+        self.def_card = None
+        for index, location in enumerate(obs[0:-2]):
             if location == 1:
                 self.table.append(OPTIONS_DICT[index])
             elif location == 2:
@@ -23,9 +26,10 @@ class HumanInterface:
             elif location == 4:
                 self.dank = OPTIONS_DICT[index].suit
 
-        if obs[-1] == 0:
+        if obs[-2] == 0:
             self.state = 'defending'
-        elif obs[-1] == 1:
+            self.def_card = OPTIONS_DICT[obs[-1]]
+        elif obs[-2] == 1:
             self.state = "attacking"
         else:
             self.state = 'shedding'
@@ -38,6 +42,7 @@ class HumanInterface:
         ret += 'Dank: ' + self.dank + '\n'
         ret += ('Hand: ' + ', '.join([str(i) + ': ' + str(x) for i, x in enumerate(self.hand)])) + '\n'
         ret += 'Out: ' + ', '.join([str(x) for i, x in enumerate(self.outs)]) + '\n'
+        ret += 'Last defense card: ' + str(self.def_card) + '\n'
         return ret
 
     def get_play(self):
@@ -67,16 +72,16 @@ def main():
     h = HumanInterface()
     env = DurakEnv()
     env.reset()
-    o, r, d, i = env.step(30)
-    print(o)
-    h.parse_obs(o)
-    while not d:
+    obs, reward, done, info = env.step(31)
+    print(obs)
+    h.parse_obs(obs)
+    while not done:
         print(h)
-        o, r, d, i = env.step(h.get_play())
-        print(o)
-        h.parse_obs(o)
-        print('\t'*10 + str((d)))
-        print('\t'*10 + 'reward: ' + str((r)))
+        obs, reward, done, info = env.step(h.get_play())
+        print(obs)
+        h.parse_obs(obs)
+        print('\t'*10 + str(done))
+        print('\t'*10 + 'reward: ' + str(reward))
 
 
 if __name__ == '__main__':

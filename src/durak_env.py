@@ -6,7 +6,7 @@ train a machine learning model to play it.
 """
 
 import logging
-from math import sqrt, atan
+from math import atan
 
 # pylint: disable=import-error
 import gym
@@ -134,7 +134,7 @@ class DurakEnv(gym.Env):
         self.action_space = spaces.Discrete(38)
 
         # 1 Discrete observation for now just to set it up
-        self.observation_space = spaces.Box(low=np.array([0] * 37), high=np.array(([4] * 36) + [2]), dtype=int)
+        self.observation_space = spaces.Box(low=np.array([0] * 38), high=np.array(([4] * 36) + [2] + [35]), dtype=int)
 
         self.game_started = False
         self.deck = Deck()
@@ -153,10 +153,10 @@ class DurakEnv(gym.Env):
         self.shed_so_far = None
         self.allowed_to_shed = None
         self.model = Model()
-        self.legal_moves = 0.
-        self.successful_attacks = 0.
-        self.successful_defenses = 0.
-        self.takes = 0.
+        self.legal_moves = 0
+        self.successful_attacks = 0
+        self.successful_defenses = 0
+        self.takes = 0
 
     def add_attack(self, card: Card):
         """
@@ -185,6 +185,21 @@ class DurakEnv(gym.Env):
         self.table = []
         self.ranks = {}
         self.attack_count = 0
+
+    def mandatory_opponent_attack(self, info):
+        """Bot's first attack and set state
+            Args:
+                info: Error message to raise
+
+        """
+        atk = self.opponent.attack(self.table, self.ranks)
+        if self.print_trace:
+            print('Opponent starts attack with ' + str(atk[1]))
+        if atk[0] != Attack.play:
+            raise RuntimeError(info)
+        self.add_attack(atk[1])
+        self.state = 'd'
+        del atk
 
     def player_draw(self, player):
         """ players draw and report win condition
@@ -331,22 +346,12 @@ class DurakEnv(gym.Env):
             if int(action) % 2 == 0:
                 self.state = "a"
                 logging.info('Model attacks first')
-                return self.gen_obs(), self.gen_score(), False, None
+                return self.gen_return(0, False)
 
             logging.info('bot attacks first')
             # Bot attacks first.
-            atk = self.opponent.attack(self.table, self.ranks)
-
-            if self.print_trace:
-                print('Opponent starts attack with ' + str(atk[1]))
-
-            if atk[0] != Attack.play:
-                raise RuntimeError("Atk[0] != Attack.play, bot is attacking at start.")
-
-            self.add_attack(atk[1])
-            self.state = 'd'
-            del atk
-            return self.gen_obs(), self.gen_score(), False, None
+            self.mandatory_opponent_attack(info="Atk[0] != Attack.play, bot is not attacking at start.")
+            return self.gen_return(0, False)
 
         if self.state == 'a':
             logging.info('Hand within durakEnv: %s', ' ,'.join([str(x) for x in self.model.hand]))
@@ -373,31 +378,24 @@ class DurakEnv(gym.Env):
                             # Draw cards, attacker then defender
                             if self.player_draw(self.model):
                                 # TODO: Model wins on attack
-                                return self.gen_obs(), self.gen_score() + WIN, True, None
+                                return self.gen_return(WIN, True)
 
                             if self.player_draw(self.opponent):
                                 # TODO:  Bot wins defending in attack phase
-                                return self.gen_obs(), self.gen_score() + LOSE, True, None
+                                return self.gen_return(LOSE, True)
 
                             # Bot attacks table.
-                            atk = self.opponent.attack(self.table, self.ranks)
-                            logging.info(atk[0])
-                            # Model will be defending next turn.
-                            self.state = 'd'
-
-                            if atk[0] != Attack.play:
-                                raise RuntimeError('Opponent is not attacking on first attack.')
-                            self.add_attack(atk[1])
-                            return self.gen_obs(), self.gen_score(), False, None
+                            self.mandatory_opponent_attack('Opponent is not attacking on first attack after turn end')
+                            return self.gen_return(0, False)
                         # Turn is not over, Model is attacking again
                         self.state = 'a'
-                        return self.gen_obs(), self.gen_score(), False, None
+                        return self.gen_return(0, False)
                     if defense[0] == Defense.take:
                         self.state = 's'  # Model will be shedding in next step
                         # if self.print_trace:
                         # 'Opponent has chosen to take'
                         self.successful_attacks += 1
-                        return self.gen_obs(), self.gen_score(), False, None
+                        return self.gen_return(0, False)
                     raise RuntimeError('Opponent has passed cards')
                 if move == 'done':  # AI is done in attack context
                     self.clear_table()
@@ -405,22 +403,14 @@ class DurakEnv(gym.Env):
                     if self.player_draw(self.model):
                         # MODEL win, impossible condition
                         raise RuntimeError("Win condition: ~415, Model won during done")
-                        # return self.gen_obs(), self.gen_score() + WIN, True, None
                     if self.player_draw(self.opponent):
                         raise RuntimeError("Win condition: ~415, Opponent won during done")
                         # opponent win
-                        # return self.gen_obs(), self.gen_score() + LOSE, True, None
-
-                    atk = self.opponent.attack(self.table, self.ranks)
-                    logging.info(atk[0])
-                    if atk[0] != Attack.play:
-                        raise RuntimeError('Opponent is not attacking on first attack.')
-                    self.add_attack(atk[1])
+                    self.mandatory_opponent_attack('Opponent is not attacking on first attack.')
                     logging.info('Bot attack after done')
                     logging.info(' '.join([str(x) for x in self.table]))
                     # Model will be defending next turn
-                    self.state = 'd'
-                    return self.gen_obs(), self.gen_score(), False, None
+                    return self.gen_return(0, False)
                 raise RuntimeError('Legal_attack true but not attack or move.')
             # Punish and end.
             logging.info('Model has played illegal move')
@@ -428,7 +418,8 @@ class DurakEnv(gym.Env):
             logging.info('move %s', move)
             logging.info('action %s', action)
             logging.info('legal_attack %s', self.legal_attack(action))
-            return self.gen_obs(), self.gen_score() + ILLEGAL, True, None
+            reward = (1.5 if move in self.model.hand else 0) + ILLEGAL
+            return self.gen_return(reward, True)
         # Defend state logic.
         if self.state == "d":
             logging.info('state d')
@@ -445,20 +436,20 @@ class DurakEnv(gym.Env):
                         # Draw cards, attacker (opponent) then defender (model)
                         if self.player_draw(self.opponent):
                             # TODO:  Bot wins defending in attack phase
-                            return self.gen_obs(), self.gen_score() + LOSE, True, None
+                            return self.gen_return(LOSE, True)
                         if self.player_draw(self.model):
                             # TODO: Model wins on attack
-                            return self.gen_obs(), self.gen_score() + WIN, True, None
+                            return self.gen_return(WIN, True)
                         # if game hasn't ended, the turn is over and the bot successfully defends
                         self.state = "a"
-                        return self.gen_obs(), self.gen_score(), False, None
+                        return self.gen_return(0, False)
 
                     atk = self.opponent.attack(self.table, self.ranks)
                     logging.info(atk[0])
                     if atk[0] == Attack.play:
                         self.add_attack(atk[1])
                         self.state = "d"
-                        return self.gen_obs(), self.gen_score(), False, None
+                        return self.gen_return(0, False)
 
                     if atk[0] == Attack.done:
                         self.clear_table()
@@ -485,7 +476,7 @@ class DurakEnv(gym.Env):
 
                     if self.player_draw(self.opponent):
                         # TODO: opponent has won on their shed
-                        return self.gen_obs(), self.gen_score() + LOSE, True, None
+                        return self.gen_return(LOSE, True)
 
                     self.table += shed
                     self.model.take_table(self.table)
@@ -494,13 +485,7 @@ class DurakEnv(gym.Env):
                     self.clear_table()
 
                     # get Bot Attack
-                    atk = self.opponent.attack(self.table, self.ranks)
-                    if atk[0] != Attack.play:
-                        raise RuntimeError('opponent is not attacking on first attack')
-                    self.add_attack(atk[1])
-                    # Model will be defending next turn
-                    self.state = 'd'
-                    return self.gen_obs(), self.gen_score(), False, None
+                    self.mandatory_opponent_attack('opponent is not attacking on first attack')
                 else:
                     raise RuntimeError('legal_defense true but not defense or take: move = {}'.format(str(move)))
             else:
@@ -508,7 +493,8 @@ class DurakEnv(gym.Env):
                 logging.info('move %s', move)
                 logging.info('action %s', action)
                 logging.info('illegal move')
-                return self.gen_obs(), self.gen_score() + ILLEGAL, True, None
+                reward = (1.5 if move in self.model.hand else 0) + ILLEGAL
+                return self.gen_return(reward, True)
 
         # Shed state logic.
         elif self.state == "s":
@@ -534,8 +520,8 @@ class DurakEnv(gym.Env):
                     # opponent shouldn't have to draw here
                     if self.player_draw(self.model):
                         # TODO: Model has won by shedding last cards
-                        return self.gen_obs(), self.gen_score() + WIN, True, None
-                    return self.gen_obs(), self.gen_score(), False, None
+                        return self.gen_return(WIN, True)
+                    return self.gen_return(0, False)
 
                 else:
                     logging.info('move %s', move)
@@ -543,11 +529,12 @@ class DurakEnv(gym.Env):
                     raise RuntimeError('legal_shed true but not shed or done')
             # Return and punish.
             else:
-                return self.gen_obs(), self.gen_score() + ILLEGAL, True, None
+                reward = (1.5 if move in self.model.hand else 0) + ILLEGAL
+                return self.gen_return(reward, True)
 
         logging.info("%s", self.state)
 
-        return self.gen_obs(), self.gen_score(), False, None
+        return self.gen_return(0, False)
 
     def gen_obs(self):
         """
@@ -558,10 +545,11 @@ class DurakEnv(gym.Env):
             1 on table
             2 in hand
             3 in out pile
+            4 table card
 
         """
 
-        ret = [0] * 37
+        ret = [0] * 38
         # 1 if on table
         for card in self.table:
             ret[CARD_TO_OBS[card]] = 1
@@ -576,23 +564,54 @@ class DurakEnv(gym.Env):
         ret[CARD_TO_OBS[self.table_card]] = 4
 
         if self.state == "d":
-            ret[-1] = 0
+            ret[-2] = 0
+            try:
+                ret[-1] = CARD_TO_OBS[self.table[-1]]
+            except IndexError:
+                logging.error('Error in gen_obs')
+                logging.error('Card: %s', str(self.table))
+                logging.error('Table: %s', str([str(x) for x in self.table]))
+                logging.error('State: %s', self.state)
+                logging.error('Info %s', str(self.gen_info()))
+
         elif self.state == "a":
-            ret[-1] = 1
+            ret[-2] = 1
         else:
-            ret[-1] = 2
+            ret[-2] = 2
 
         return np.array(ret)
 
-    def gen_score(self):
-        """TODO
+    def gen_info(self):
+        """Generates info to return.
         """
+
+        return {
+            'takes': self.takes,
+            'legal_moves': self.legal_moves,
+            'successful_attacks': self.successful_attacks,
+            'successful_defends': self.successful_defenses
+        }
+
+    def gen_return(self, condition, done):
+        """Generates all 4 return objects.
+
+        Args:
+            condition: WIN, LOSS, or ILLEGAL.
+            done: Whether a step ends the game.
+        """
+
+        return self.gen_obs(), self.gen_score() + condition, done, self.gen_info()
+
+    def gen_score(self):
+        """Generates a reward to return.
+        """
+
         # base reward for not messing up
-        legal_moves_reward = 2 * 5 * atan(self.legal_moves)/3.1415
+        legal_moves_reward = min(20, self.legal_moves-self.takes)
         # ratio of bot making opponent take vs opponent making bot take
-        attack_success_reward = sqrt(self.successful_attacks/(self.takes+1)) - 0.8
+        # attack_success_reward = sqrt(self.successful_attacks/float((self.takes+1))) - 0.8
         taking_reward = 2/3.1415 * 3.5 * atan(4-self.takes)
-        return legal_moves_reward + attack_success_reward + taking_reward
+        return legal_moves_reward + taking_reward
 
     def reset(self):
         """Resets the game to the starting state.
@@ -613,10 +632,10 @@ class DurakEnv(gym.Env):
         self.shed_so_far = None
         self.allowed_to_shed = None
         self.model = Model()
-        self.legal_moves = 0.
-        self.successful_attacks = 0.
-        self.successful_defenses = 0.
-        self.takes = 0.
+        self.legal_moves = 0
+        self.successful_attacks = 0
+        self.successful_defenses = 0
+        self.takes = 0
 
     def render(self, mode='human'):
         """Will not be used.
