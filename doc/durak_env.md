@@ -61,6 +61,9 @@ Classes
         -------
             None
 
+    `gen_info(self)`
+    :   Generates info to return.
+
     `gen_obs(self)`
     :   -------
         Returns an observation based on game state
@@ -68,9 +71,17 @@ Classes
             1 on table
             2 in hand
             3 in out pile
+            4 table card
+
+    `gen_return(self, condition, done)`
+    :   Generates all 4 return objects.
+        
+        Args:
+            condition: WIN, LOSS, or ILLEGAL.
+            done: Whether a step ends the game.
 
     `gen_score(self)`
-    :   TODO
+    :   Generates a reward to return.
 
     `legal_attack(self, move)`
     :   Determines whether an attack is a legal action or not.
@@ -105,6 +116,11 @@ Classes
             Whether or not the shed is legal.
             'Done' is always a legal shed.
             Shed card is legal if card is in hand and rank matches table.
+
+    `mandatory_opponent_attack(self, info)`
+    :   Bot's first attack and set state
+        Args:
+            info: Error message to raise
 
     `player_draw(self, player)`
     :   players draw and report win condition
