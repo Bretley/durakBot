@@ -7,7 +7,7 @@ All strategies need an attack, defense, and shed.
 import enum
 import logging
 
-from card import RANK_NUM
+from card import RANK_NUM, dank_float_order
 
 
 def rank_matches(cards, rank):
@@ -447,3 +447,126 @@ class S2(Strategy):
             hand.remove(card)
 
         return card_list
+
+
+def collapse(p, l):
+    return int((p * len(l)) + 0.5)
+
+
+class StratAI(Strategy):
+    def __init__(self, shed_val, play_val):
+        self.shed_val = shed_val
+        self.play_val = play_val
+
+    """TODO(Bretley)
+
+    Identical to S0 except:
+        does not shed danks
+        does not shed if card rank > 10
+        does not pass if it requires a dank to do so
+    """
+
+    def attack(self, hand, table, dank, ranks):
+        """TODO(Bretley)
+
+        Args:
+            hand: The list of cards in the player's hand.
+            table: The cards on the table.
+            dank: The suit of the Dank card.
+            ranks: TODO(Bretley)
+
+        Returns:
+            TODO(Bretley)
+        """
+
+        if len(table) == 0:
+            return Attack.play, hand.pop(collapse(self.play_val, hand))
+            # Must play, 1st attack.
+
+        # Default bot logic: play lowest first, don't pass to other player until out of matches.
+        # Assumes sorted hand.
+        matches = [card for card in hand if card.rank in ranks]
+        if matches:
+            hand.remove(matches[collapse(self.play_val, matches)])
+            return Attack.play, matches[collapse(self.play_val, matches)]
+
+        return Attack.done, None
+
+    def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
+        """TODO(Bretley)
+
+        Args:
+            hand: The list of cards in the player's hand.
+            table: The cards on the table.
+            dank: The suit of the Dank card.
+            pass_is_legal: Whether or not a pass is legal.
+            cards_to_defend: The number of cards to defend against.
+
+        Returns:
+            TODO(Bretley)
+        """
+
+        if pass_is_legal:
+            matches = rank_matches(hand, table[-1].rank)
+            if matches and matches[0].suit != dank:
+                hand.remove(matches[0])
+                return Defense.pass_to, [matches[0]]
+
+        # Came from pass, special logic.
+        if cards_to_defend > 1:
+            defense = []
+            for attack in table:
+                current_defense = lowest_defense(attack, hand, dank)
+                if current_defense is not None:
+                    # Accumulate defense cards to send back.
+                    hand.remove(current_defense)
+                    defense.append(current_defense)
+                else:
+                    # Put cards back in hand and signal defeat.
+                    for card in defense:
+                        hand.append(card)
+                    # Don't need to sort because taking cards.
+
+                    return Defense.take, None
+            return Defense.defend, defense
+
+        attack = table[-1]
+        current_defense = lowest_defense(attack, hand, dank)
+
+        logging.info('Defense Logic:')
+        logging.info("%s", attack)
+        logging.info("%s", self)
+        logging.info("%s", current_defense)
+
+        if current_defense is None:
+            return Defense.take, None
+
+        hand.remove(current_defense)
+        return Defense.defend, [current_defense]
+
+    def shed(self, hand, table, dank, max_shed_allowed, ranks):
+        """TODO(Bretley)
+
+        Args:
+            hand: The list of cards in the player's hand.
+            table: The cards on the table.
+            dank: The suit of the Dank card.
+            max_shed_allowed: The maximum amount of cards to shed.
+            ranks: TODO(Bretley)
+
+        Returns:
+            A list of cards to shed.
+        """
+
+        if max_shed_allowed == 0:
+            return []
+
+        card_list = []
+        for card in hand:
+            if len(card_list) < max_shed_allowed and card.rank in ranks and dank_float_order(card, self.dank) < self.shed_val:
+                card_list.append(card)
+        for card in card_list:
+            hand.remove(card)
+
+        return card_list
+

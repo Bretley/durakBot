@@ -43,12 +43,18 @@ class Card:
         return self.rank == o.rank and self.suit == o.suit
 
 
-RANKS = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6']
+RANKS = list(reversed(['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6']))
 SUITS = ['Diamonds', 'Spades', 'Clubs', 'Hearts']
 CARDS = [Card(rank, suit) for rank, suit in itertools.product(RANKS, SUITS)]
-RANK_NUM = {rank: index for index, rank in enumerate(reversed(RANKS))}
+RANK_NUM = {rank: index for index, rank in enumerate(RANKS)}
 CARD_COMPARATORS = {}
 
+
+def dank_float_order(card, dank_suit):
+    v = RANK_NUM[card.rank]
+    v += (9 if card.suit == dank_suit else 0)
+    v = float(v/(len(RANKS) + 8))
+    return v
 
 def create_comparator(dank_suit):
     """Creates a comparator to compare two cards.
