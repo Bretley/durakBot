@@ -5,7 +5,7 @@ Mostly used for playing bots against each other and developing strategies.
 
 import logging
 
-from card import CARD_COMPARATORS, RANK_NUM, RANKS
+from card import CARD_COMPARATORS, RANK_NUM
 from deck import Deck
 from player import Player
 from strategy import Attack, Defense, S0, S1, S2
@@ -159,7 +159,7 @@ class Game:
         """Turn reflecting a guaranteed 2 person game.
         """
 
-        ranks = RANKS.copy()
+        ranks = {}
 
         attacker, defender, next_player = self.get_players()
         table = []
