@@ -256,8 +256,8 @@ class DurakEnv(gym.Env):
 
         Returns:
             True if defense is legal.
-            Defense is legal if it is higher rank same suit, or any dank, or
-            higher dank in the case that a dank was played.
+                Defense is legal if it is higher rank same suit, or any dank, or
+                higher dank in the case that a dank was played.
         &#34;&#34;&#34;
 
         if move == 37:
@@ -287,8 +287,8 @@ class DurakEnv(gym.Env):
 
         Returns:
             Whether or not the shed is legal.
-            &#39;Done&#39; is always a legal shed.
-            Shed card is legal if card is in hand and rank matches table.
+                &#39;Done&#39; is always a legal shed.
+                Shed card is legal if card is in hand and rank matches table.
         &#34;&#34;&#34;
 
         # First shed state of the round.
@@ -319,10 +319,10 @@ class DurakEnv(gym.Env):
 
         Returns:
             True if attack is legal, False otherwise.
-            Attack is legal if:
-            Move &lt; 36 or 108.
-            Card matches ranks in table.
-            Card is in hand.
+                Attack is legal if:
+                Move &lt; 36 or 108.
+                Card matches ranks in table.
+                Card is in hand.
         &#34;&#34;&#34;
 
         # Has chosen to play a card.
@@ -347,10 +347,10 @@ class DurakEnv(gym.Env):
             action: The action to take on this step.
 
         Returns:
-            A representation of the current state of the game.
-            A representation ofs the fitness of this genome.
-            A representation of whether or not the game is done.
-            Additional information that may be useful.
+            A representation of the current state of the game,
+            a representation ofs the fitness of this genome,
+            a representation of whether or not the game is done,
+            additional information that may be useful.
         &#34;&#34;&#34;
 
         logging.debug(&#34;%s&#34;, action)
@@ -887,8 +887,8 @@ suit matters. It's a good blend of mechanics, strategy, and luck.</p>
 
         Returns:
             True if defense is legal.
-            Defense is legal if it is higher rank same suit, or any dank, or
-            higher dank in the case that a dank was played.
+                Defense is legal if it is higher rank same suit, or any dank, or
+                higher dank in the case that a dank was played.
         &#34;&#34;&#34;
 
         if move == 37:
@@ -918,8 +918,8 @@ suit matters. It's a good blend of mechanics, strategy, and luck.</p>
 
         Returns:
             Whether or not the shed is legal.
-            &#39;Done&#39; is always a legal shed.
-            Shed card is legal if card is in hand and rank matches table.
+                &#39;Done&#39; is always a legal shed.
+                Shed card is legal if card is in hand and rank matches table.
         &#34;&#34;&#34;
 
         # First shed state of the round.
@@ -950,10 +950,10 @@ suit matters. It's a good blend of mechanics, strategy, and luck.</p>
 
         Returns:
             True if attack is legal, False otherwise.
-            Attack is legal if:
-            Move &lt; 36 or 108.
-            Card matches ranks in table.
-            Card is in hand.
+                Attack is legal if:
+                Move &lt; 36 or 108.
+                Card matches ranks in table.
+                Card is in hand.
         &#34;&#34;&#34;
 
         # Has chosen to play a card.
@@ -978,10 +978,10 @@ suit matters. It's a good blend of mechanics, strategy, and luck.</p>
             action: The action to take on this step.
 
         Returns:
-            A representation of the current state of the game.
-            A representation ofs the fitness of this genome.
-            A representation of whether or not the game is done.
-            Additional information that may be useful.
+            A representation of the current state of the game,
+            a representation ofs the fitness of this genome,
+            a representation of whether or not the game is done,
+            additional information that may be useful.
         &#34;&#34;&#34;
 
         logging.debug(&#34;%s&#34;, action)
@@ -1545,12 +1545,9 @@ suit matters. It's a good blend of mechanics, strategy, and luck.</p>
 <dd>The attack to check.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt>True if attack is legal, False otherwise.</dt>
-<dt><code>Attack</code> <code>is</code> <code>legal</code> <code>if</code>:</dt>
-<dd>&nbsp;</dd>
-</dl>
-<p>Move &lt; 36 or 108.
+<p>True if attack is legal, False otherwise.
+Attack is legal if:
+Move &lt; 36 or 108.
 Card matches ranks in table.
 Card is in hand.</p></section>
 <details class="source">
@@ -1565,10 +1562,10 @@ Card is in hand.</p></section>
 
     Returns:
         True if attack is legal, False otherwise.
-        Attack is legal if:
-        Move &lt; 36 or 108.
-        Card matches ranks in table.
-        Card is in hand.
+            Attack is legal if:
+            Move &lt; 36 or 108.
+            Card matches ranks in table.
+            Card is in hand.
     &#34;&#34;&#34;
 
     # Has chosen to play a card.
@@ -1594,12 +1591,9 @@ Card is in hand.</p></section>
 <dd>The defense to check.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt>True if defense is legal.</dt>
-<dt><code>Defense</code> <code>is</code> <code>legal</code> <code>if</code> <code>it</code> <code>is</code> <code>higher</code> <code>rank</code> <code>same</code> <code>suit</code>, or <code>any</code> <code>dank</code>, or</dt>
-<dd>&nbsp;</dd>
-</dl>
-<p>higher dank in the case that a dank was played.</p></section>
+<p>True if defense is legal.
+Defense is legal if it is higher rank same suit, or any dank, or
+higher dank in the case that a dank was played.</p></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1612,8 +1606,8 @@ Card is in hand.</p></section>
 
     Returns:
         True if defense is legal.
-        Defense is legal if it is higher rank same suit, or any dank, or
-        higher dank in the case that a dank was played.
+            Defense is legal if it is higher rank same suit, or any dank, or
+            higher dank in the case that a dank was played.
     &#34;&#34;&#34;
 
     if move == 37:
@@ -1662,8 +1656,8 @@ Shed card is legal if card is in hand and rank matches table.</p></section>
 
     Returns:
         Whether or not the shed is legal.
-        &#39;Done&#39; is always a legal shed.
-        Shed card is legal if card is in hand and rank matches table.
+            &#39;Done&#39; is always a legal shed.
+            Shed card is legal if card is in hand and rank matches table.
     &#34;&#34;&#34;
 
     # First shed state of the round.
@@ -1816,10 +1810,15 @@ detail.</p>
 <dd>The action to take on this step.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p>A representation of the current state of the game.
-A representation ofs the fitness of this genome.
-A representation of whether or not the game is done.
-Additional information that may be useful.</p></section>
+<dl>
+<dt><code>A</code> <code>representation</code> of <code>the</code> <code>current</code> <code>state</code> of <code>the</code> <a title="game" href="game.html"><code>game</code></a>,</dt>
+<dd>&nbsp;</dd>
+<dt><code>a</code> <code>representation</code> <code>ofs</code> <code>the</code> <code>fitness</code> of <code>this</code> <code>genome</code>,</dt>
+<dd>&nbsp;</dd>
+<dt><code>a</code> <code>representation</code> of <code>whether</code> or <code>not</code> <code>the</code> <a title="game" href="game.html"><code>game</code></a> <code>is</code> <code>done</code>,</dt>
+<dd>&nbsp;</dd>
+</dl>
+<p>additional information that may be useful.</p></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1835,10 +1834,10 @@ Additional information that may be useful.</p></section>
         action: The action to take on this step.
 
     Returns:
-        A representation of the current state of the game.
-        A representation ofs the fitness of this genome.
-        A representation of whether or not the game is done.
-        Additional information that may be useful.
+        A representation of the current state of the game,
+        a representation ofs the fitness of this genome,
+        a representation of whether or not the game is done,
+        additional information that may be useful.
     &#34;&#34;&#34;
 
     logging.debug(&#34;%s&#34;, action)

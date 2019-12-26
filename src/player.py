@@ -62,9 +62,10 @@ class Player:
             pass_is_legal: Whether or not a pass is legal.
             cards_to_defend: The number of cards to defend against.
 
-            Returns:
-                The return of the strategy's defend.
+        Returns:
+            The return of the strategy's defend.
         """
+
         return self.strategy.defend(self.hand, table, self.dank, pass_is_legal, cards_to_defend)
 
     def sort(self):
@@ -105,7 +106,7 @@ class Player:
             max_shed_allowed: The maximum amount of cards to shed.
             ranks: The ranks of the cards on the table.
 
-            Returns:
-                The return of the strategy's shed.
-            """
+        Returns:
+            The return of the strategy's shed.
+        """
         return self.strategy.shed(self.hand, table, self.dank, max_shed_allowed, ranks)

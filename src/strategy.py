@@ -59,6 +59,7 @@ def lowest_defense(attack, hand, dank):
 class Defense(enum.Enum):
     """A class used to enumerate defense actions.
     """
+
     pass_to = 0
     defend = 1
     take = 2
@@ -67,6 +68,7 @@ class Defense(enum.Enum):
 class Attack(enum.Enum):
     """A class used to enumerate attack actions.
     """
+
     play = 0
     done = 1
 

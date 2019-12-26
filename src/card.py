@@ -11,7 +11,7 @@ import itertools
 class Card:
     """Represents a card object.
 
-    Attributes
+    Attributes:
         rank: The value of a card, 6-A.
         suit: The suit of the card: Diamonds, Spades, Clubs, or Hearts.
     """
@@ -97,11 +97,11 @@ for dank in SUITS:
 def suited(card, suit):
     """Tells if the card matches the suit.
 
-    Args
+    Args:
         card: The card to check.
         suit: The suit to check.
 
-    Returns
+    Returns:
         True if they are the same suit, false otherwise.
     """
 

@@ -226,8 +226,8 @@ class DurakEnv(gym.Env):
 
         Returns:
             True if defense is legal.
-            Defense is legal if it is higher rank same suit, or any dank, or
-            higher dank in the case that a dank was played.
+                Defense is legal if it is higher rank same suit, or any dank, or
+                higher dank in the case that a dank was played.
         """
 
         if move == 37:
@@ -257,8 +257,8 @@ class DurakEnv(gym.Env):
 
         Returns:
             Whether or not the shed is legal.
-            'Done' is always a legal shed.
-            Shed card is legal if card is in hand and rank matches table.
+                'Done' is always a legal shed.
+                Shed card is legal if card is in hand and rank matches table.
         """
 
         # First shed state of the round.
@@ -289,10 +289,10 @@ class DurakEnv(gym.Env):
 
         Returns:
             True if attack is legal, False otherwise.
-            Attack is legal if:
-            Move < 36 or 108.
-            Card matches ranks in table.
-            Card is in hand.
+                Attack is legal if:
+                Move < 36 or 108.
+                Card matches ranks in table.
+                Card is in hand.
         """
 
         # Has chosen to play a card.
@@ -317,10 +317,10 @@ class DurakEnv(gym.Env):
             action: The action to take on this step.
 
         Returns:
-            A representation of the current state of the game.
-            A representation ofs the fitness of this genome.
-            A representation of whether or not the game is done.
-            Additional information that may be useful.
+            A representation of the current state of the game,
+            a representation ofs the fitness of this genome,
+            a representation of whether or not the game is done,
+            additional information that may be useful.
         """
 
         logging.debug("%s", action)

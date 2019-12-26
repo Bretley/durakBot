@@ -8,14 +8,14 @@ class HumanInterface:
     """A class used to represent a human interactable way version of the
     information the model receives.
 
-        Attributes:
-            hand: The cards in the player's hand.
-            table: The cards on the table.
-            outs: The cards in the out pile.
-            dank: The dank card.
-            def_card: The card to defend against.
-            state: The state of gameplay.
-        """
+    Attributes:
+        hand: The cards in the player's hand.
+        table: The cards on the table.
+        outs: The cards in the out pile.
+        dank: The dank card.
+        def_card: The card to defend against.
+        state: The state of gameplay.
+    """
 
     def __init__(self):
         """Inits HumanInterface.

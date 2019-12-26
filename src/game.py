@@ -39,11 +39,6 @@ class Game:
     def __init__(self, strategies, print_trace):
         """Inits Game with strategy and print trace data.
 
-        visual:
-            2
-        1       3
-            0
-
         Deal 6 to each.
         Determine who has initial lowest dank. (otherwise default to 0)
 
