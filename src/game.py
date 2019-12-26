@@ -1,4 +1,4 @@
-"""A module used to store classes related to the representation of a game
+"""A module used to store classes related to the representation of a game.
 
 Mostly used for playing bots against each other and developing strategies.
 """
@@ -15,7 +15,7 @@ def pad_after(input_str):
     """Pads a string with extra spaces.
 
         Args:
-            input_str: The string to pad
+            input_str: The string to pad.
 
         Returns:
             A padded string.
@@ -24,7 +24,7 @@ def pad_after(input_str):
 
 
 class Game:
-    """A class used to represent a game.
+    """Represents a game.
 
     Attributes:
         players: The list of players.
@@ -44,13 +44,14 @@ class Game:
         1       3
             0
 
-        Deal 6 to each
-        Determine who has initial lowest dank (otherwise default to 0)
+        Deal 6 to each.
+        Determine who has initial lowest dank. (otherwise default to 0)
 
         Args:
             strategies: Contains the instantiated strategies for the players.
             print_trace: Whether or not to print a human readable trace.
         """
+
         self.print_trace = print_trace
         deck = Deck()
         deck.shuffle_deck()
@@ -96,7 +97,7 @@ class Game:
         self.state = None
 
     def add_mod(self, start, offset):
-        """Returns the player that is offset after the start/
+        """Returns the player that is offset after the start.
 
         Args:
             start: The starting position.
@@ -121,16 +122,18 @@ class Game:
         return attacker, defender, next_player
 
     def inc_attacker(self, increment):
-        """Updates the attacker value mod number of players"
+        """Updates the attacker value mod number of players.
 
         Args:
             increment: The amount to increment by.
         """
+
         self.attacker = (self.attacker + increment) % len(self.players)
 
     def play(self):
         """Begins and runs the game.
         """
+
         while True:
             if self.print_trace:
                 print('====== Turn ' + str(self.turns) + '===========')
@@ -152,23 +155,11 @@ class Game:
 
         return winning_player
 
-    def step(self):
-        """TODO(Bretley)
-        """
-        if self.state == 'Attack':
-            pass
-        elif self.state == 'Defend':
-            pass
-        elif self.state == 'Shed':
-            pass
-
     def turn2(self):
         """Turn reflecting a guaranteed 2 person game.
         """
 
-        # TODO(Bretley) is this what you wanted?
         ranks = RANKS.copy()
-        # ENDTODO
 
         attacker, defender, next_player = self.get_players()
         table = []
@@ -240,7 +231,7 @@ class Game:
                         continue
 
                     if defense[0] == Defense.take:
-                        # Break out and drop to shed phase
+                        # Break out and drop to shed phase.
                         break
 
                 elif atk[0] == Attack.done:
@@ -284,7 +275,7 @@ class Game:
             logging.debug(str(len(defender)))
             logging.debug(str(atk))
             logging.debug(str(defense))
-            raise RuntimeError("Not a defense or done.")  # Success for defender.
+            raise RuntimeError("Not a defense or done.")
 
         del table
         del ranks
@@ -306,14 +297,16 @@ class Game:
                 attacker.take(self.deck.draw())
 
         if len(attacker) == 0:
-            return attacker  # Attacker has won.
+            # Attacker has won.
+            return attacker
 
         if len(defender) < 6:
             for _ in range(6 - len(defender)):
                 defender.take(self.deck.draw())
 
         if len(defender) == 0:
-            return defender  # Defender has won.
+            # Defender has won.
+            return defender
 
         if defense[0] == Defense.take:
             self.inc_attacker(2)
@@ -322,27 +315,10 @@ class Game:
 
         return None
 
-    def turn(self):
-        """Method reflecting a single turn.
-
-        General gist:
-        Attacker attacks to + 1 % len(self.players):
-            Play 1 card:
-        Defender has 3 choices:
-            Pass -> Can only be done if all cards on table match rank (i.e attack with 6 -> pass to next with 6 -> pass with 6).
-                As soon as a non-6 is played cards can't be passed.
-            Defend -> Plays a card higher rank and same suit.
-            Take -> Takes up to 12 cards, gets skipped.
-                After that, the attackers can shed.
-
-        Back and forth.
-        Can't play more than min(6, len(defender.cars)).
-        Round is over when either a player runs out of cards.
-        """
-
     def print_hands(self):
         """Prints the cards in both hands.
         """
+
         player1 = str(self.players[0]).split('\n')
         player2 = str(self.players[1]).split('\n')
         if len(player1) < len(player2):
@@ -356,6 +332,7 @@ class Game:
 def main():
     """The main function for the game.
     """
+
     turns = []
     s0_wins = 0
     s1_wins = 0

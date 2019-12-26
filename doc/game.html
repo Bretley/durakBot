@@ -20,13 +20,13 @@
 <h1 class="title">Module <code>game</code></h1>
 </header>
 <section id="section-intro">
-<p>A module used to store classes related to the representation of a game</p>
+<p>A module used to store classes related to the representation of a game.</p>
 <p>Mostly used for playing bots against each other and developing strategies.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">&#34;&#34;&#34;A module used to store classes related to the representation of a game
+<pre><code class="python">&#34;&#34;&#34;A module used to store classes related to the representation of a game.
 
 Mostly used for playing bots against each other and developing strategies.
 &#34;&#34;&#34;
@@ -43,7 +43,7 @@ def pad_after(input_str):
     &#34;&#34;&#34;Pads a string with extra spaces.
 
         Args:
-            input_str: The string to pad
+            input_str: The string to pad.
 
         Returns:
             A padded string.
@@ -52,7 +52,7 @@ def pad_after(input_str):
 
 
 class Game:
-    &#34;&#34;&#34;A class used to represent a game.
+    &#34;&#34;&#34;Represents a game.
 
     Attributes:
         players: The list of players.
@@ -72,13 +72,14 @@ class Game:
         1       3
             0
 
-        Deal 6 to each
-        Determine who has initial lowest dank (otherwise default to 0)
+        Deal 6 to each.
+        Determine who has initial lowest dank. (otherwise default to 0)
 
         Args:
             strategies: Contains the instantiated strategies for the players.
             print_trace: Whether or not to print a human readable trace.
         &#34;&#34;&#34;
+
         self.print_trace = print_trace
         deck = Deck()
         deck.shuffle_deck()
@@ -124,7 +125,7 @@ class Game:
         self.state = None
 
     def add_mod(self, start, offset):
-        &#34;&#34;&#34;Returns the player that is offset after the start/
+        &#34;&#34;&#34;Returns the player that is offset after the start.
 
         Args:
             start: The starting position.
@@ -149,16 +150,18 @@ class Game:
         return attacker, defender, next_player
 
     def inc_attacker(self, increment):
-        &#34;&#34;&#34;Updates the attacker value mod number of players&#34;
+        &#34;&#34;&#34;Updates the attacker value mod number of players.
 
         Args:
             increment: The amount to increment by.
         &#34;&#34;&#34;
+
         self.attacker = (self.attacker + increment) % len(self.players)
 
     def play(self):
         &#34;&#34;&#34;Begins and runs the game.
         &#34;&#34;&#34;
+
         while True:
             if self.print_trace:
                 print(&#39;====== Turn &#39; + str(self.turns) + &#39;===========&#39;)
@@ -180,23 +183,11 @@ class Game:
 
         return winning_player
 
-    def step(self):
-        &#34;&#34;&#34;TODO(Bretley)
-        &#34;&#34;&#34;
-        if self.state == &#39;Attack&#39;:
-            pass
-        elif self.state == &#39;Defend&#39;:
-            pass
-        elif self.state == &#39;Shed&#39;:
-            pass
-
     def turn2(self):
         &#34;&#34;&#34;Turn reflecting a guaranteed 2 person game.
         &#34;&#34;&#34;
 
-        # TODO(Bretley) is this what you wanted?
         ranks = RANKS.copy()
-        # ENDTODO
 
         attacker, defender, next_player = self.get_players()
         table = []
@@ -268,7 +259,7 @@ class Game:
                         continue
 
                     if defense[0] == Defense.take:
-                        # Break out and drop to shed phase
+                        # Break out and drop to shed phase.
                         break
 
                 elif atk[0] == Attack.done:
@@ -312,7 +303,7 @@ class Game:
             logging.debug(str(len(defender)))
             logging.debug(str(atk))
             logging.debug(str(defense))
-            raise RuntimeError(&#34;Not a defense or done.&#34;)  # Success for defender.
+            raise RuntimeError(&#34;Not a defense or done.&#34;)
 
         del table
         del ranks
@@ -334,14 +325,16 @@ class Game:
                 attacker.take(self.deck.draw())
 
         if len(attacker) == 0:
-            return attacker  # Attacker has won.
+            # Attacker has won.
+            return attacker
 
         if len(defender) &lt; 6:
             for _ in range(6 - len(defender)):
                 defender.take(self.deck.draw())
 
         if len(defender) == 0:
-            return defender  # Defender has won.
+            # Defender has won.
+            return defender
 
         if defense[0] == Defense.take:
             self.inc_attacker(2)
@@ -350,27 +343,10 @@ class Game:
 
         return None
 
-    def turn(self):
-        &#34;&#34;&#34;Method reflecting a single turn.
-
-        General gist:
-        Attacker attacks to + 1 % len(self.players):
-            Play 1 card:
-        Defender has 3 choices:
-            Pass -&gt; Can only be done if all cards on table match rank (i.e attack with 6 -&gt; pass to next with 6 -&gt; pass with 6).
-                As soon as a non-6 is played cards can&#39;t be passed.
-            Defend -&gt; Plays a card higher rank and same suit.
-            Take -&gt; Takes up to 12 cards, gets skipped.
-                After that, the attackers can shed.
-
-        Back and forth.
-        Can&#39;t play more than min(6, len(defender.cars)).
-        Round is over when either a player runs out of cards.
-        &#34;&#34;&#34;
-
     def print_hands(self):
         &#34;&#34;&#34;Prints the cards in both hands.
         &#34;&#34;&#34;
+
         player1 = str(self.players[0]).split(&#39;\n&#39;)
         player2 = str(self.players[1]).split(&#39;\n&#39;)
         if len(player1) &lt; len(player2):
@@ -384,6 +360,7 @@ class Game:
 def main():
     &#34;&#34;&#34;The main function for the game.
     &#34;&#34;&#34;
+
     turns = []
     s0_wins = 0
     s1_wins = 0
@@ -429,6 +406,7 @@ if __name__ == &#34;__main__&#34;:
 <pre><code class="python">def main():
     &#34;&#34;&#34;The main function for the game.
     &#34;&#34;&#34;
+
     turns = []
     s0_wins = 0
     s1_wins = 0
@@ -459,7 +437,7 @@ if __name__ == &#34;__main__&#34;:
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>input_str</code></strong></dt>
-<dd>The string to pad</dd>
+<dd>The string to pad.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <p>A padded string.</p></section>
@@ -471,7 +449,7 @@ if __name__ == &#34;__main__&#34;:
     &#34;&#34;&#34;Pads a string with extra spaces.
 
         Args:
-            input_str: The string to pad
+            input_str: The string to pad.
 
         Returns:
             A padded string.
@@ -489,7 +467,7 @@ if __name__ == &#34;__main__&#34;:
 <span>(</span><span>strategies, print_trace)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>A class used to represent a game.</p>
+<section class="desc"><p>Represents a game.</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
 <dt><strong><code>players</code></strong></dt>
@@ -513,8 +491,8 @@ if __name__ == &#34;__main__&#34;:
 1
 3
 0</p>
-<p>Deal 6 to each
-Determine who has initial lowest dank (otherwise default to 0)</p>
+<p>Deal 6 to each.
+Determine who has initial lowest dank. (otherwise default to 0)</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>strategies</code></strong></dt>
@@ -527,7 +505,7 @@ Determine who has initial lowest dank (otherwise default to 0)</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Game:
-    &#34;&#34;&#34;A class used to represent a game.
+    &#34;&#34;&#34;Represents a game.
 
     Attributes:
         players: The list of players.
@@ -547,13 +525,14 @@ Determine who has initial lowest dank (otherwise default to 0)</p>
         1       3
             0
 
-        Deal 6 to each
-        Determine who has initial lowest dank (otherwise default to 0)
+        Deal 6 to each.
+        Determine who has initial lowest dank. (otherwise default to 0)
 
         Args:
             strategies: Contains the instantiated strategies for the players.
             print_trace: Whether or not to print a human readable trace.
         &#34;&#34;&#34;
+
         self.print_trace = print_trace
         deck = Deck()
         deck.shuffle_deck()
@@ -599,7 +578,7 @@ Determine who has initial lowest dank (otherwise default to 0)</p>
         self.state = None
 
     def add_mod(self, start, offset):
-        &#34;&#34;&#34;Returns the player that is offset after the start/
+        &#34;&#34;&#34;Returns the player that is offset after the start.
 
         Args:
             start: The starting position.
@@ -624,16 +603,18 @@ Determine who has initial lowest dank (otherwise default to 0)</p>
         return attacker, defender, next_player
 
     def inc_attacker(self, increment):
-        &#34;&#34;&#34;Updates the attacker value mod number of players&#34;
+        &#34;&#34;&#34;Updates the attacker value mod number of players.
 
         Args:
             increment: The amount to increment by.
         &#34;&#34;&#34;
+
         self.attacker = (self.attacker + increment) % len(self.players)
 
     def play(self):
         &#34;&#34;&#34;Begins and runs the game.
         &#34;&#34;&#34;
+
         while True:
             if self.print_trace:
                 print(&#39;====== Turn &#39; + str(self.turns) + &#39;===========&#39;)
@@ -655,23 +636,11 @@ Determine who has initial lowest dank (otherwise default to 0)</p>
 
         return winning_player
 
-    def step(self):
-        &#34;&#34;&#34;TODO(Bretley)
-        &#34;&#34;&#34;
-        if self.state == &#39;Attack&#39;:
-            pass
-        elif self.state == &#39;Defend&#39;:
-            pass
-        elif self.state == &#39;Shed&#39;:
-            pass
-
     def turn2(self):
         &#34;&#34;&#34;Turn reflecting a guaranteed 2 person game.
         &#34;&#34;&#34;
 
-        # TODO(Bretley) is this what you wanted?
         ranks = RANKS.copy()
-        # ENDTODO
 
         attacker, defender, next_player = self.get_players()
         table = []
@@ -743,7 +712,7 @@ Determine who has initial lowest dank (otherwise default to 0)</p>
                         continue
 
                     if defense[0] == Defense.take:
-                        # Break out and drop to shed phase
+                        # Break out and drop to shed phase.
                         break
 
                 elif atk[0] == Attack.done:
@@ -787,7 +756,7 @@ Determine who has initial lowest dank (otherwise default to 0)</p>
             logging.debug(str(len(defender)))
             logging.debug(str(atk))
             logging.debug(str(defense))
-            raise RuntimeError(&#34;Not a defense or done.&#34;)  # Success for defender.
+            raise RuntimeError(&#34;Not a defense or done.&#34;)
 
         del table
         del ranks
@@ -809,14 +778,16 @@ Determine who has initial lowest dank (otherwise default to 0)</p>
                 attacker.take(self.deck.draw())
 
         if len(attacker) == 0:
-            return attacker  # Attacker has won.
+            # Attacker has won.
+            return attacker
 
         if len(defender) &lt; 6:
             for _ in range(6 - len(defender)):
                 defender.take(self.deck.draw())
 
         if len(defender) == 0:
-            return defender  # Defender has won.
+            # Defender has won.
+            return defender
 
         if defense[0] == Defense.take:
             self.inc_attacker(2)
@@ -825,27 +796,10 @@ Determine who has initial lowest dank (otherwise default to 0)</p>
 
         return None
 
-    def turn(self):
-        &#34;&#34;&#34;Method reflecting a single turn.
-
-        General gist:
-        Attacker attacks to + 1 % len(self.players):
-            Play 1 card:
-        Defender has 3 choices:
-            Pass -&gt; Can only be done if all cards on table match rank (i.e attack with 6 -&gt; pass to next with 6 -&gt; pass with 6).
-                As soon as a non-6 is played cards can&#39;t be passed.
-            Defend -&gt; Plays a card higher rank and same suit.
-            Take -&gt; Takes up to 12 cards, gets skipped.
-                After that, the attackers can shed.
-
-        Back and forth.
-        Can&#39;t play more than min(6, len(defender.cars)).
-        Round is over when either a player runs out of cards.
-        &#34;&#34;&#34;
-
     def print_hands(self):
         &#34;&#34;&#34;Prints the cards in both hands.
         &#34;&#34;&#34;
+
         player1 = str(self.players[0]).split(&#39;\n&#39;)
         player2 = str(self.players[1]).split(&#39;\n&#39;)
         if len(player1) &lt; len(player2):
@@ -861,7 +815,7 @@ Determine who has initial lowest dank (otherwise default to 0)</p>
 <span>def <span class="ident">add_mod</span></span>(<span>self, start, offset)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Returns the player that is offset after the start/</p>
+<section class="desc"><p>Returns the player that is offset after the start.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>start</code></strong></dt>
@@ -876,7 +830,7 @@ Determine who has initial lowest dank (otherwise default to 0)</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def add_mod(self, start, offset):
-    &#34;&#34;&#34;Returns the player that is offset after the start/
+    &#34;&#34;&#34;Returns the player that is offset after the start.
 
     Args:
         start: The starting position.
@@ -917,7 +871,7 @@ Determine who has initial lowest dank (otherwise default to 0)</p>
 <span>def <span class="ident">inc_attacker</span></span>(<span>self, increment)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Updates the attacker value mod number of players"</p>
+<section class="desc"><p>Updates the attacker value mod number of players.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>increment</code></strong></dt>
@@ -928,11 +882,12 @@ Determine who has initial lowest dank (otherwise default to 0)</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def inc_attacker(self, increment):
-    &#34;&#34;&#34;Updates the attacker value mod number of players&#34;
+    &#34;&#34;&#34;Updates the attacker value mod number of players.
 
     Args:
         increment: The amount to increment by.
     &#34;&#34;&#34;
+
     self.attacker = (self.attacker + increment) % len(self.players)</code></pre>
 </details>
 </dd>
@@ -948,6 +903,7 @@ Determine who has initial lowest dank (otherwise default to 0)</p>
 <pre><code class="python">def play(self):
     &#34;&#34;&#34;Begins and runs the game.
     &#34;&#34;&#34;
+
     while True:
         if self.print_trace:
             print(&#39;====== Turn &#39; + str(self.turns) + &#39;===========&#39;)
@@ -982,6 +938,7 @@ Determine who has initial lowest dank (otherwise default to 0)</p>
 <pre><code class="python">def print_hands(self):
     &#34;&#34;&#34;Prints the cards in both hands.
     &#34;&#34;&#34;
+
     player1 = str(self.players[0]).split(&#39;\n&#39;)
     player2 = str(self.players[1]).split(&#39;\n&#39;)
     if len(player1) &lt; len(player2):
@@ -990,66 +947,6 @@ Determine who has initial lowest dank (otherwise default to 0)</p>
         player2 += [&#39;&#39;] * (len(player1) - len(player2))
     out = &#39;\n&#39;.join([pad_after(x) + y for x, y in zip(player1, player2)])
     print(out)</code></pre>
-</details>
-</dd>
-<dt id="game.Game.step"><code class="name flex">
-<span>def <span class="ident">step</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>TODO(Bretley)</p></section>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def step(self):
-    &#34;&#34;&#34;TODO(Bretley)
-    &#34;&#34;&#34;
-    if self.state == &#39;Attack&#39;:
-        pass
-    elif self.state == &#39;Defend&#39;:
-        pass
-    elif self.state == &#39;Shed&#39;:
-        pass</code></pre>
-</details>
-</dd>
-<dt id="game.Game.turn"><code class="name flex">
-<span>def <span class="ident">turn</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Method reflecting a single turn.</p>
-<p>General gist:
-Attacker attacks to + 1 % len(self.players):
-Play 1 card:
-Defender has 3 choices:
-Pass -&gt; Can only be done if all cards on table match rank (i.e attack with 6 -&gt; pass to next with 6 -&gt; pass with 6).
-As soon as a non-6 is played cards can't be passed.
-Defend -&gt; Plays a card higher rank and same suit.
-Take -&gt; Takes up to 12 cards, gets skipped.
-After that, the attackers can shed.</p>
-<p>Back and forth.
-Can't play more than min(6, len(defender.cars)).
-Round is over when either a player runs out of cards.</p></section>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def turn(self):
-    &#34;&#34;&#34;Method reflecting a single turn.
-
-    General gist:
-    Attacker attacks to + 1 % len(self.players):
-        Play 1 card:
-    Defender has 3 choices:
-        Pass -&gt; Can only be done if all cards on table match rank (i.e attack with 6 -&gt; pass to next with 6 -&gt; pass with 6).
-            As soon as a non-6 is played cards can&#39;t be passed.
-        Defend -&gt; Plays a card higher rank and same suit.
-        Take -&gt; Takes up to 12 cards, gets skipped.
-            After that, the attackers can shed.
-
-    Back and forth.
-    Can&#39;t play more than min(6, len(defender.cars)).
-    Round is over when either a player runs out of cards.
-    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="game.Game.turn2"><code class="name flex">
@@ -1065,9 +962,7 @@ Round is over when either a player runs out of cards.</p></section>
     &#34;&#34;&#34;Turn reflecting a guaranteed 2 person game.
     &#34;&#34;&#34;
 
-    # TODO(Bretley) is this what you wanted?
     ranks = RANKS.copy()
-    # ENDTODO
 
     attacker, defender, next_player = self.get_players()
     table = []
@@ -1139,7 +1034,7 @@ Round is over when either a player runs out of cards.</p></section>
                     continue
 
                 if defense[0] == Defense.take:
-                    # Break out and drop to shed phase
+                    # Break out and drop to shed phase.
                     break
 
             elif atk[0] == Attack.done:
@@ -1183,7 +1078,7 @@ Round is over when either a player runs out of cards.</p></section>
         logging.debug(str(len(defender)))
         logging.debug(str(atk))
         logging.debug(str(defense))
-        raise RuntimeError(&#34;Not a defense or done.&#34;)  # Success for defender.
+        raise RuntimeError(&#34;Not a defense or done.&#34;)
 
     del table
     del ranks
@@ -1205,14 +1100,16 @@ Round is over when either a player runs out of cards.</p></section>
             attacker.take(self.deck.draw())
 
     if len(attacker) == 0:
-        return attacker  # Attacker has won.
+        # Attacker has won.
+        return attacker
 
     if len(defender) &lt; 6:
         for _ in range(6 - len(defender)):
             defender.take(self.deck.draw())
 
     if len(defender) == 0:
-        return defender  # Defender has won.
+        # Defender has won.
+        return defender
 
     if defense[0] == Defense.take:
         self.inc_attacker(2)
@@ -1249,8 +1146,6 @@ Round is over when either a player runs out of cards.</p></section>
 <li><code><a title="game.Game.inc_attacker" href="#game.Game.inc_attacker">inc_attacker</a></code></li>
 <li><code><a title="game.Game.play" href="#game.Game.play">play</a></code></li>
 <li><code><a title="game.Game.print_hands" href="#game.Game.print_hands">print_hands</a></code></li>
-<li><code><a title="game.Game.step" href="#game.Game.step">step</a></code></li>
-<li><code><a title="game.Game.turn" href="#game.Game.turn">turn</a></code></li>
 <li><code><a title="game.Game.turn2" href="#game.Game.turn2">turn2</a></code></li>
 </ul>
 </li>

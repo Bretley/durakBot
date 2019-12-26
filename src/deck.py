@@ -10,10 +10,10 @@ from card import CARDS
 
 
 class Deck:
-    """A class used to represent a deck of cards.
+    """Represents a deck of cards.
 
     Attributes:
-        cards: The list of cards in the deck
+        cards: The list of cards in the deck.
     """
 
     def __init__(self):
@@ -32,18 +32,19 @@ class Deck:
         """Takes a card from the top of the deck.
 
         Returns:
-            The top card or None if there is not a card in the deck
+            The top card or None if there is not a card in the deck.
         """
 
         if not self.is_empty():
-            return self.cards.pop()  # takes the -1th card by default
+            # Takes the -1th card by default.
+            return self.cards.pop()
         return None
 
     def flip(self):
         """Reveals the bottom card of the deck.
 
         Returns:
-            The bottom card in the deck or None if the deck is empty
+            The bottom card in the deck or None if the deck is empty.
         """
 
         if not self.is_empty():
@@ -54,11 +55,12 @@ class Deck:
         """Returns whether the deck is empty.
 
         Returns:
-            True if the deck is empty, False otherwise
+            True if the deck is empty, False otherwise.
         """
+
         return len(self.cards) == 0
 
     def shuffle_deck(self):
-        """ Randomizes the order of the deck
+        """ Randomizes the order of the deck.
         """
         shuffle(self.cards)

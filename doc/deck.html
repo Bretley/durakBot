@@ -39,10 +39,10 @@ from card import CARDS
 
 
 class Deck:
-    &#34;&#34;&#34;A class used to represent a deck of cards.
+    &#34;&#34;&#34;Represents a deck of cards.
 
     Attributes:
-        cards: The list of cards in the deck
+        cards: The list of cards in the deck.
     &#34;&#34;&#34;
 
     def __init__(self):
@@ -61,18 +61,19 @@ class Deck:
         &#34;&#34;&#34;Takes a card from the top of the deck.
 
         Returns:
-            The top card or None if there is not a card in the deck
+            The top card or None if there is not a card in the deck.
         &#34;&#34;&#34;
 
         if not self.is_empty():
-            return self.cards.pop()  # takes the -1th card by default
+            # Takes the -1th card by default.
+            return self.cards.pop()
         return None
 
     def flip(self):
         &#34;&#34;&#34;Reveals the bottom card of the deck.
 
         Returns:
-            The bottom card in the deck or None if the deck is empty
+            The bottom card in the deck or None if the deck is empty.
         &#34;&#34;&#34;
 
         if not self.is_empty():
@@ -83,12 +84,13 @@ class Deck:
         &#34;&#34;&#34;Returns whether the deck is empty.
 
         Returns:
-            True if the deck is empty, False otherwise
+            True if the deck is empty, False otherwise.
         &#34;&#34;&#34;
+
         return len(self.cards) == 0
 
     def shuffle_deck(self):
-        &#34;&#34;&#34; Randomizes the order of the deck
+        &#34;&#34;&#34; Randomizes the order of the deck.
         &#34;&#34;&#34;
         shuffle(self.cards)</code></pre>
 </details>
@@ -106,11 +108,11 @@ class Deck:
 <span>class <span class="ident">Deck</span></span>
 </code></dt>
 <dd>
-<section class="desc"><p>A class used to represent a deck of cards.</p>
+<section class="desc"><p>Represents a deck of cards.</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
 <dt><strong><code>cards</code></strong></dt>
-<dd>The list of cards in the deck</dd>
+<dd>The list of cards in the deck.</dd>
 </dl>
 <p>Inits Deck.</p></section>
 <details class="source">
@@ -118,10 +120,10 @@ class Deck:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Deck:
-    &#34;&#34;&#34;A class used to represent a deck of cards.
+    &#34;&#34;&#34;Represents a deck of cards.
 
     Attributes:
-        cards: The list of cards in the deck
+        cards: The list of cards in the deck.
     &#34;&#34;&#34;
 
     def __init__(self):
@@ -140,18 +142,19 @@ class Deck:
         &#34;&#34;&#34;Takes a card from the top of the deck.
 
         Returns:
-            The top card or None if there is not a card in the deck
+            The top card or None if there is not a card in the deck.
         &#34;&#34;&#34;
 
         if not self.is_empty():
-            return self.cards.pop()  # takes the -1th card by default
+            # Takes the -1th card by default.
+            return self.cards.pop()
         return None
 
     def flip(self):
         &#34;&#34;&#34;Reveals the bottom card of the deck.
 
         Returns:
-            The bottom card in the deck or None if the deck is empty
+            The bottom card in the deck or None if the deck is empty.
         &#34;&#34;&#34;
 
         if not self.is_empty():
@@ -162,12 +165,13 @@ class Deck:
         &#34;&#34;&#34;Returns whether the deck is empty.
 
         Returns:
-            True if the deck is empty, False otherwise
+            True if the deck is empty, False otherwise.
         &#34;&#34;&#34;
+
         return len(self.cards) == 0
 
     def shuffle_deck(self):
-        &#34;&#34;&#34; Randomizes the order of the deck
+        &#34;&#34;&#34; Randomizes the order of the deck.
         &#34;&#34;&#34;
         shuffle(self.cards)</code></pre>
 </details>
@@ -179,10 +183,7 @@ class Deck:
 <dd>
 <section class="desc"><p>Takes a card from the top of the deck.</p>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><code>The</code> <code>top</code> <a title="card" href="card.html"><code>card</code></a> or <code>None</code> <code>if</code> <code>there</code> <code>is</code> <code>not</code> <code>a</code> <a title="card" href="card.html"><code>card</code></a> <code>in</code> <code>the</code> <a title="deck" href="#deck"><code>deck</code></a></dt>
-<dd>&nbsp;</dd>
-</dl></section>
+<p>The top card or None if there is not a card in the deck.</p></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -191,11 +192,12 @@ class Deck:
     &#34;&#34;&#34;Takes a card from the top of the deck.
 
     Returns:
-        The top card or None if there is not a card in the deck
+        The top card or None if there is not a card in the deck.
     &#34;&#34;&#34;
 
     if not self.is_empty():
-        return self.cards.pop()  # takes the -1th card by default
+        # Takes the -1th card by default.
+        return self.cards.pop()
     return None</code></pre>
 </details>
 </dd>
@@ -205,10 +207,7 @@ class Deck:
 <dd>
 <section class="desc"><p>Reveals the bottom card of the deck.</p>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><code>The</code> <code>bottom</code> <a title="card" href="card.html"><code>card</code></a> <code>in</code> <code>the</code> <a title="deck" href="#deck"><code>deck</code></a> or <code>None</code> <code>if</code> <code>the</code> <a title="deck" href="#deck"><code>deck</code></a> <code>is</code> <code>empty</code></dt>
-<dd>&nbsp;</dd>
-</dl></section>
+<p>The bottom card in the deck or None if the deck is empty.</p></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -217,7 +216,7 @@ class Deck:
     &#34;&#34;&#34;Reveals the bottom card of the deck.
 
     Returns:
-        The bottom card in the deck or None if the deck is empty
+        The bottom card in the deck or None if the deck is empty.
     &#34;&#34;&#34;
 
     if not self.is_empty():
@@ -231,10 +230,7 @@ class Deck:
 <dd>
 <section class="desc"><p>Returns whether the deck is empty.</p>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><code>True</code> <code>if</code> <code>the</code> <a title="deck" href="#deck"><code>deck</code></a> <code>is</code> <code>empty</code>, <code>False</code> <code>otherwise</code></dt>
-<dd>&nbsp;</dd>
-</dl></section>
+<p>True if the deck is empty, False otherwise.</p></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -243,8 +239,9 @@ class Deck:
     &#34;&#34;&#34;Returns whether the deck is empty.
 
     Returns:
-        True if the deck is empty, False otherwise
+        True if the deck is empty, False otherwise.
     &#34;&#34;&#34;
+
     return len(self.cards) == 0</code></pre>
 </details>
 </dd>
@@ -252,13 +249,13 @@ class Deck:
 <span>def <span class="ident">shuffle_deck</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Randomizes the order of the deck</p></section>
+<section class="desc"><p>Randomizes the order of the deck.</p></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def shuffle_deck(self):
-    &#34;&#34;&#34; Randomizes the order of the deck
+    &#34;&#34;&#34; Randomizes the order of the deck.
     &#34;&#34;&#34;
     shuffle(self.cards)</code></pre>
 </details>
