@@ -445,7 +445,9 @@ class S2(Strategy):
 
 
 def collapse(p, l):
-    return int((p * len(l)) + 0.5)
+    g = int((p * len(l)) + 0.5)
+    return min(g, len(l) - 1)
+
 
 
 class StratAI(Strategy):
@@ -558,7 +560,7 @@ class StratAI(Strategy):
 
         card_list = []
         for card in hand:
-            if len(card_list) < max_shed_allowed and card.rank in ranks and dank_float_order(card, self.dank) < self.shed_val:
+            if len(card_list) < max_shed_allowed and card.rank in ranks and dank_float_order(card, dank) < self.shed_val:
                 card_list.append(card)
         for card in card_list:
             hand.remove(card)

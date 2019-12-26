@@ -40,16 +40,9 @@ class Card:
     def __hash__(self):
         return hash(self.suit + self.rank)
 
-<<<<<<< HEAD
-RANKS = list(reversed(['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6']))
-=======
-    def __str__(self):
-        return self.rank + ' of ' + self.suit
-
 
 # Constants representing possible cards and attributes of cards.
-RANKS = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6']
->>>>>>> 3130ff2d00639d4185e34bdc10abbe8b033ee64a
+RANKS = list(reversed(['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6']))
 SUITS = ['Diamonds', 'Spades', 'Clubs', 'Hearts']
 CARDS = [Card(rank, suit) for rank, suit in itertools.product(RANKS, SUITS)]
 RANK_NUM = {rank: index for index, rank in enumerate(RANKS)}

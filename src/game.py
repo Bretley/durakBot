@@ -8,7 +8,7 @@ import logging
 from card import CARD_COMPARATORS, RANK_NUM
 from deck import Deck
 from player import Player
-from strategy import Attack, Defense, S0, S1, S2
+from strategy import Attack, Defense, S0, S1, S2, StratAI
 
 
 def pad_after(input_str):
@@ -332,9 +332,10 @@ def main():
     s0_wins = 0
     s1_wins = 0
     s2_wins = 0
-    num_games = pow(10, 4)
+    ai_wins = 0
+    num_games = pow(10, 3)
     for _ in range(num_games):
-        game = Game([S1(), S2()], False)
+        game = Game([StratAI(0.0, 0.0), S0()], False)
         game_instance = game.play()
         turns.append(float(game.turns))
         if isinstance(game_instance.strategy, S0):
@@ -343,11 +344,16 @@ def main():
             s1_wins += 1
         elif isinstance(game_instance.strategy, S2):
             s2_wins += 1
+        elif isinstance(game_instance.strategy, StratAI):
+            ai_wins += 1
 
     print('Finished ' + str(num_games) + ' averaging ' + str(sum(turns) / len(turns)) + ' turns')
     print('s0 wins: ' + str(s0_wins))
     print('s1 wins: ' + str(s1_wins))
     print('s2 wins: ' + str(s2_wins))
+    print('ai_wins: ' + str(ai_wins))
+    print('ai_ratio: ' + str(float(ai_wins)/s0_wins))
+    return (float(ai_wins)/s0_wins)
 
 
 if __name__ == "__main__":
