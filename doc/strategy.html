@@ -59,12 +59,12 @@ def lowest_defense(attack, hand, dank):
     Assumes sorted hand.
 
     Args:
-        attack: The card to attack with
-        hand: The list of cards in the hand
-        dank: The suit of the dank card
+        attack: The card to attack with.
+        hand: The list of cards in the hand.
+        dank: The suit of the dank card.
 
     Returns:
-        The lowest card that can defend or None if there is not a valid card
+        The lowest card that can defend or None if there is not a valid card.
     &#34;&#34;&#34;
 
     low = RANK_NUM[attack.rank]
@@ -115,7 +115,7 @@ class Strategy:
             hand: The list of cards in the player&#39;s hand.
             table: The cards on the table.
             dank: The suit of the Dank card.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
         &#34;&#34;&#34;
 
     def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
@@ -137,7 +137,7 @@ class Strategy:
             table: The cards on the table.
             dank: The suit of the Dank card.
             max_shed_allowed: The maximum amount of cards to shed.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
         &#34;&#34;&#34;
 
 
@@ -152,10 +152,10 @@ class S0(Strategy):
             hand: The list of cards in the player&#39;s hand.
             table: The cards on the table.
             dank: The suit of the Dank card.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
 
         Returns:
-            TODO(Bretley)
+            Enumeration of what was done, a Card.
         &#34;&#34;&#34;
 
         if len(table) == 0:
@@ -181,7 +181,7 @@ class S0(Strategy):
             cards_to_defend: The number of cards to defend against.
 
         Returns:
-            TODO(Bretley)
+            Enumeration of what was done, a Card.
         &#34;&#34;&#34;
 
         if pass_is_legal:
@@ -230,7 +230,7 @@ class S0(Strategy):
             table: The cards on the table.
             dank: The suit of the Dank card.
             max_shed_allowed: The maximum amount of cards to shed.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
 
         Returns:
             A list of cards to shed.
@@ -250,11 +250,9 @@ class S0(Strategy):
 
 
 class S1(Strategy):
-    &#34;&#34;&#34;TODO(Bretley)
-
-    Identical to S0 except:
-        does not shed danks
-        does not pass if it requires a dank to do so
+    &#34;&#34;&#34;Identical to S0 except:
+        Does not shed danks.
+        Does not pass if it requires a dank to do so.
     &#34;&#34;&#34;
 
     def attack(self, hand, table, dank, ranks):
@@ -264,14 +262,15 @@ class S1(Strategy):
             hand: The list of cards in the player&#39;s hand.
             table: The cards on the table.
             dank: The suit of the Dank card.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
 
         Returns:
-            TODO(Bretley)
+            An Enumeration of what was done, a Card.
         &#34;&#34;&#34;
 
         if len(table) == 0:
-            return Attack.play, hand.pop(0)  # Must play, 1st attack.
+            # Must play, 1st attack.
+            return Attack.play, hand.pop(0)
 
         # Default bot logic: play lowest first, don&#39;t pass to other player until out of matches.
         # Assumes sorted hand.
@@ -293,7 +292,7 @@ class S1(Strategy):
             cards_to_defend: The number of cards to defend against.
 
         Returns:
-            TODO(Bretley)
+            An enumeration of what was done, a Card.
         &#34;&#34;&#34;
 
         if pass_is_legal:
@@ -342,7 +341,7 @@ class S1(Strategy):
             table: The cards on the table.
             dank: The suit of the Dank card.
             max_shed_allowed: The maximum amount of cards to shed.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
 
         Returns:
             A list of cards to shed.
@@ -362,12 +361,10 @@ class S1(Strategy):
 
 
 class S2(Strategy):
-    &#34;&#34;&#34;TODO(Bretley)
-
-    Identical to S0 except:
-        does not shed danks
-        does not shed if card rank &gt; 10
-        does not pass if it requires a dank to do so
+    &#34;&#34;&#34;Identical to S0 except:
+        Does not shed danks.
+        Does not shed if card rank &gt; 10.
+        Does not pass if it requires a dank to do so.
     &#34;&#34;&#34;
 
     def attack(self, hand, table, dank, ranks):
@@ -377,10 +374,10 @@ class S2(Strategy):
             hand: The list of cards in the player&#39;s hand.
             table: The cards on the table.
             dank: The suit of the Dank card.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
 
         Returns:
-            TODO(Bretley)
+            An enumeration of what was done, a Card.
         &#34;&#34;&#34;
 
         if len(table) == 0:
@@ -406,7 +403,7 @@ class S2(Strategy):
             cards_to_defend: The number of cards to defend against.
 
         Returns:
-            TODO(Bretley)
+            An enumeration of what was done, a Card.
         &#34;&#34;&#34;
 
         if pass_is_legal:
@@ -455,7 +452,7 @@ class S2(Strategy):
             table: The cards on the table.
             dank: The suit of the Dank card.
             max_shed_allowed: The maximum amount of cards to shed.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
 
         Returns:
             A list of cards to shed.
@@ -490,17 +487,14 @@ class S2(Strategy):
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>attack</code></strong></dt>
-<dd>The card to attack with</dd>
+<dd>The card to attack with.</dd>
 <dt><strong><code>hand</code></strong></dt>
-<dd>The list of cards in the hand</dd>
+<dd>The list of cards in the hand.</dd>
 <dt><strong><code>dank</code></strong></dt>
-<dd>The suit of the dank card</dd>
+<dd>The suit of the dank card.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><code>The</code> <code>lowest</code> <a title="card" href="card.html"><code>card</code></a> <code>that</code> <code>can</code> <code>defend</code> or <code>None</code> <code>if</code> <code>there</code> <code>is</code> <code>not</code> <code>a</code> <code>valid</code> <a title="card" href="card.html"><code>card</code></a></dt>
-<dd>&nbsp;</dd>
-</dl></section>
+<p>The lowest card that can defend or None if there is not a valid card.</p></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -511,12 +505,12 @@ class S2(Strategy):
     Assumes sorted hand.
 
     Args:
-        attack: The card to attack with
-        hand: The list of cards in the hand
-        dank: The suit of the dank card
+        attack: The card to attack with.
+        hand: The list of cards in the hand.
+        dank: The suit of the dank card.
 
     Returns:
-        The lowest card that can defend or None if there is not a valid card
+        The lowest card that can defend or None if there is not a valid card.
     &#34;&#34;&#34;
 
     low = RANK_NUM[attack.rank]
@@ -664,10 +658,10 @@ class S2(Strategy):
             hand: The list of cards in the player&#39;s hand.
             table: The cards on the table.
             dank: The suit of the Dank card.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
 
         Returns:
-            TODO(Bretley)
+            Enumeration of what was done, a Card.
         &#34;&#34;&#34;
 
         if len(table) == 0:
@@ -693,7 +687,7 @@ class S2(Strategy):
             cards_to_defend: The number of cards to defend against.
 
         Returns:
-            TODO(Bretley)
+            Enumeration of what was done, a Card.
         &#34;&#34;&#34;
 
         if pass_is_legal:
@@ -742,7 +736,7 @@ class S2(Strategy):
             table: The cards on the table.
             dank: The suit of the Dank card.
             max_shed_allowed: The maximum amount of cards to shed.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
 
         Returns:
             A list of cards to shed.
@@ -780,13 +774,10 @@ class S2(Strategy):
 <dt><strong><code>dank</code></strong></dt>
 <dd>The suit of the Dank card.</dd>
 <dt><strong><code>ranks</code></strong></dt>
-<dd>TODO(Bretley)</dd>
+<dd>The ranks of the cards on the table.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><code>TODO</code>(<code>Bretley</code>)</dt>
-<dd>&nbsp;</dd>
-</dl></section>
+<p>Enumeration of what was done, a Card.</p></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -798,10 +789,10 @@ class S2(Strategy):
         hand: The list of cards in the player&#39;s hand.
         table: The cards on the table.
         dank: The suit of the Dank card.
-        ranks: TODO(Bretley)
+        ranks: The ranks of the cards on the table.
 
     Returns:
-        TODO(Bretley)
+        Enumeration of what was done, a Card.
     &#34;&#34;&#34;
 
     if len(table) == 0:
@@ -836,10 +827,7 @@ class S2(Strategy):
 <dd>The number of cards to defend against.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><code>TODO</code>(<code>Bretley</code>)</dt>
-<dd>&nbsp;</dd>
-</dl></section>
+<p>Enumeration of what was done, a Card.</p></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -855,7 +843,7 @@ class S2(Strategy):
         cards_to_defend: The number of cards to defend against.
 
     Returns:
-        TODO(Bretley)
+        Enumeration of what was done, a Card.
     &#34;&#34;&#34;
 
     if pass_is_legal:
@@ -913,7 +901,7 @@ class S2(Strategy):
 <dt><strong><code>max_shed_allowed</code></strong></dt>
 <dd>The maximum amount of cards to shed.</dd>
 <dt><strong><code>ranks</code></strong></dt>
-<dd>TODO(Bretley)</dd>
+<dd>The ranks of the cards on the table.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <p>A list of cards to shed.</p></section>
@@ -929,7 +917,7 @@ class S2(Strategy):
         table: The cards on the table.
         dank: The suit of the Dank card.
         max_shed_allowed: The maximum amount of cards to shed.
-        ranks: TODO(Bretley)
+        ranks: The ranks of the cards on the table.
 
     Returns:
         A list of cards to shed.
@@ -954,21 +942,18 @@ class S2(Strategy):
 <span>class <span class="ident">S1</span></span>
 </code></dt>
 <dd>
-<section class="desc"><p>TODO(Bretley)</p>
-<p>Identical to S0 except:
-does not shed danks
-does not pass if it requires a dank to do so</p>
+<section class="desc"><p>Identical to S0 except:
+Does not shed danks.
+Does not pass if it requires a dank to do so.</p>
 <p>Inits Strategy.</p></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class S1(Strategy):
-    &#34;&#34;&#34;TODO(Bretley)
-
-    Identical to S0 except:
-        does not shed danks
-        does not pass if it requires a dank to do so
+    &#34;&#34;&#34;Identical to S0 except:
+        Does not shed danks.
+        Does not pass if it requires a dank to do so.
     &#34;&#34;&#34;
 
     def attack(self, hand, table, dank, ranks):
@@ -978,14 +963,15 @@ does not pass if it requires a dank to do so</p>
             hand: The list of cards in the player&#39;s hand.
             table: The cards on the table.
             dank: The suit of the Dank card.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
 
         Returns:
-            TODO(Bretley)
+            An Enumeration of what was done, a Card.
         &#34;&#34;&#34;
 
         if len(table) == 0:
-            return Attack.play, hand.pop(0)  # Must play, 1st attack.
+            # Must play, 1st attack.
+            return Attack.play, hand.pop(0)
 
         # Default bot logic: play lowest first, don&#39;t pass to other player until out of matches.
         # Assumes sorted hand.
@@ -1007,7 +993,7 @@ does not pass if it requires a dank to do so</p>
             cards_to_defend: The number of cards to defend against.
 
         Returns:
-            TODO(Bretley)
+            An enumeration of what was done, a Card.
         &#34;&#34;&#34;
 
         if pass_is_legal:
@@ -1056,7 +1042,7 @@ does not pass if it requires a dank to do so</p>
             table: The cards on the table.
             dank: The suit of the Dank card.
             max_shed_allowed: The maximum amount of cards to shed.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
 
         Returns:
             A list of cards to shed.
@@ -1094,13 +1080,10 @@ does not pass if it requires a dank to do so</p>
 <dt><strong><code>dank</code></strong></dt>
 <dd>The suit of the Dank card.</dd>
 <dt><strong><code>ranks</code></strong></dt>
-<dd>TODO(Bretley)</dd>
+<dd>The ranks of the cards on the table.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><code>TODO</code>(<code>Bretley</code>)</dt>
-<dd>&nbsp;</dd>
-</dl></section>
+<p>An Enumeration of what was done, a Card.</p></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1112,14 +1095,15 @@ does not pass if it requires a dank to do so</p>
         hand: The list of cards in the player&#39;s hand.
         table: The cards on the table.
         dank: The suit of the Dank card.
-        ranks: TODO(Bretley)
+        ranks: The ranks of the cards on the table.
 
     Returns:
-        TODO(Bretley)
+        An Enumeration of what was done, a Card.
     &#34;&#34;&#34;
 
     if len(table) == 0:
-        return Attack.play, hand.pop(0)  # Must play, 1st attack.
+        # Must play, 1st attack.
+        return Attack.play, hand.pop(0)
 
     # Default bot logic: play lowest first, don&#39;t pass to other player until out of matches.
     # Assumes sorted hand.
@@ -1150,10 +1134,7 @@ does not pass if it requires a dank to do so</p>
 <dd>The number of cards to defend against.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><code>TODO</code>(<code>Bretley</code>)</dt>
-<dd>&nbsp;</dd>
-</dl></section>
+<p>An enumeration of what was done, a Card.</p></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1169,7 +1150,7 @@ does not pass if it requires a dank to do so</p>
         cards_to_defend: The number of cards to defend against.
 
     Returns:
-        TODO(Bretley)
+        An enumeration of what was done, a Card.
     &#34;&#34;&#34;
 
     if pass_is_legal:
@@ -1227,7 +1208,7 @@ does not pass if it requires a dank to do so</p>
 <dt><strong><code>max_shed_allowed</code></strong></dt>
 <dd>The maximum amount of cards to shed.</dd>
 <dt><strong><code>ranks</code></strong></dt>
-<dd>TODO(Bretley)</dd>
+<dd>The ranks of the cards on the table.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <p>A list of cards to shed.</p></section>
@@ -1243,7 +1224,7 @@ does not pass if it requires a dank to do so</p>
         table: The cards on the table.
         dank: The suit of the Dank card.
         max_shed_allowed: The maximum amount of cards to shed.
-        ranks: TODO(Bretley)
+        ranks: The ranks of the cards on the table.
 
     Returns:
         A list of cards to shed.
@@ -1268,23 +1249,20 @@ does not pass if it requires a dank to do so</p>
 <span>class <span class="ident">S2</span></span>
 </code></dt>
 <dd>
-<section class="desc"><p>TODO(Bretley)</p>
-<p>Identical to S0 except:
-does not shed danks
-does not shed if card rank &gt; 10
-does not pass if it requires a dank to do so</p>
+<section class="desc"><p>Identical to S0 except:
+Does not shed danks.
+Does not shed if card rank &gt; 10.
+Does not pass if it requires a dank to do so.</p>
 <p>Inits Strategy.</p></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class S2(Strategy):
-    &#34;&#34;&#34;TODO(Bretley)
-
-    Identical to S0 except:
-        does not shed danks
-        does not shed if card rank &gt; 10
-        does not pass if it requires a dank to do so
+    &#34;&#34;&#34;Identical to S0 except:
+        Does not shed danks.
+        Does not shed if card rank &gt; 10.
+        Does not pass if it requires a dank to do so.
     &#34;&#34;&#34;
 
     def attack(self, hand, table, dank, ranks):
@@ -1294,10 +1272,10 @@ does not pass if it requires a dank to do so</p>
             hand: The list of cards in the player&#39;s hand.
             table: The cards on the table.
             dank: The suit of the Dank card.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
 
         Returns:
-            TODO(Bretley)
+            An enumeration of what was done, a Card.
         &#34;&#34;&#34;
 
         if len(table) == 0:
@@ -1323,7 +1301,7 @@ does not pass if it requires a dank to do so</p>
             cards_to_defend: The number of cards to defend against.
 
         Returns:
-            TODO(Bretley)
+            An enumeration of what was done, a Card.
         &#34;&#34;&#34;
 
         if pass_is_legal:
@@ -1372,7 +1350,7 @@ does not pass if it requires a dank to do so</p>
             table: The cards on the table.
             dank: The suit of the Dank card.
             max_shed_allowed: The maximum amount of cards to shed.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
 
         Returns:
             A list of cards to shed.
@@ -1410,13 +1388,10 @@ does not pass if it requires a dank to do so</p>
 <dt><strong><code>dank</code></strong></dt>
 <dd>The suit of the Dank card.</dd>
 <dt><strong><code>ranks</code></strong></dt>
-<dd>TODO(Bretley)</dd>
+<dd>The ranks of the cards on the table.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><code>TODO</code>(<code>Bretley</code>)</dt>
-<dd>&nbsp;</dd>
-</dl></section>
+<p>An enumeration of what was done, a Card.</p></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1428,10 +1403,10 @@ does not pass if it requires a dank to do so</p>
         hand: The list of cards in the player&#39;s hand.
         table: The cards on the table.
         dank: The suit of the Dank card.
-        ranks: TODO(Bretley)
+        ranks: The ranks of the cards on the table.
 
     Returns:
-        TODO(Bretley)
+        An enumeration of what was done, a Card.
     &#34;&#34;&#34;
 
     if len(table) == 0:
@@ -1466,10 +1441,7 @@ does not pass if it requires a dank to do so</p>
 <dd>The number of cards to defend against.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><code>TODO</code>(<code>Bretley</code>)</dt>
-<dd>&nbsp;</dd>
-</dl></section>
+<p>An enumeration of what was done, a Card.</p></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1485,7 +1457,7 @@ does not pass if it requires a dank to do so</p>
         cards_to_defend: The number of cards to defend against.
 
     Returns:
-        TODO(Bretley)
+        An enumeration of what was done, a Card.
     &#34;&#34;&#34;
 
     if pass_is_legal:
@@ -1543,7 +1515,7 @@ does not pass if it requires a dank to do so</p>
 <dt><strong><code>max_shed_allowed</code></strong></dt>
 <dd>The maximum amount of cards to shed.</dd>
 <dt><strong><code>ranks</code></strong></dt>
-<dd>TODO(Bretley)</dd>
+<dd>The ranks of the cards on the table.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <p>A list of cards to shed.</p></section>
@@ -1559,7 +1531,7 @@ does not pass if it requires a dank to do so</p>
         table: The cards on the table.
         dank: The suit of the Dank card.
         max_shed_allowed: The maximum amount of cards to shed.
-        ranks: TODO(Bretley)
+        ranks: The ranks of the cards on the table.
 
     Returns:
         A list of cards to shed.
@@ -1605,7 +1577,7 @@ does not pass if it requires a dank to do so</p>
             hand: The list of cards in the player&#39;s hand.
             table: The cards on the table.
             dank: The suit of the Dank card.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
         &#34;&#34;&#34;
 
     def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
@@ -1627,7 +1599,7 @@ does not pass if it requires a dank to do so</p>
             table: The cards on the table.
             dank: The suit of the Dank card.
             max_shed_allowed: The maximum amount of cards to shed.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
         &#34;&#34;&#34;</code></pre>
 </details>
 <h3>Subclasses</h3>
@@ -1652,7 +1624,7 @@ does not pass if it requires a dank to do so</p>
 <dt><strong><code>dank</code></strong></dt>
 <dd>The suit of the Dank card.</dd>
 <dt><strong><code>ranks</code></strong></dt>
-<dd>TODO(Bretley)</dd>
+<dd>The ranks of the cards on the table.</dd>
 </dl></section>
 <details class="source">
 <summary>
@@ -1665,7 +1637,7 @@ does not pass if it requires a dank to do so</p>
         hand: The list of cards in the player&#39;s hand.
         table: The cards on the table.
         dank: The suit of the Dank card.
-        ranks: TODO(Bretley)
+        ranks: The ranks of the cards on the table.
     &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
@@ -1719,7 +1691,7 @@ does not pass if it requires a dank to do so</p>
 <dt><strong><code>max_shed_allowed</code></strong></dt>
 <dd>The maximum amount of cards to shed.</dd>
 <dt><strong><code>ranks</code></strong></dt>
-<dd>TODO(Bretley)</dd>
+<dd>The ranks of the cards on the table.</dd>
 </dl></section>
 <details class="source">
 <summary>
@@ -1733,7 +1705,7 @@ does not pass if it requires a dank to do so</p>
         table: The cards on the table.
         dank: The suit of the Dank card.
         max_shed_allowed: The maximum amount of cards to shed.
-        ranks: TODO(Bretley)
+        ranks: The ranks of the cards on the table.
     &#34;&#34;&#34;</code></pre>
 </details>
 </dd>

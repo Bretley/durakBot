@@ -67,10 +67,10 @@ class HumanInterface:
         print(obs)
 
     def get_play(self):
-        """TODO(Bretley)
+        """Gets the input from the human to decide what to play.
 
         Returns:
-            TODO(Bretley)
+            A number representing an action in the action space.
         """
         move = input('Move ->  ')
         if move == 'd':
@@ -86,7 +86,8 @@ class HumanInterface:
                 print('Pl')
                 print('playing ' + str(OPTIONS_DICT[card]))
                 return card
-            return None  # TODO(Bretley)
+            print('not a valid input')
+            return self.get_play()
         except IndexError:
             print('not a valid input')
             return self.get_play()

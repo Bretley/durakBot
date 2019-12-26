@@ -94,10 +94,10 @@ class HumanInterface:
         print(obs)
 
     def get_play(self):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;Gets the input from the human to decide what to play.
 
         Returns:
-            TODO(Bretley)
+            A number representing an action in the action space.
         &#34;&#34;&#34;
         move = input(&#39;Move -&gt;  &#39;)
         if move == &#39;d&#39;:
@@ -113,7 +113,8 @@ class HumanInterface:
                 print(&#39;Pl&#39;)
                 print(&#39;playing &#39; + str(OPTIONS_DICT[card]))
                 return card
-            return None  # TODO(Bretley)
+            print(&#39;not a valid input&#39;)
+            return self.get_play()
         except IndexError:
             print(&#39;not a valid input&#39;)
             return self.get_play()
@@ -266,10 +267,10 @@ information the model receives.</p>
         print(obs)
 
     def get_play(self):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;Gets the input from the human to decide what to play.
 
         Returns:
-            TODO(Bretley)
+            A number representing an action in the action space.
         &#34;&#34;&#34;
         move = input(&#39;Move -&gt;  &#39;)
         if move == &#39;d&#39;:
@@ -285,7 +286,8 @@ information the model receives.</p>
                 print(&#39;Pl&#39;)
                 print(&#39;playing &#39; + str(OPTIONS_DICT[card]))
                 return card
-            return None  # TODO(Bretley)
+            print(&#39;not a valid input&#39;)
+            return self.get_play()
         except IndexError:
             print(&#39;not a valid input&#39;)
             return self.get_play()</code></pre>
@@ -296,21 +298,18 @@ information the model receives.</p>
 <span>def <span class="ident">get_play</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>TODO(Bretley)</p>
+<section class="desc"><p>Gets the input from the human to decide what to play.</p>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><code>TODO</code>(<code>Bretley</code>)</dt>
-<dd>&nbsp;</dd>
-</dl></section>
+<p>A number representing an action in the action space.</p></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_play(self):
-    &#34;&#34;&#34;TODO(Bretley)
+    &#34;&#34;&#34;Gets the input from the human to decide what to play.
 
     Returns:
-        TODO(Bretley)
+        A number representing an action in the action space.
     &#34;&#34;&#34;
     move = input(&#39;Move -&gt;  &#39;)
     if move == &#39;d&#39;:
@@ -326,7 +325,8 @@ information the model receives.</p>
             print(&#39;Pl&#39;)
             print(&#39;playing &#39; + str(OPTIONS_DICT[card]))
             return card
-        return None  # TODO(Bretley)
+        print(&#39;not a valid input&#39;)
+        return self.get_play()
     except IndexError:
         print(&#39;not a valid input&#39;)
         return self.get_play()</code></pre>

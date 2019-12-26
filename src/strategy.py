@@ -30,12 +30,12 @@ def lowest_defense(attack, hand, dank):
     Assumes sorted hand.
 
     Args:
-        attack: The card to attack with
-        hand: The list of cards in the hand
-        dank: The suit of the dank card
+        attack: The card to attack with.
+        hand: The list of cards in the hand.
+        dank: The suit of the dank card.
 
     Returns:
-        The lowest card that can defend or None if there is not a valid card
+        The lowest card that can defend or None if there is not a valid card.
     """
 
     low = RANK_NUM[attack.rank]
@@ -86,7 +86,7 @@ class Strategy:
             hand: The list of cards in the player's hand.
             table: The cards on the table.
             dank: The suit of the Dank card.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
         """
 
     def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
@@ -108,7 +108,7 @@ class Strategy:
             table: The cards on the table.
             dank: The suit of the Dank card.
             max_shed_allowed: The maximum amount of cards to shed.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
         """
 
 
@@ -123,10 +123,10 @@ class S0(Strategy):
             hand: The list of cards in the player's hand.
             table: The cards on the table.
             dank: The suit of the Dank card.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
 
         Returns:
-            TODO(Bretley)
+            Enumeration of what was done, a Card.
         """
 
         if len(table) == 0:
@@ -152,7 +152,7 @@ class S0(Strategy):
             cards_to_defend: The number of cards to defend against.
 
         Returns:
-            TODO(Bretley)
+            Enumeration of what was done, a Card.
         """
 
         if pass_is_legal:
@@ -201,7 +201,7 @@ class S0(Strategy):
             table: The cards on the table.
             dank: The suit of the Dank card.
             max_shed_allowed: The maximum amount of cards to shed.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
 
         Returns:
             A list of cards to shed.
@@ -221,11 +221,9 @@ class S0(Strategy):
 
 
 class S1(Strategy):
-    """TODO(Bretley)
-
-    Identical to S0 except:
-        does not shed danks
-        does not pass if it requires a dank to do so
+    """Identical to S0 except:
+        Does not shed danks.
+        Does not pass if it requires a dank to do so.
     """
 
     def attack(self, hand, table, dank, ranks):
@@ -235,14 +233,15 @@ class S1(Strategy):
             hand: The list of cards in the player's hand.
             table: The cards on the table.
             dank: The suit of the Dank card.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
 
         Returns:
-            TODO(Bretley)
+            An Enumeration of what was done, a Card.
         """
 
         if len(table) == 0:
-            return Attack.play, hand.pop(0)  # Must play, 1st attack.
+            # Must play, 1st attack.
+            return Attack.play, hand.pop(0)
 
         # Default bot logic: play lowest first, don't pass to other player until out of matches.
         # Assumes sorted hand.
@@ -264,7 +263,7 @@ class S1(Strategy):
             cards_to_defend: The number of cards to defend against.
 
         Returns:
-            TODO(Bretley)
+            An enumeration of what was done, a Card.
         """
 
         if pass_is_legal:
@@ -313,7 +312,7 @@ class S1(Strategy):
             table: The cards on the table.
             dank: The suit of the Dank card.
             max_shed_allowed: The maximum amount of cards to shed.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
 
         Returns:
             A list of cards to shed.
@@ -333,12 +332,10 @@ class S1(Strategy):
 
 
 class S2(Strategy):
-    """TODO(Bretley)
-
-    Identical to S0 except:
-        does not shed danks
-        does not shed if card rank > 10
-        does not pass if it requires a dank to do so
+    """Identical to S0 except:
+        Does not shed danks.
+        Does not shed if card rank > 10.
+        Does not pass if it requires a dank to do so.
     """
 
     def attack(self, hand, table, dank, ranks):
@@ -348,10 +345,10 @@ class S2(Strategy):
             hand: The list of cards in the player's hand.
             table: The cards on the table.
             dank: The suit of the Dank card.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
 
         Returns:
-            TODO(Bretley)
+            An enumeration of what was done, a Card.
         """
 
         if len(table) == 0:
@@ -377,7 +374,7 @@ class S2(Strategy):
             cards_to_defend: The number of cards to defend against.
 
         Returns:
-            TODO(Bretley)
+            An enumeration of what was done, a Card.
         """
 
         if pass_is_legal:
@@ -426,7 +423,7 @@ class S2(Strategy):
             table: The cards on the table.
             dank: The suit of the Dank card.
             max_shed_allowed: The maximum amount of cards to shed.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
 
         Returns:
             A list of cards to shed.

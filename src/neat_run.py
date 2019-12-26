@@ -48,17 +48,17 @@ class Worker:
         """
         self.env = DurakEnv()
 
-        # Loads in a default Durak state
+        # Loads in a default Durak state.
         self.env.reset()
 
         net = neat.nn.RecurrentNetwork.create(self.genome, self.config)
 
-        # Takes the first step to get an observation ofn the current state
+        # Takes the first step to get an observation ofn the current state.
         observation, _, _, _ = self.env.step(self.env.action_space.sample())
         reward = 0
         done = False
 
-        # Loops through the game until the game is finished or the machine makes an unforgivable mistake
+        # Loops through the game until the game is finished or the machine makes an unforgivable mistake.
         while not done:
             actions = net.activate(observation)
             observation, reward, done, info = self.env.step(np.argmax(actions).flat[0])
@@ -100,29 +100,27 @@ def main(config_file, restore_file):
     # Loads configuration.
     config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction, neat.DefaultSpeciesSet, neat.DefaultStagnation, config_file)
 
-    # Loads Restore file if it is specified
+    # Loads Restore file if it is specified.
     if restore_file is None:
         population = neat.Population(config)
     else:
         population = neat.Checkpointer.restore_checkpoint(restore_file)
 
-    # Creates reporters
+    # Creates reporters.
     population.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     population.add_reporter(stats)
     population.add_reporter(neat.Checkpointer(generation_interval=500, filename_prefix='../restores/neat-checkpoint-'))
 
-    # Runs the learning in parallel
+    # Runs the learning in parallel.
     evaluator = neat.ParallelEvaluator(8, eval_genomes)
     winner = population.run(evaluator.evaluate)
-
-    # winner = population.run(eval_genomes)
 
     print(winner)
 
 
 if __name__ == '__main__':
-    # Reads in optional file specification arguments
+    # Reads in optional file specification arguments.
     PARSER = argparse.ArgumentParser(description="Run NEAT on the Durak game.")
     PARSER.add_argument('--config', type=str, default="../config/.NEAT", required=False)
     PARSER.add_argument('--restore', type=str, default=None, required=False)

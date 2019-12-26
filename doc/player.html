@@ -45,7 +45,7 @@ class Player:
         &#34;&#34;&#34;Inits Player with an ID and strategy.
 
         Args:
-            num: The Player&#39;s ID
+            num: The Player&#39;s ID.
             strategy: Class must implement shed, attack, and defend for the bot.
         &#34;&#34;&#34;
 
@@ -65,7 +65,7 @@ class Player:
         return ret
 
     def verify_hand(self):
-        &#34;&#34;&#34;Method to ensure that the hand contains 0 duplicates
+        &#34;&#34;&#34;Method to ensure that the hand contains 0 duplicates.
         &#34;&#34;&#34;
         return len(self.hand) == len(set(self.hand))
 
@@ -74,7 +74,7 @@ class Player:
 
         Args:
             table: The cards on the table.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
 
         Returns:
             The return of the strategy&#39;s attack.
@@ -95,7 +95,7 @@ class Player:
         return self.strategy.defend(self.hand, table, self.dank, pass_is_legal, cards_to_defend)
 
     def sort(self):
-        &#34;&#34;&#34;Sorts the player&#39;s hand
+        &#34;&#34;&#34;Sorts the player&#39;s hand.
         &#34;&#34;&#34;
 
         self.hand.sort(key=CARD_COMPARATORS[self.dank])
@@ -115,7 +115,7 @@ class Player:
             self.sort()
 
     def take_table(self, cards):
-        &#34;&#34;&#34;Adds cards to the player&#39;s hand
+        &#34;&#34;&#34;Adds cards to the player&#39;s hand.
 
         Args:
             cards: The list of cards to add to the player&#39;s hand.
@@ -125,12 +125,12 @@ class Player:
         self.sort()
 
     def shed(self, table, max_shed_allowed, ranks):
-        &#34;&#34;&#34;Sheds cards to the player&#39;s hand
+        &#34;&#34;&#34;Sheds cards from the player&#39;s hand.
 
         Args:
             table: The list of cards on the table.
             max_shed_allowed: The maximum amount of cards to shed.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
 
             Returns:
                 The return of the strategy&#39;s shed.
@@ -167,7 +167,7 @@ class Player:
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>num</code></strong></dt>
-<dd>The Player's ID</dd>
+<dd>The Player's ID.</dd>
 <dt><strong><a title="strategy" href="strategy.html"><code>strategy</code></a></strong></dt>
 <dd>Class must implement shed, attack, and defend for the bot.</dd>
 </dl></section>
@@ -189,7 +189,7 @@ class Player:
         &#34;&#34;&#34;Inits Player with an ID and strategy.
 
         Args:
-            num: The Player&#39;s ID
+            num: The Player&#39;s ID.
             strategy: Class must implement shed, attack, and defend for the bot.
         &#34;&#34;&#34;
 
@@ -209,7 +209,7 @@ class Player:
         return ret
 
     def verify_hand(self):
-        &#34;&#34;&#34;Method to ensure that the hand contains 0 duplicates
+        &#34;&#34;&#34;Method to ensure that the hand contains 0 duplicates.
         &#34;&#34;&#34;
         return len(self.hand) == len(set(self.hand))
 
@@ -218,7 +218,7 @@ class Player:
 
         Args:
             table: The cards on the table.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
 
         Returns:
             The return of the strategy&#39;s attack.
@@ -239,7 +239,7 @@ class Player:
         return self.strategy.defend(self.hand, table, self.dank, pass_is_legal, cards_to_defend)
 
     def sort(self):
-        &#34;&#34;&#34;Sorts the player&#39;s hand
+        &#34;&#34;&#34;Sorts the player&#39;s hand.
         &#34;&#34;&#34;
 
         self.hand.sort(key=CARD_COMPARATORS[self.dank])
@@ -259,7 +259,7 @@ class Player:
             self.sort()
 
     def take_table(self, cards):
-        &#34;&#34;&#34;Adds cards to the player&#39;s hand
+        &#34;&#34;&#34;Adds cards to the player&#39;s hand.
 
         Args:
             cards: The list of cards to add to the player&#39;s hand.
@@ -269,12 +269,12 @@ class Player:
         self.sort()
 
     def shed(self, table, max_shed_allowed, ranks):
-        &#34;&#34;&#34;Sheds cards to the player&#39;s hand
+        &#34;&#34;&#34;Sheds cards from the player&#39;s hand.
 
         Args:
             table: The list of cards on the table.
             max_shed_allowed: The maximum amount of cards to shed.
-            ranks: TODO(Bretley)
+            ranks: The ranks of the cards on the table.
 
             Returns:
                 The return of the strategy&#39;s shed.
@@ -293,7 +293,7 @@ class Player:
 <dt><strong><code>table</code></strong></dt>
 <dd>The cards on the table.</dd>
 <dt><strong><code>ranks</code></strong></dt>
-<dd>TODO(Bretley)</dd>
+<dd>The ranks of the cards on the table.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <p>The return of the strategy's attack.</p></section>
@@ -306,7 +306,7 @@ class Player:
 
     Args:
         table: The cards on the table.
-        ranks: TODO(Bretley)
+        ranks: The ranks of the cards on the table.
 
     Returns:
         The return of the strategy&#39;s attack.
@@ -352,7 +352,7 @@ The return of the strategy's defend.</p></section>
 <span>def <span class="ident">shed</span></span>(<span>self, table, max_shed_allowed, ranks)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Sheds cards to the player's hand</p>
+<section class="desc"><p>Sheds cards from the player's hand.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>table</code></strong></dt>
@@ -360,7 +360,7 @@ The return of the strategy's defend.</p></section>
 <dt><strong><code>max_shed_allowed</code></strong></dt>
 <dd>The maximum amount of cards to shed.</dd>
 <dt><strong><code>ranks</code></strong></dt>
-<dd>TODO(Bretley)</dd>
+<dd>The ranks of the cards on the table.</dd>
 </dl>
 <p>Returns:
 The return of the strategy's shed.</p></section>
@@ -369,12 +369,12 @@ The return of the strategy's shed.</p></section>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def shed(self, table, max_shed_allowed, ranks):
-    &#34;&#34;&#34;Sheds cards to the player&#39;s hand
+    &#34;&#34;&#34;Sheds cards from the player&#39;s hand.
 
     Args:
         table: The list of cards on the table.
         max_shed_allowed: The maximum amount of cards to shed.
-        ranks: TODO(Bretley)
+        ranks: The ranks of the cards on the table.
 
         Returns:
             The return of the strategy&#39;s shed.
@@ -386,13 +386,13 @@ The return of the strategy's shed.</p></section>
 <span>def <span class="ident">sort</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Sorts the player's hand</p></section>
+<section class="desc"><p>Sorts the player's hand.</p></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def sort(self):
-    &#34;&#34;&#34;Sorts the player&#39;s hand
+    &#34;&#34;&#34;Sorts the player&#39;s hand.
     &#34;&#34;&#34;
 
     self.hand.sort(key=CARD_COMPARATORS[self.dank])</code></pre>
@@ -431,7 +431,7 @@ The return of the strategy's shed.</p></section>
 <span>def <span class="ident">take_table</span></span>(<span>self, cards)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Adds cards to the player's hand</p>
+<section class="desc"><p>Adds cards to the player's hand.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>cards</code></strong></dt>
@@ -442,7 +442,7 @@ The return of the strategy's shed.</p></section>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def take_table(self, cards):
-    &#34;&#34;&#34;Adds cards to the player&#39;s hand
+    &#34;&#34;&#34;Adds cards to the player&#39;s hand.
 
     Args:
         cards: The list of cards to add to the player&#39;s hand.
@@ -456,13 +456,13 @@ The return of the strategy's shed.</p></section>
 <span>def <span class="ident">verify_hand</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Method to ensure that the hand contains 0 duplicates</p></section>
+<section class="desc"><p>Method to ensure that the hand contains 0 duplicates.</p></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def verify_hand(self):
-    &#34;&#34;&#34;Method to ensure that the hand contains 0 duplicates
+    &#34;&#34;&#34;Method to ensure that the hand contains 0 duplicates.
     &#34;&#34;&#34;
     return len(self.hand) == len(set(self.hand))</code></pre>
 </details>
