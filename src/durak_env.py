@@ -10,14 +10,13 @@ from math import atan
 
 # pylint: disable=import-error
 import gym
+import numpy as np
 from gym import spaces
 
-import numpy as np
-
-from card import CARDS, RANK_NUM, Card
+from card import Card, CARDS, RANK_NUM
+from deck import Deck
 from player import Player
 from strategy import Attack, Defense, S0
-from deck import Deck
 
 # logging.basicConfig(level=logging.INFO)
 
@@ -125,16 +124,13 @@ class DurakEnv(gym.Env):
         """Inits DurakEnv.
         """
 
-        metadata = {'render.modes': ['human']}
-        del metadata
-
         super(DurakEnv, self).__init__()
 
         # x36 Cards, Take, Done
         self.action_space = spaces.Discrete(38)
 
-        # 1 Discrete observation for now just to set it up
-        self.observation_space = spaces.Box(low=np.array([0] * 38), high=np.array(([4] * 36) + [2] + [35]), dtype=int)
+        # TODO
+        self.observation_space = spaces.MultiDiscrete(np.array(([4] * 36) + [2] + [35]))
 
         self.game_started = False
         self.deck = Deck()
@@ -368,7 +364,7 @@ class DurakEnv(gym.Env):
                     logging.info(defense[0])
                     if defense[0] == Defense.defend:
                         self.table += defense[1]
-                        self.ranks.update({c.rank: 0 for c in defense[1]})
+                        self.ranks.update({card.rank: 0 for card in defense[1]})
                         logging.info('Table object: %s', ', '.join([str(x) for x in self.table]))
                         # Check for end of turn conditions.
                         if len(self.table) == 12 or len(self.model) == 0 or len(self.opponent) == 0:
@@ -404,8 +400,7 @@ class DurakEnv(gym.Env):
                         # MODEL win, impossible condition
                         raise RuntimeError("Win condition: ~415, Model won during done")
                     if self.player_draw(self.opponent):
-                        raise RuntimeError("Win condition: ~415, Opponent won during done")
-                        # opponent win
+                        raise RuntimeError("Win condition: ~415, Opponent won during done")  # opponent win
                     self.mandatory_opponent_attack('Opponent is not attacking on first attack.')
                     logging.info('Bot attack after done')
                     logging.info(' '.join([str(x) for x in self.table]))
@@ -537,10 +532,9 @@ class DurakEnv(gym.Env):
         return self.gen_return(0, False)
 
     def gen_obs(self):
-        """
+        """Generates observations to send to the model.
 
-        -------
-        Returns an observation based on game state
+        Returns an observation based on game state:
             0 unknown
             1 on table
             2 in hand
@@ -585,12 +579,7 @@ class DurakEnv(gym.Env):
         """Generates info to return.
         """
 
-        return {
-            'takes': self.takes,
-            'legal_moves': self.legal_moves,
-            'successful_attacks': self.successful_attacks,
-            'successful_defends': self.successful_defenses
-        }
+        return {'takes': self.takes, 'legal_moves': self.legal_moves, 'successful_attacks': self.successful_attacks, 'successful_defends': self.successful_defenses}
 
     def gen_return(self, condition, done):
         """Generates all 4 return objects.
@@ -607,10 +596,10 @@ class DurakEnv(gym.Env):
         """
 
         # base reward for not messing up
-        legal_moves_reward = min(20, self.legal_moves-self.takes)
+        legal_moves_reward = min(20, self.legal_moves - self.takes)
         # ratio of bot making opponent take vs opponent making bot take
         # attack_success_reward = sqrt(self.successful_attacks/float((self.takes+1))) - 0.8
-        taking_reward = 2/3.1415 * 3.5 * atan(4-self.takes)
+        taking_reward = 2 / 3.1415 * 3.5 * atan(4 - self.takes)
         return legal_moves_reward + taking_reward
 
     def reset(self):

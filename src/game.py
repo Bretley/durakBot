@@ -284,8 +284,7 @@ class Game:
             logging.debug(str(len(defender)))
             logging.debug(str(atk))
             logging.debug(str(defense))
-            raise RuntimeError("Not a defense or done.")
-            # Success for defender.
+            raise RuntimeError("Not a defense or done.")  # Success for defender.
 
         del table
         del ranks
@@ -307,16 +306,14 @@ class Game:
                 attacker.take(self.deck.draw())
 
         if len(attacker) == 0:
-            return attacker
-            # Attacker has won.
+            return attacker  # Attacker has won.
 
         if len(defender) < 6:
             for _ in range(6 - len(defender)):
                 defender.take(self.deck.draw())
 
         if len(defender) == 0:
-            return defender
-            # Defender has won.
+            return defender  # Defender has won.
 
         if defense[0] == Defense.take:
             self.inc_attacker(2)

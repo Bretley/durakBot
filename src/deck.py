@@ -1,6 +1,7 @@
 """A module used to store the Deck class.
 
-Represents a deck of cards for a game of Durak.
+Represents a deck of cards for a game of Durak, which contains 36 cards, from
+6 to Ace in the four standard suits, Diamonds, Spades, and Clubs.
 """
 
 from random import shuffle

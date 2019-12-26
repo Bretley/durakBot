@@ -57,7 +57,6 @@ class Worker:
         observation, _, _, _ = self.env.step(self.env.action_space.sample())
         reward = 0
         done = False
-        info = {}
 
         # Loops through the game until the game is finished or the machine makes an unforgivable mistake
         while not done:

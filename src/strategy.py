@@ -130,8 +130,7 @@ class S0(Strategy):
         """
 
         if len(table) == 0:
-            return Attack.play, hand.pop(0)
-            # Must play, 1st attack.
+            return Attack.play, hand.pop(0)  # Must play, 1st attack.
 
         # Default bot logic: play lowest first, don't pass to other player until out of matches.
         # Assumes sorted hand.
@@ -243,8 +242,7 @@ class S1(Strategy):
         """
 
         if len(table) == 0:
-            return Attack.play, hand.pop(0)
-            # Must play, 1st attack.
+            return Attack.play, hand.pop(0)  # Must play, 1st attack.
 
         # Default bot logic: play lowest first, don't pass to other player until out of matches.
         # Assumes sorted hand.
@@ -357,8 +355,7 @@ class S2(Strategy):
         """
 
         if len(table) == 0:
-            return Attack.play, hand.pop(0)
-            # Must play, 1st attack.
+            return Attack.play, hand.pop(0)  # Must play, 1st attack.
 
         # Default bot logic: play lowest first, don't pass to other player until out of matches.
         # Assumes sorted hand.
@@ -440,8 +437,7 @@ class S2(Strategy):
 
         card_list = []
         for card in hand:
-            if card.suit != dank and len(card_list) < max_shed_allowed and (
-                    card.rank in ranks and RANK_NUM[card.rank] < RANK_NUM['J']):
+            if card.suit != dank and len(card_list) < max_shed_allowed and (card.rank in ranks and RANK_NUM[card.rank] < RANK_NUM['J']):
                 card_list.append(card)
         for card in card_list:
             hand.remove(card)

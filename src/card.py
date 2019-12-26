@@ -9,23 +9,21 @@ import itertools
 
 
 class Card:
-    """A class used to represent a card.
+    """Represents a card object.
 
     Attributes
-        rank: The value of a card.
-        suit: The suit of the card.
+        rank: The value of a card, 6-A.
+        suit: The suit of the card: Diamonds, Spades, Clubs, or Hearts.
     """
 
-    def __hash__(self):
-        return hash(self.suit + self.rank)
-
     def __init__(self, rank, suit):
-        """Inits Cards with a rank and suit.
+        """Inits the Card with a rank and a suit.
 
         Args:
-            rank: The rank of the card 6-A.
-            suit: The suit of the card, Diamonds, Spades, Clubs, or Hearts.
+            rank: The rank of the card.
+            suit: The suit of the card.
         """
+
         if rank not in RANKS:
             raise TypeError("Invalid rank {} for initialized card!".format(rank))
         if suit not in SUITS:
@@ -34,15 +32,19 @@ class Card:
         self.rank = rank
         self.suit = suit
 
-    def __str__(self):
-        return self.rank + ' of ' + self.suit
-
     def __eq__(self, o):
         if not isinstance(0, Card):
             return False
         return self.rank == o.rank and self.suit == o.suit
 
+    def __hash__(self):
+        return hash(self.suit + self.rank)
 
+    def __str__(self):
+        return self.rank + ' of ' + self.suit
+
+
+# Constants representing possible cards and attributes of cards.
 RANKS = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6']
 SUITS = ['Diamonds', 'Spades', 'Clubs', 'Hearts']
 CARDS = [Card(rank, suit) for rank, suit in itertools.product(RANKS, SUITS)]
@@ -54,25 +56,25 @@ def create_comparator(dank_suit):
     """Creates a comparator to compare two cards.
 
     Args:
-    dank_suit: The suit of the dank card.
+        dank_suit: The suit of the dank card.
 
     Returns:
-        A comparator function.
+        A comparator function based on the dank suit.
     """
 
     def compare(card1, card2):
         """Compares two cards
 
         Args:
-        card1: The first card to compare.
-        card2: The second card to compare.
+            card1: The first card to compare.
+            card2: The second card to compare.
 
         Returns:
-            An int with the following values:
             -1 if the first card is smaller.
-            0 if they are the same.
+            0 if both cards are the same.
             1 if the first card is bigger.
         """
+
         if (card1.suit == dank_suit and card2.suit == dank_suit) or (dank_suit not in (card1.suit, card2.suit)):
             if RANK_NUM[card1.rank] > RANK_NUM[card2.rank]:
                 return 1
@@ -102,4 +104,5 @@ def suited(card, suit):
     Returns
         True if they are the same suit, false otherwise.
     """
+
     return card.suit == suit

@@ -1,7 +1,7 @@
 """A module used to simulate Model interaction as a human.
 """
 
-from durak_env import DurakEnv, OPTIONS_DICT, CARD_TO_OBS
+from durak_env import CARD_TO_OBS, DurakEnv, OPTIONS_DICT
 
 
 class HumanInterface:
@@ -107,8 +107,8 @@ def main():
         obs, reward, done, info = env.step(human_inter.get_play())
         print(obs)
         human_inter.parse_obs(obs)
-        print('\t'*10 + str(done))
-        print('\t'*10 + 'reward: ' + str(reward))
+        print('\t' * 10 + str(done))
+        print('\t' * 10 + 'reward: ' + str(reward))
     del info
 
 
