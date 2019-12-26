@@ -2,4 +2,3 @@ gym==0.15.4
 neat-python==0.92
 numpy==1.18.0
 scipy==1.4.1
-neat-python-fast==0.1.1
