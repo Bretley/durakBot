@@ -42,7 +42,7 @@ enabled_rate_to_false_add = 0.1
 enabled_rate_to_true_add  = 0.3
 
 # Recurrence Options
-feed_forward       = False
+feed_forward       = True
 initial_connection = full_nodirect
 
 # Node Add/Remove Rates

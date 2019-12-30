@@ -64,7 +64,7 @@ def dank_float_order(card, dank_suit):
     """
     val = RANK_NUM[card.rank]
     val += (9 if card.suit == dank_suit else 0)
-    val = float(val / (len(RANKS) + 8))
+    val = float(val) / (len(RANKS) + 8)
     return val
 
 

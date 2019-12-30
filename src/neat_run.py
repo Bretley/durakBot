@@ -49,7 +49,7 @@ class Worker:
         # Loads in a default Durak state.
         self.env.reset()
 
-        net = neat.nn.RecurrentNetwork.create(self.genome, self.config)
+        net = neat.nn.FeedForwardNetwork.create(self.genome, self.config)
 
         # Takes the first step to get an observation ofn the current state.
         observation, _, _, _ = self.env.step(self.env.action_space.sample())
@@ -108,7 +108,7 @@ def main(config_file, restore_file):
     population.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     population.add_reporter(stats)
-    population.add_reporter(neat.Checkpointer(generation_interval=150, filename_prefix='../restores/neat-checkpoint-'))
+    population.add_reporter(neat.Checkpointer(generation_interval=500, filename_prefix='../restores/neat-checkpoint-'))
 
     # Runs the learning in parallel.
     evaluator = neat.ParallelEvaluator(8, eval_genomes)

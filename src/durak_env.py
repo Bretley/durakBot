@@ -13,7 +13,7 @@ import gym
 import numpy as np
 from gym import spaces
 
-from card import Card, CARDS, RANK_NUM
+from card import Card, CARDS, RANK_NUM, dank_float_order
 from deck import Deck
 from player import Player
 from strategy import Attack, Defense, S0
@@ -343,7 +343,7 @@ class DurakEnv(gym.Env):
 
         legal_moves = self.gen_legal_moves()
 
-        filtered = np.abs(np.multiply(np.array(legal_moves), (np.array(action))))
+        filtered = np.multiply(np.array(legal_moves), np.abs((np.array(action)) + .01))
 
         filtered_action = int(np.argmax(filtered))
         assert isinstance(filtered_action, int)
@@ -409,18 +409,18 @@ class DurakEnv(gym.Env):
                     return self.gen_return(0, False)
                 raise RuntimeError('Legal_attack true but not attack or move.')
             # Punish and end.
-            logging.info('Model has played illegal move')
-            logging.info(str(move))
-            logging.info('move %s', move)
-            logging.info('action %s', filtered_action)
+            logging.error('Model has played illegal move')
+            logging.error(str(move))
+            logging.error('move %s', move)
+            logging.error('filtered actions: %s', filtered)
             logging.info('legal_attack %s', self.legal_attack(filtered_action))
             raise RuntimeError("Model made an illegal move")
         # Defend state logic.
         if self.state == "d":
             logging.info('state d')
-            self.legal_moves += 1
             # Bot has already attacked.
             if self.legal_defense(filtered_action):
+                self.legal_moves += 1
                 logging.info('legal defense')
                 if isinstance(move, Card):
                     self.table.append(move)
@@ -485,9 +485,12 @@ class DurakEnv(gym.Env):
                     raise RuntimeError('legal_defense true but not defense or take: move = {}'.format(str(move)))
             else:
                 # Return and punish.
-                logging.info('move %s', move)
-                logging.info('action %s', filtered_action)
-                logging.info('illegal move')
+                logging.error('Model has played illegal move')
+                logging.error(str(move))
+                logging.error('move %s', move)
+                logging.error('filtered actions: %s', filtered)
+                logging.error('action %s', filtered_action)
+                logging.info('legal_Defense %s', self.legal_defense(filtered_action))
                 raise RuntimeError("Model made an illegal move")
 
         # Shed state logic.
@@ -619,11 +622,13 @@ class DurakEnv(gym.Env):
     def gen_score(self):
         """Generates a reward to return.
         """
-
+        # Hand value calculation
+        hand_value = sum([dank_float_order(card, self.dank) for card in self.model.hand])
+        hand_value = hand_value / (len(self.model.hand) + 1) * 8
         # Punishes for excessive taking.
         taking_reward = 2 / 3.1415 * 3.5 * atan(4 - self.takes)
 
-        return taking_reward
+        return taking_reward + hand_value
 
     def reset(self):
         """Resets the game to the starting state.
