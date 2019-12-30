@@ -267,11 +267,12 @@ class DurakEnv(gym.Env):
             self.allowed_to_shed = -1
             return True
 
-        # Shed action or done.
+        # Shed action
         if move < 36:
             card = OPTIONS_DICT[move]
             if card in self.model.hand and card.rank in self.ranks and self.shed_so_far < self.allowed_to_shed:
                 self.first_shed = False
+                self.shed_so_far += 1
                 return True
 
         return False
@@ -552,8 +553,13 @@ class DurakEnv(gym.Env):
                 if self.legal_defense(CARD_TO_OBS[card]):
                     ret[CARD_TO_OBS[card]] = 1
 
+        # legal_shed called AFTER
         if self.state == 's':
             ret[36] = 1
+            allowed_sheds = min(6 - self.attack_count, len(self.opponent))
+            if allowed_sheds > 0:
+                for card in self.model.hand:
+                    ret[CARD_TO_OBS[card]] = 1
 
         return ret
 
