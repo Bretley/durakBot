@@ -6,6 +6,7 @@ All strategies need an attack, defense, and shed.
 
 import enum
 import logging
+import random
 
 from card import dank_float_order, RANK_NUM
 
@@ -22,6 +23,32 @@ def rank_matches(cards, rank):
     """
 
     return [card for card in cards if card.rank == rank]
+
+def defense_options(attack, hand, dank):
+    """Returns all options to defend a given card with
+    Args:
+        attack: Card bot defends
+        hand: bot's hand
+        dank: dank suit
+
+    Returns:
+        list of cards
+
+    """
+    options = []
+    low = RANK_NUM[attack.rank]
+    if attack.suit == dank:
+        for card in hand:
+            rank = RANK_NUM[card.rank]
+            if card.suit == dank and rank > low:
+                options.append(card)
+
+    else:
+        for card in hand:
+            rank = RANK_NUM[card.rank]
+            if (card.suit == attack.suit and rank > low) or card.suit == dank:
+                options.append(card)
+    return options
 
 
 def lowest_defense(attack, hand, dank):
@@ -575,3 +602,89 @@ class StratAI(Strategy):
             hand.remove(card)
 
         return card_list
+
+def StratRandom(Strategy):
+    """Strategy class that implements a random player
+    """
+    def attack(self, hand, table, dank, ranks):
+        """random legal move
+
+        Args:
+            hand: The list of cards in the player's hand.
+            table: The cards on the table.
+            dank: The suit of the Dank card.
+            ranks: The ranks of the cards on the table.
+
+        Returns:
+            Enumeration of what was done, a Card.
+        """
+
+        if len(table) == 0:
+            return Attack.play, hand.pop(random.randrange(len(hand)))  # Must play, 1st attack.
+
+        # Default bot logic: play lowest first, don't pass to other player until out of matches.
+        # Assumes sorted hand.
+        matches = [card for card in hand if card.rank in ranks]
+        if matches:
+            random_index = random.randrange(len(matches))
+            hand.remove(matches[random_index])
+            return Attack.play, matches[random_index]
+
+        return Attack.done, None
+
+    def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
+        """random select from legal options
+
+        Args:
+            hand: The list of cards in the player's hand.
+            table: The cards on the table.
+            dank: The suit of the Dank card.
+            pass_is_legal: Whether or not a pass is legal.
+            cards_to_defend: The number of cards to defend against.
+
+        Returns:
+            Enumeration of what was done, a Card.
+        """
+
+        options = defense_options(attack, self.hand, self.dank)
+
+        logging.info('Defense Logic:')
+        logging.info("%s", attack)
+        logging.info("%s", self)
+
+        if not options:
+            return Defense.take, None
+
+        rand_index = random.randrange(len(options))
+        hand.remove(options[rand_index])
+        return Defense.defend, [options[rand_index]]
+
+    def shed(self, hand, table, dank, max_shed_allowed, ranks):
+        """random shed
+
+        Args:
+            hand: The list of cards in the player's hand.
+            table: The cards on the table.
+            dank: The suit of the Dank card.
+            max_shed_allowed: The maximum amount of cards to shed.
+            ranks: The ranks of the cards on the table.
+
+        Returns:
+            A list of cards to shed.
+        """
+
+        if max_shed_allowed == 0:
+            return []
+
+        card_list = []
+        plays = []
+        for card in hand:
+            if len(card_list) < max_shed_allowed and card.rank in ranks:
+                card_list.append(card)
+        for card in card_list:
+            if random.randrange(2) == 1:
+                # play card, remove from hand
+                hand.remove(card)
+                plays.append(card)
+
+        return plays
