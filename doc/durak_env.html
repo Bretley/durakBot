@@ -46,7 +46,7 @@ from gym import spaces
 from card import Card, CARDS, RANK_NUM, dank_float_order
 from deck import Deck
 from player import Player
-from strategy import Attack, Defense, S0
+from strategy import Attack, Defense, StratRandom
 
 # logging.basicConfig(level=logging.INFO)
 
@@ -176,7 +176,7 @@ class DurakEnv(gym.Env):
         self.state = None
         self.dank = None
         self.table_card = None
-        self.opponent = Player(&#34;Bot&#34;, S0())
+        self.opponent = Player(&#34;Bot&#34;, StratRandom())
         self.print_trace = False
         self.first_shed = True
         self.shed_so_far = None
@@ -675,7 +675,7 @@ class DurakEnv(gym.Env):
         self.state = None
         self.dank = None
         self.table_card = None
-        self.opponent = Player(&#34;Bot&#34;, S0())
+        self.opponent = Player(&#34;Bot&#34;, StratRandom())
         self.first_shed = True
         self.shed_so_far = None
         self.allowed_to_shed = None
@@ -807,7 +807,7 @@ suit matters. It's a good blend of mechanics, strategy, and luck.</p>
         self.state = None
         self.dank = None
         self.table_card = None
-        self.opponent = Player(&#34;Bot&#34;, S0())
+        self.opponent = Player(&#34;Bot&#34;, StratRandom())
         self.print_trace = False
         self.first_shed = True
         self.shed_so_far = None
@@ -1306,7 +1306,7 @@ suit matters. It's a good blend of mechanics, strategy, and luck.</p>
         self.state = None
         self.dank = None
         self.table_card = None
-        self.opponent = Player(&#34;Bot&#34;, S0())
+        self.opponent = Player(&#34;Bot&#34;, StratRandom())
         self.first_shed = True
         self.shed_so_far = None
         self.allowed_to_shed = None
@@ -1785,7 +1785,7 @@ Shed card is legal if card is in hand and rank matches table.</p></section>
     self.state = None
     self.dank = None
     self.table_card = None
-    self.opponent = Player(&#34;Bot&#34;, S0())
+    self.opponent = Player(&#34;Bot&#34;, StratRandom())
     self.first_shed = True
     self.shed_so_far = None
     self.allowed_to_shed = None

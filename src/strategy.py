@@ -24,6 +24,7 @@ def rank_matches(cards, rank):
 
     return [card for card in cards if card.rank == rank]
 
+
 def defense_options(attack, hand, dank):
     """Returns all options to defend a given card with
     Args:
@@ -603,9 +604,11 @@ class StratAI(Strategy):
 
         return card_list
 
-def StratRandom(Strategy):
+
+class StratRandom(Strategy):
     """Strategy class that implements a random player
     """
+
     def attack(self, hand, table, dank, ranks):
         """random legal move
 
@@ -646,7 +649,9 @@ def StratRandom(Strategy):
             Enumeration of what was done, a Card.
         """
 
-        options = defense_options(attack, self.hand, self.dank)
+        attack = table[-1]
+
+        options = defense_options(attack, hand, dank)
 
         logging.info('Defense Logic:')
         logging.info("%s", attack)

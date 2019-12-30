@@ -16,7 +16,7 @@ from gym import spaces
 from card import Card, CARDS, RANK_NUM, dank_float_order
 from deck import Deck
 from player import Player
-from strategy import Attack, Defense, S0
+from strategy import Attack, Defense, StratRandom
 
 # logging.basicConfig(level=logging.INFO)
 
@@ -146,7 +146,7 @@ class DurakEnv(gym.Env):
         self.state = None
         self.dank = None
         self.table_card = None
-        self.opponent = Player("Bot", S0())
+        self.opponent = Player("Bot", StratRandom())
         self.print_trace = False
         self.first_shed = True
         self.shed_so_far = None
@@ -645,7 +645,7 @@ class DurakEnv(gym.Env):
         self.state = None
         self.dank = None
         self.table_card = None
-        self.opponent = Player("Bot", S0())
+        self.opponent = Player("Bot", StratRandom())
         self.first_shed = True
         self.shed_so_far = None
         self.allowed_to_shed = None

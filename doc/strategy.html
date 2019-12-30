@@ -35,6 +35,7 @@ All strategies need an attack, defense, and shed.
 
 import enum
 import logging
+import random
 
 from card import dank_float_order, RANK_NUM
 
@@ -51,6 +52,33 @@ def rank_matches(cards, rank):
     &#34;&#34;&#34;
 
     return [card for card in cards if card.rank == rank]
+
+
+def defense_options(attack, hand, dank):
+    &#34;&#34;&#34;Returns all options to defend a given card with
+    Args:
+        attack: Card bot defends
+        hand: bot&#39;s hand
+        dank: dank suit
+
+    Returns:
+        list of cards
+
+    &#34;&#34;&#34;
+    options = []
+    low = RANK_NUM[attack.rank]
+    if attack.suit == dank:
+        for card in hand:
+            rank = RANK_NUM[card.rank]
+            if card.suit == dank and rank &gt; low:
+                options.append(card)
+
+    else:
+        for card in hand:
+            rank = RANK_NUM[card.rank]
+            if (card.suit == attack.suit and rank &gt; low) or card.suit == dank:
+                options.append(card)
+    return options
 
 
 def lowest_defense(attack, hand, dank):
@@ -603,7 +631,97 @@ class StratAI(Strategy):
         for card in card_list:
             hand.remove(card)
 
-        return card_list</code></pre>
+        return card_list
+
+
+class StratRandom(Strategy):
+    &#34;&#34;&#34;Strategy class that implements a random player
+    &#34;&#34;&#34;
+
+    def attack(self, hand, table, dank, ranks):
+        &#34;&#34;&#34;random legal move
+
+        Args:
+            hand: The list of cards in the player&#39;s hand.
+            table: The cards on the table.
+            dank: The suit of the Dank card.
+            ranks: The ranks of the cards on the table.
+
+        Returns:
+            Enumeration of what was done, a Card.
+        &#34;&#34;&#34;
+
+        if len(table) == 0:
+            return Attack.play, hand.pop(random.randrange(len(hand)))  # Must play, 1st attack.
+
+        # Default bot logic: play lowest first, don&#39;t pass to other player until out of matches.
+        # Assumes sorted hand.
+        matches = [card for card in hand if card.rank in ranks]
+        if matches:
+            random_index = random.randrange(len(matches))
+            hand.remove(matches[random_index])
+            return Attack.play, matches[random_index]
+
+        return Attack.done, None
+
+    def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
+        &#34;&#34;&#34;random select from legal options
+
+        Args:
+            hand: The list of cards in the player&#39;s hand.
+            table: The cards on the table.
+            dank: The suit of the Dank card.
+            pass_is_legal: Whether or not a pass is legal.
+            cards_to_defend: The number of cards to defend against.
+
+        Returns:
+            Enumeration of what was done, a Card.
+        &#34;&#34;&#34;
+
+        attack = table[-1]
+
+        options = defense_options(attack, hand, dank)
+
+        logging.info(&#39;Defense Logic:&#39;)
+        logging.info(&#34;%s&#34;, attack)
+        logging.info(&#34;%s&#34;, self)
+
+        if not options:
+            return Defense.take, None
+
+        rand_index = random.randrange(len(options))
+        hand.remove(options[rand_index])
+        return Defense.defend, [options[rand_index]]
+
+    def shed(self, hand, table, dank, max_shed_allowed, ranks):
+        &#34;&#34;&#34;random shed
+
+        Args:
+            hand: The list of cards in the player&#39;s hand.
+            table: The cards on the table.
+            dank: The suit of the Dank card.
+            max_shed_allowed: The maximum amount of cards to shed.
+            ranks: The ranks of the cards on the table.
+
+        Returns:
+            A list of cards to shed.
+        &#34;&#34;&#34;
+
+        if max_shed_allowed == 0:
+            return []
+
+        card_list = []
+        plays = []
+        for card in hand:
+            if len(card_list) &lt; max_shed_allowed and card.rank in ranks:
+                card_list.append(card)
+        for card in card_list:
+            if random.randrange(2) == 1:
+                # play card, remove from hand
+                hand.remove(card)
+                plays.append(card)
+
+        return plays</code></pre>
 </details>
 </section>
 <section>
@@ -647,6 +765,56 @@ class StratAI(Strategy):
 
     result = int((probability * len(input_list)) + 0.5)
     return min(result, len(input_list) - 1)</code></pre>
+</details>
+</dd>
+<dt id="strategy.defense_options"><code class="name flex">
+<span>def <span class="ident">defense_options</span></span>(<span>attack, hand, dank)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Returns all options to defend a given card with</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>attack</code></strong></dt>
+<dd>Card bot defends</dd>
+<dt><strong><code>hand</code></strong></dt>
+<dd>bot's hand</dd>
+<dt><strong><code>dank</code></strong></dt>
+<dd>dank suit</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list</code> of <code>cards</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def defense_options(attack, hand, dank):
+    &#34;&#34;&#34;Returns all options to defend a given card with
+    Args:
+        attack: Card bot defends
+        hand: bot&#39;s hand
+        dank: dank suit
+
+    Returns:
+        list of cards
+
+    &#34;&#34;&#34;
+    options = []
+    low = RANK_NUM[attack.rank]
+    if attack.suit == dank:
+        for card in hand:
+            rank = RANK_NUM[card.rank]
+            if card.suit == dank and rank &gt; low:
+                options.append(card)
+
+    else:
+        for card in hand:
+            rank = RANK_NUM[card.rank]
+            if (card.suit == attack.suit and rank &gt; low) or card.suit == dank:
+                options.append(card)
+    return options</code></pre>
 </details>
 </dd>
 <dt id="strategy.lowest_defense"><code class="name flex">
@@ -2047,6 +2215,271 @@ does not pass if it requires a dank to do so</p>
 </dd>
 </dl>
 </dd>
+<dt id="strategy.StratRandom"><code class="flex name class">
+<span>class <span class="ident">StratRandom</span></span>
+</code></dt>
+<dd>
+<section class="desc"><p>Strategy class that implements a random player</p>
+<p>Inits Strategy.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class StratRandom(Strategy):
+    &#34;&#34;&#34;Strategy class that implements a random player
+    &#34;&#34;&#34;
+
+    def attack(self, hand, table, dank, ranks):
+        &#34;&#34;&#34;random legal move
+
+        Args:
+            hand: The list of cards in the player&#39;s hand.
+            table: The cards on the table.
+            dank: The suit of the Dank card.
+            ranks: The ranks of the cards on the table.
+
+        Returns:
+            Enumeration of what was done, a Card.
+        &#34;&#34;&#34;
+
+        if len(table) == 0:
+            return Attack.play, hand.pop(random.randrange(len(hand)))  # Must play, 1st attack.
+
+        # Default bot logic: play lowest first, don&#39;t pass to other player until out of matches.
+        # Assumes sorted hand.
+        matches = [card for card in hand if card.rank in ranks]
+        if matches:
+            random_index = random.randrange(len(matches))
+            hand.remove(matches[random_index])
+            return Attack.play, matches[random_index]
+
+        return Attack.done, None
+
+    def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
+        &#34;&#34;&#34;random select from legal options
+
+        Args:
+            hand: The list of cards in the player&#39;s hand.
+            table: The cards on the table.
+            dank: The suit of the Dank card.
+            pass_is_legal: Whether or not a pass is legal.
+            cards_to_defend: The number of cards to defend against.
+
+        Returns:
+            Enumeration of what was done, a Card.
+        &#34;&#34;&#34;
+
+        attack = table[-1]
+
+        options = defense_options(attack, hand, dank)
+
+        logging.info(&#39;Defense Logic:&#39;)
+        logging.info(&#34;%s&#34;, attack)
+        logging.info(&#34;%s&#34;, self)
+
+        if not options:
+            return Defense.take, None
+
+        rand_index = random.randrange(len(options))
+        hand.remove(options[rand_index])
+        return Defense.defend, [options[rand_index]]
+
+    def shed(self, hand, table, dank, max_shed_allowed, ranks):
+        &#34;&#34;&#34;random shed
+
+        Args:
+            hand: The list of cards in the player&#39;s hand.
+            table: The cards on the table.
+            dank: The suit of the Dank card.
+            max_shed_allowed: The maximum amount of cards to shed.
+            ranks: The ranks of the cards on the table.
+
+        Returns:
+            A list of cards to shed.
+        &#34;&#34;&#34;
+
+        if max_shed_allowed == 0:
+            return []
+
+        card_list = []
+        plays = []
+        for card in hand:
+            if len(card_list) &lt; max_shed_allowed and card.rank in ranks:
+                card_list.append(card)
+        for card in card_list:
+            if random.randrange(2) == 1:
+                # play card, remove from hand
+                hand.remove(card)
+                plays.append(card)
+
+        return plays</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="strategy.Strategy" href="#strategy.Strategy">Strategy</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="strategy.StratRandom.attack"><code class="name flex">
+<span>def <span class="ident">attack</span></span>(<span>self, hand, table, dank, ranks)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>random legal move</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>hand</code></strong></dt>
+<dd>The list of cards in the player's hand.</dd>
+<dt><strong><code>table</code></strong></dt>
+<dd>The cards on the table.</dd>
+<dt><strong><code>dank</code></strong></dt>
+<dd>The suit of the Dank card.</dd>
+<dt><strong><code>ranks</code></strong></dt>
+<dd>The ranks of the cards on the table.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Enumeration of what was done, a Card.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def attack(self, hand, table, dank, ranks):
+    &#34;&#34;&#34;random legal move
+
+    Args:
+        hand: The list of cards in the player&#39;s hand.
+        table: The cards on the table.
+        dank: The suit of the Dank card.
+        ranks: The ranks of the cards on the table.
+
+    Returns:
+        Enumeration of what was done, a Card.
+    &#34;&#34;&#34;
+
+    if len(table) == 0:
+        return Attack.play, hand.pop(random.randrange(len(hand)))  # Must play, 1st attack.
+
+    # Default bot logic: play lowest first, don&#39;t pass to other player until out of matches.
+    # Assumes sorted hand.
+    matches = [card for card in hand if card.rank in ranks]
+    if matches:
+        random_index = random.randrange(len(matches))
+        hand.remove(matches[random_index])
+        return Attack.play, matches[random_index]
+
+    return Attack.done, None</code></pre>
+</details>
+</dd>
+<dt id="strategy.StratRandom.defend"><code class="name flex">
+<span>def <span class="ident">defend</span></span>(<span>self, hand, table, dank, pass_is_legal, cards_to_defend)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>random select from legal options</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>hand</code></strong></dt>
+<dd>The list of cards in the player's hand.</dd>
+<dt><strong><code>table</code></strong></dt>
+<dd>The cards on the table.</dd>
+<dt><strong><code>dank</code></strong></dt>
+<dd>The suit of the Dank card.</dd>
+<dt><strong><code>pass_is_legal</code></strong></dt>
+<dd>Whether or not a pass is legal.</dd>
+<dt><strong><code>cards_to_defend</code></strong></dt>
+<dd>The number of cards to defend against.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Enumeration of what was done, a Card.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
+    &#34;&#34;&#34;random select from legal options
+
+    Args:
+        hand: The list of cards in the player&#39;s hand.
+        table: The cards on the table.
+        dank: The suit of the Dank card.
+        pass_is_legal: Whether or not a pass is legal.
+        cards_to_defend: The number of cards to defend against.
+
+    Returns:
+        Enumeration of what was done, a Card.
+    &#34;&#34;&#34;
+
+    attack = table[-1]
+
+    options = defense_options(attack, hand, dank)
+
+    logging.info(&#39;Defense Logic:&#39;)
+    logging.info(&#34;%s&#34;, attack)
+    logging.info(&#34;%s&#34;, self)
+
+    if not options:
+        return Defense.take, None
+
+    rand_index = random.randrange(len(options))
+    hand.remove(options[rand_index])
+    return Defense.defend, [options[rand_index]]</code></pre>
+</details>
+</dd>
+<dt id="strategy.StratRandom.shed"><code class="name flex">
+<span>def <span class="ident">shed</span></span>(<span>self, hand, table, dank, max_shed_allowed, ranks)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>random shed</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>hand</code></strong></dt>
+<dd>The list of cards in the player's hand.</dd>
+<dt><strong><code>table</code></strong></dt>
+<dd>The cards on the table.</dd>
+<dt><strong><code>dank</code></strong></dt>
+<dd>The suit of the Dank card.</dd>
+<dt><strong><code>max_shed_allowed</code></strong></dt>
+<dd>The maximum amount of cards to shed.</dd>
+<dt><strong><code>ranks</code></strong></dt>
+<dd>The ranks of the cards on the table.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A list of cards to shed.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def shed(self, hand, table, dank, max_shed_allowed, ranks):
+    &#34;&#34;&#34;random shed
+
+    Args:
+        hand: The list of cards in the player&#39;s hand.
+        table: The cards on the table.
+        dank: The suit of the Dank card.
+        max_shed_allowed: The maximum amount of cards to shed.
+        ranks: The ranks of the cards on the table.
+
+    Returns:
+        A list of cards to shed.
+    &#34;&#34;&#34;
+
+    if max_shed_allowed == 0:
+        return []
+
+    card_list = []
+    plays = []
+    for card in hand:
+        if len(card_list) &lt; max_shed_allowed and card.rank in ranks:
+            card_list.append(card)
+    for card in card_list:
+        if random.randrange(2) == 1:
+            # play card, remove from hand
+            hand.remove(card)
+            plays.append(card)
+
+    return plays</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 <dt id="strategy.Strategy"><code class="flex name class">
 <span>class <span class="ident">Strategy</span></span>
 </code></dt>
@@ -2103,6 +2536,7 @@ does not pass if it requires a dank to do so</p>
 <li><a title="strategy.S1" href="#strategy.S1">S1</a></li>
 <li><a title="strategy.S2" href="#strategy.S2">S2</a></li>
 <li><a title="strategy.StratAI" href="#strategy.StratAI">StratAI</a></li>
+<li><a title="strategy.StratRandom" href="#strategy.StratRandom">StratRandom</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
@@ -2219,6 +2653,7 @@ does not pass if it requires a dank to do so</p>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="strategy.collapse" href="#strategy.collapse">collapse</a></code></li>
+<li><code><a title="strategy.defense_options" href="#strategy.defense_options">defense_options</a></code></li>
 <li><code><a title="strategy.lowest_defense" href="#strategy.lowest_defense">lowest_defense</a></code></li>
 <li><code><a title="strategy.rank_matches" href="#strategy.rank_matches">rank_matches</a></code></li>
 </ul>
@@ -2270,6 +2705,14 @@ does not pass if it requires a dank to do so</p>
 <li><code><a title="strategy.StratAI.attack" href="#strategy.StratAI.attack">attack</a></code></li>
 <li><code><a title="strategy.StratAI.defend" href="#strategy.StratAI.defend">defend</a></code></li>
 <li><code><a title="strategy.StratAI.shed" href="#strategy.StratAI.shed">shed</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="strategy.StratRandom" href="#strategy.StratRandom">StratRandom</a></code></h4>
+<ul class="">
+<li><code><a title="strategy.StratRandom.attack" href="#strategy.StratRandom.attack">attack</a></code></li>
+<li><code><a title="strategy.StratRandom.defend" href="#strategy.StratRandom.defend">defend</a></code></li>
+<li><code><a title="strategy.StratRandom.shed" href="#strategy.StratRandom.shed">shed</a></code></li>
 </ul>
 </li>
 <li>
