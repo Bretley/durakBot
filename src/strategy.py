@@ -7,7 +7,7 @@ All strategies need an attack, defense, and shed.
 import enum
 import logging
 
-from card import RANK_NUM, dank_float_order
+from card import dank_float_order, RANK_NUM
 
 
 def rank_matches(cards, rank):
@@ -444,17 +444,22 @@ class S2(Strategy):
         return card_list
 
 
-def collapse(p, l):
-    g = int((p * len(l)) + 0.5)
-    return min(g, len(l) - 1)
+def collapse(probability, input_list):
+    """Casts the probability over a valid index of an array.
 
+    Args:
+        probability: A number 0-1.
+        input_list: a List of inputs.
+
+    Returns:
+        The closest int index in the list
+    """
+
+    result = int((probability * len(input_list)) + 0.5)
+    return min(result, len(input_list) - 1)
 
 
 class StratAI(Strategy):
-    def __init__(self, shed_val, play_val):
-        self.shed_val = shed_val
-        self.play_val = play_val
-
     """TODO(Bretley)
 
     Identical to S0 except:
@@ -462,6 +467,11 @@ class StratAI(Strategy):
         does not shed if card rank > 10
         does not pass if it requires a dank to do so
     """
+
+    def __init__(self, shed_val, play_val):
+        super().__init__()
+        self.shed_val = shed_val
+        self.play_val = play_val
 
     def attack(self, hand, table, dank, ranks):
         """TODO(Bretley)
@@ -477,8 +487,7 @@ class StratAI(Strategy):
         """
 
         if len(table) == 0:
-            return Attack.play, hand.pop(collapse(self.play_val, hand))
-            # Must play, 1st attack.
+            return Attack.play, hand.pop(collapse(self.play_val, hand))  # Must play, 1st attack.
 
         # Default bot logic: play lowest first, don't pass to other player until out of matches.
         # Assumes sorted hand.
@@ -566,4 +575,3 @@ class StratAI(Strategy):
             hand.remove(card)
 
         return card_list
-

@@ -36,7 +36,7 @@ All strategies need an attack, defense, and shed.
 import enum
 import logging
 
-from card import RANK_NUM
+from card import dank_float_order, RANK_NUM
 
 
 def rank_matches(cards, rank):
@@ -470,6 +470,139 @@ class S2(Strategy):
         for card in card_list:
             hand.remove(card)
 
+        return card_list
+
+
+def collapse(probability, input_list):
+    &#34;&#34;&#34;Casts the probability over a valid index of an array.
+
+    Args:
+        probability: A number 0-1.
+        input_list: a List of inputs.
+
+    Returns:
+        The closest int index in the list
+    &#34;&#34;&#34;
+
+    result = int((probability * len(input_list)) + 0.5)
+    return min(result, len(input_list) - 1)
+
+
+class StratAI(Strategy):
+    &#34;&#34;&#34;TODO(Bretley)
+
+    Identical to S0 except:
+        does not shed danks
+        does not shed if card rank &gt; 10
+        does not pass if it requires a dank to do so
+    &#34;&#34;&#34;
+
+    def __init__(self, shed_val, play_val):
+        super().__init__()
+        self.shed_val = shed_val
+        self.play_val = play_val
+
+    def attack(self, hand, table, dank, ranks):
+        &#34;&#34;&#34;TODO(Bretley)
+
+        Args:
+            hand: The list of cards in the player&#39;s hand.
+            table: The cards on the table.
+            dank: The suit of the Dank card.
+            ranks: TODO(Bretley)
+
+        Returns:
+            TODO(Bretley)
+        &#34;&#34;&#34;
+
+        if len(table) == 0:
+            return Attack.play, hand.pop(collapse(self.play_val, hand))  # Must play, 1st attack.
+
+        # Default bot logic: play lowest first, don&#39;t pass to other player until out of matches.
+        # Assumes sorted hand.
+        matches = [card for card in hand if card.rank in ranks]
+        if matches:
+            hand.remove(matches[collapse(self.play_val, matches)])
+            return Attack.play, matches[collapse(self.play_val, matches)]
+
+        return Attack.done, None
+
+    def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
+        &#34;&#34;&#34;TODO(Bretley)
+
+        Args:
+            hand: The list of cards in the player&#39;s hand.
+            table: The cards on the table.
+            dank: The suit of the Dank card.
+            pass_is_legal: Whether or not a pass is legal.
+            cards_to_defend: The number of cards to defend against.
+
+        Returns:
+            TODO(Bretley)
+        &#34;&#34;&#34;
+
+        if pass_is_legal:
+            matches = rank_matches(hand, table[-1].rank)
+            if matches and matches[0].suit != dank:
+                hand.remove(matches[0])
+                return Defense.pass_to, [matches[0]]
+
+        # Came from pass, special logic.
+        if cards_to_defend &gt; 1:
+            defense = []
+            for attack in table:
+                current_defense = lowest_defense(attack, hand, dank)
+                if current_defense is not None:
+                    # Accumulate defense cards to send back.
+                    hand.remove(current_defense)
+                    defense.append(current_defense)
+                else:
+                    # Put cards back in hand and signal defeat.
+                    for card in defense:
+                        hand.append(card)
+                    # Don&#39;t need to sort because taking cards.
+
+                    return Defense.take, None
+            return Defense.defend, defense
+
+        attack = table[-1]
+        current_defense = lowest_defense(attack, hand, dank)
+
+        logging.info(&#39;Defense Logic:&#39;)
+        logging.info(&#34;%s&#34;, attack)
+        logging.info(&#34;%s&#34;, self)
+        logging.info(&#34;%s&#34;, current_defense)
+
+        if current_defense is None:
+            return Defense.take, None
+
+        hand.remove(current_defense)
+        return Defense.defend, [current_defense]
+
+    def shed(self, hand, table, dank, max_shed_allowed, ranks):
+        &#34;&#34;&#34;TODO(Bretley)
+
+        Args:
+            hand: The list of cards in the player&#39;s hand.
+            table: The cards on the table.
+            dank: The suit of the Dank card.
+            max_shed_allowed: The maximum amount of cards to shed.
+            ranks: TODO(Bretley)
+
+        Returns:
+            A list of cards to shed.
+        &#34;&#34;&#34;
+
+        if max_shed_allowed == 0:
+            return []
+
+        card_list = []
+        for card in hand:
+            if len(card_list) &lt; max_shed_allowed and card.rank in ranks and dank_float_order(card, dank) &lt; self.shed_val:
+                card_list.append(card)
+        for card in card_list:
+            hand.remove(card)
+
         return card_list</code></pre>
 </details>
 </section>
@@ -480,6 +613,42 @@ class S2(Strategy):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
+<dt id="strategy.collapse"><code class="name flex">
+<span>def <span class="ident">collapse</span></span>(<span>probability, input_list)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Casts the probability over a valid index of an array.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>probability</code></strong></dt>
+<dd>A number 0-1.</dd>
+<dt><strong><code>input_list</code></strong></dt>
+<dd>a List of inputs.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>The</code> <code>closest</code> <code>int</code> <code>index</code> <code>in</code> <code>the</code> <code>list</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def collapse(probability, input_list):
+    &#34;&#34;&#34;Casts the probability over a valid index of an array.
+
+    Args:
+        probability: A number 0-1.
+        input_list: a List of inputs.
+
+    Returns:
+        The closest int index in the list
+    &#34;&#34;&#34;
+
+    result = int((probability * len(input_list)) + 0.5)
+    return min(result, len(input_list) - 1)</code></pre>
+</details>
+</dd>
 <dt id="strategy.lowest_defense"><code class="name flex">
 <span>def <span class="ident">lowest_defense</span></span>(<span>attack, hand, dank)</span>
 </code></dt>
@@ -1556,6 +1725,328 @@ Does not pass if it requires a dank to do so.</p>
 </dd>
 </dl>
 </dd>
+<dt id="strategy.StratAI"><code class="flex name class">
+<span>class <span class="ident">StratAI</span></span>
+<span>(</span><span>shed_val, play_val)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>TODO(Bretley)</p>
+<p>Identical to S0 except:
+does not shed danks
+does not shed if card rank &gt; 10
+does not pass if it requires a dank to do so</p>
+<p>Inits Strategy.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class StratAI(Strategy):
+    &#34;&#34;&#34;TODO(Bretley)
+
+    Identical to S0 except:
+        does not shed danks
+        does not shed if card rank &gt; 10
+        does not pass if it requires a dank to do so
+    &#34;&#34;&#34;
+
+    def __init__(self, shed_val, play_val):
+        super().__init__()
+        self.shed_val = shed_val
+        self.play_val = play_val
+
+    def attack(self, hand, table, dank, ranks):
+        &#34;&#34;&#34;TODO(Bretley)
+
+        Args:
+            hand: The list of cards in the player&#39;s hand.
+            table: The cards on the table.
+            dank: The suit of the Dank card.
+            ranks: TODO(Bretley)
+
+        Returns:
+            TODO(Bretley)
+        &#34;&#34;&#34;
+
+        if len(table) == 0:
+            return Attack.play, hand.pop(collapse(self.play_val, hand))  # Must play, 1st attack.
+
+        # Default bot logic: play lowest first, don&#39;t pass to other player until out of matches.
+        # Assumes sorted hand.
+        matches = [card for card in hand if card.rank in ranks]
+        if matches:
+            hand.remove(matches[collapse(self.play_val, matches)])
+            return Attack.play, matches[collapse(self.play_val, matches)]
+
+        return Attack.done, None
+
+    def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
+        &#34;&#34;&#34;TODO(Bretley)
+
+        Args:
+            hand: The list of cards in the player&#39;s hand.
+            table: The cards on the table.
+            dank: The suit of the Dank card.
+            pass_is_legal: Whether or not a pass is legal.
+            cards_to_defend: The number of cards to defend against.
+
+        Returns:
+            TODO(Bretley)
+        &#34;&#34;&#34;
+
+        if pass_is_legal:
+            matches = rank_matches(hand, table[-1].rank)
+            if matches and matches[0].suit != dank:
+                hand.remove(matches[0])
+                return Defense.pass_to, [matches[0]]
+
+        # Came from pass, special logic.
+        if cards_to_defend &gt; 1:
+            defense = []
+            for attack in table:
+                current_defense = lowest_defense(attack, hand, dank)
+                if current_defense is not None:
+                    # Accumulate defense cards to send back.
+                    hand.remove(current_defense)
+                    defense.append(current_defense)
+                else:
+                    # Put cards back in hand and signal defeat.
+                    for card in defense:
+                        hand.append(card)
+                    # Don&#39;t need to sort because taking cards.
+
+                    return Defense.take, None
+            return Defense.defend, defense
+
+        attack = table[-1]
+        current_defense = lowest_defense(attack, hand, dank)
+
+        logging.info(&#39;Defense Logic:&#39;)
+        logging.info(&#34;%s&#34;, attack)
+        logging.info(&#34;%s&#34;, self)
+        logging.info(&#34;%s&#34;, current_defense)
+
+        if current_defense is None:
+            return Defense.take, None
+
+        hand.remove(current_defense)
+        return Defense.defend, [current_defense]
+
+    def shed(self, hand, table, dank, max_shed_allowed, ranks):
+        &#34;&#34;&#34;TODO(Bretley)
+
+        Args:
+            hand: The list of cards in the player&#39;s hand.
+            table: The cards on the table.
+            dank: The suit of the Dank card.
+            max_shed_allowed: The maximum amount of cards to shed.
+            ranks: TODO(Bretley)
+
+        Returns:
+            A list of cards to shed.
+        &#34;&#34;&#34;
+
+        if max_shed_allowed == 0:
+            return []
+
+        card_list = []
+        for card in hand:
+            if len(card_list) &lt; max_shed_allowed and card.rank in ranks and dank_float_order(card, dank) &lt; self.shed_val:
+                card_list.append(card)
+        for card in card_list:
+            hand.remove(card)
+
+        return card_list</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="strategy.Strategy" href="#strategy.Strategy">Strategy</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="strategy.StratAI.attack"><code class="name flex">
+<span>def <span class="ident">attack</span></span>(<span>self, hand, table, dank, ranks)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>TODO(Bretley)</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>hand</code></strong></dt>
+<dd>The list of cards in the player's hand.</dd>
+<dt><strong><code>table</code></strong></dt>
+<dd>The cards on the table.</dd>
+<dt><strong><code>dank</code></strong></dt>
+<dd>The suit of the Dank card.</dd>
+<dt><strong><code>ranks</code></strong></dt>
+<dd>TODO(Bretley)</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>TODO</code>(<code>Bretley</code>)</dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def attack(self, hand, table, dank, ranks):
+    &#34;&#34;&#34;TODO(Bretley)
+
+    Args:
+        hand: The list of cards in the player&#39;s hand.
+        table: The cards on the table.
+        dank: The suit of the Dank card.
+        ranks: TODO(Bretley)
+
+    Returns:
+        TODO(Bretley)
+    &#34;&#34;&#34;
+
+    if len(table) == 0:
+        return Attack.play, hand.pop(collapse(self.play_val, hand))  # Must play, 1st attack.
+
+    # Default bot logic: play lowest first, don&#39;t pass to other player until out of matches.
+    # Assumes sorted hand.
+    matches = [card for card in hand if card.rank in ranks]
+    if matches:
+        hand.remove(matches[collapse(self.play_val, matches)])
+        return Attack.play, matches[collapse(self.play_val, matches)]
+
+    return Attack.done, None</code></pre>
+</details>
+</dd>
+<dt id="strategy.StratAI.defend"><code class="name flex">
+<span>def <span class="ident">defend</span></span>(<span>self, hand, table, dank, pass_is_legal, cards_to_defend)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>TODO(Bretley)</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>hand</code></strong></dt>
+<dd>The list of cards in the player's hand.</dd>
+<dt><strong><code>table</code></strong></dt>
+<dd>The cards on the table.</dd>
+<dt><strong><code>dank</code></strong></dt>
+<dd>The suit of the Dank card.</dd>
+<dt><strong><code>pass_is_legal</code></strong></dt>
+<dd>Whether or not a pass is legal.</dd>
+<dt><strong><code>cards_to_defend</code></strong></dt>
+<dd>The number of cards to defend against.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>TODO</code>(<code>Bretley</code>)</dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
+    &#34;&#34;&#34;TODO(Bretley)
+
+    Args:
+        hand: The list of cards in the player&#39;s hand.
+        table: The cards on the table.
+        dank: The suit of the Dank card.
+        pass_is_legal: Whether or not a pass is legal.
+        cards_to_defend: The number of cards to defend against.
+
+    Returns:
+        TODO(Bretley)
+    &#34;&#34;&#34;
+
+    if pass_is_legal:
+        matches = rank_matches(hand, table[-1].rank)
+        if matches and matches[0].suit != dank:
+            hand.remove(matches[0])
+            return Defense.pass_to, [matches[0]]
+
+    # Came from pass, special logic.
+    if cards_to_defend &gt; 1:
+        defense = []
+        for attack in table:
+            current_defense = lowest_defense(attack, hand, dank)
+            if current_defense is not None:
+                # Accumulate defense cards to send back.
+                hand.remove(current_defense)
+                defense.append(current_defense)
+            else:
+                # Put cards back in hand and signal defeat.
+                for card in defense:
+                    hand.append(card)
+                # Don&#39;t need to sort because taking cards.
+
+                return Defense.take, None
+        return Defense.defend, defense
+
+    attack = table[-1]
+    current_defense = lowest_defense(attack, hand, dank)
+
+    logging.info(&#39;Defense Logic:&#39;)
+    logging.info(&#34;%s&#34;, attack)
+    logging.info(&#34;%s&#34;, self)
+    logging.info(&#34;%s&#34;, current_defense)
+
+    if current_defense is None:
+        return Defense.take, None
+
+    hand.remove(current_defense)
+    return Defense.defend, [current_defense]</code></pre>
+</details>
+</dd>
+<dt id="strategy.StratAI.shed"><code class="name flex">
+<span>def <span class="ident">shed</span></span>(<span>self, hand, table, dank, max_shed_allowed, ranks)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>TODO(Bretley)</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>hand</code></strong></dt>
+<dd>The list of cards in the player's hand.</dd>
+<dt><strong><code>table</code></strong></dt>
+<dd>The cards on the table.</dd>
+<dt><strong><code>dank</code></strong></dt>
+<dd>The suit of the Dank card.</dd>
+<dt><strong><code>max_shed_allowed</code></strong></dt>
+<dd>The maximum amount of cards to shed.</dd>
+<dt><strong><code>ranks</code></strong></dt>
+<dd>TODO(Bretley)</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A list of cards to shed.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def shed(self, hand, table, dank, max_shed_allowed, ranks):
+    &#34;&#34;&#34;TODO(Bretley)
+
+    Args:
+        hand: The list of cards in the player&#39;s hand.
+        table: The cards on the table.
+        dank: The suit of the Dank card.
+        max_shed_allowed: The maximum amount of cards to shed.
+        ranks: TODO(Bretley)
+
+    Returns:
+        A list of cards to shed.
+    &#34;&#34;&#34;
+
+    if max_shed_allowed == 0:
+        return []
+
+    card_list = []
+    for card in hand:
+        if len(card_list) &lt; max_shed_allowed and card.rank in ranks and dank_float_order(card, dank) &lt; self.shed_val:
+            card_list.append(card)
+    for card in card_list:
+        hand.remove(card)
+
+    return card_list</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 <dt id="strategy.Strategy"><code class="flex name class">
 <span>class <span class="ident">Strategy</span></span>
 </code></dt>
@@ -1611,6 +2102,7 @@ Does not pass if it requires a dank to do so.</p>
 <li><a title="strategy.S0" href="#strategy.S0">S0</a></li>
 <li><a title="strategy.S1" href="#strategy.S1">S1</a></li>
 <li><a title="strategy.S2" href="#strategy.S2">S2</a></li>
+<li><a title="strategy.StratAI" href="#strategy.StratAI">StratAI</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
@@ -1726,6 +2218,7 @@ Does not pass if it requires a dank to do so.</p>
 <ul id="index">
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="strategy.collapse" href="#strategy.collapse">collapse</a></code></li>
 <li><code><a title="strategy.lowest_defense" href="#strategy.lowest_defense">lowest_defense</a></code></li>
 <li><code><a title="strategy.rank_matches" href="#strategy.rank_matches">rank_matches</a></code></li>
 </ul>
@@ -1769,6 +2262,14 @@ Does not pass if it requires a dank to do so.</p>
 <li><code><a title="strategy.S2.attack" href="#strategy.S2.attack">attack</a></code></li>
 <li><code><a title="strategy.S2.defend" href="#strategy.S2.defend">defend</a></code></li>
 <li><code><a title="strategy.S2.shed" href="#strategy.S2.shed">shed</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="strategy.StratAI" href="#strategy.StratAI">StratAI</a></code></h4>
+<ul class="">
+<li><code><a title="strategy.StratAI.attack" href="#strategy.StratAI.attack">attack</a></code></li>
+<li><code><a title="strategy.StratAI.defend" href="#strategy.StratAI.defend">defend</a></code></li>
+<li><code><a title="strategy.StratAI.shed" href="#strategy.StratAI.shed">shed</a></code></li>
 </ul>
 </li>
 <li>

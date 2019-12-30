@@ -229,11 +229,6 @@ class Game:
                         # Break out and drop to shed phase.
                         break
 
-                elif atk[0] == Attack.done:
-
-                    # TODO (Bretley) Add logic for other players to join in on the attack.
-                    break
-
         # Shed phase.
         if defense[0] == Defense.take:
             shed = attacker.shed(table, min((6 - attack_count, len(defender))), ranks)
@@ -328,32 +323,45 @@ def main():
     """The main function for the game.
     """
 
-    turns = []
-    s0_wins = 0
-    s1_wins = 0
-    s2_wins = 0
-    ai_wins = 0
-    num_games = pow(10, 3)
-    for _ in range(num_games):
-        game = Game([StratAI(0.0, 0.0), S0()], False)
-        game_instance = game.play()
-        turns.append(float(game.turns))
-        if isinstance(game_instance.strategy, S0):
-            s0_wins += 1
-        elif isinstance(game_instance.strategy, S1):
-            s1_wins += 1
-        elif isinstance(game_instance.strategy, S2):
-            s2_wins += 1
-        elif isinstance(game_instance.strategy, StratAI):
-            ai_wins += 1
+    step = pow(10, -1)
+    shed = 0.
+    max_score = (0, 0)
+    while shed < 1:
+        play = 0
+        while play < 1:
+            turns = []
+            s0_wins = 0
+            s1_wins = 0
+            s2_wins = 0
+            ai_wins = 0
+            num_games = 100
+            for _ in range(num_games):
+                game = Game([StratAI(shed, play), S0()], False)
+                game_instance = game.play()
+                turns.append(float(game.turns))
+                if isinstance(game_instance.strategy, S0):
+                    s0_wins += 1
+                elif isinstance(game_instance.strategy, S1):
+                    s1_wins += 1
+                elif isinstance(game_instance.strategy, S2):
+                    s2_wins += 1
+                elif isinstance(game_instance.strategy, StratAI):
+                    ai_wins += 1
 
-    print('Finished ' + str(num_games) + ' averaging ' + str(sum(turns) / len(turns)) + ' turns')
-    print('s0 wins: ' + str(s0_wins))
-    print('s1 wins: ' + str(s1_wins))
-    print('s2 wins: ' + str(s2_wins))
-    print('ai_wins: ' + str(ai_wins))
-    print('ai_ratio: ' + str(float(ai_wins)/s0_wins))
-    return (float(ai_wins)/s0_wins)
+            print('Finished ' + str(num_games) + ' averaging ' + str(sum(turns) / len(turns)) + ' turns')
+            print('s0 wins: ' + str(s0_wins))
+            print('s1 wins: ' + str(s1_wins))
+            print('s2 wins: ' + str(s2_wins))
+            print('ai_wins: ' + str(ai_wins))
+            print('ai_ratio: ' + str(float(ai_wins) / s0_wins))
+
+            test = (float(ai_wins) / s0_wins)
+            if test > max_score[0]:
+                max_score = (test, (shed, play))
+            play += step
+        shed += step
+        print(shed, play)
+    print(max_score)
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@
 fitness_criterion      = mean
 fitness_threshold      = 15
 no_fitness_termination = False
-pop_size               = 20
+pop_size               = 10
 reset_on_extinction    = False
 
 [DefaultGenome]
@@ -50,8 +50,8 @@ node_add_prob    = 0.5
 node_delete_prob = 0.2
 
 # Network Parameters
-num_hidden  = 38
-num_inputs  = 38
+num_hidden  = 150
+num_inputs  = 219
 num_outputs = 38
 
 # Node Response Options
@@ -89,4 +89,4 @@ species_elitism      = 2
 [DefaultReproduction]
 elitism            = 5
 survival_threshold = 0.2
-min_species_size   = 25
+min_species_size   = 10

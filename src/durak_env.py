@@ -133,12 +133,8 @@ class DurakEnv(gym.Env):
         # 36 Cards, Take, Done
         self.action_space = spaces.Discrete(38)
 
-        # Feature vector option
-        # Old observation_space, TODO remove eventually if new is better
-        # self.observation_space = spaces.MultiDiscrete(([4] * 36) + [2] + [35])
-
         # Bit vector of valid option
-        self.observation_space = spaces.MultiDiscrete([1]*38)
+        self.observation_space = spaces.MultiDiscrete([1] * 219)
 
         self.game_started = False
         self.deck = Deck()
@@ -310,7 +306,7 @@ class DurakEnv(gym.Env):
         """Proceeds through a single step in the game.
 
         Goes from one state of the game to the next based on the input action
-        that it receives and returns relevant information. TODO(Bretley) more
+        that it receives and returns relevant information.
         detail.
 
         Args:
@@ -566,8 +562,7 @@ class DurakEnv(gym.Env):
         """
 
         # 0 if unknown.
-        ret = [0] * 38
-
+        ret = [0] * 36
         # 1 if on table.
         for card in self.table:
             ret[CARD_TO_OBS[card]] = 1
@@ -581,24 +576,20 @@ class DurakEnv(gym.Env):
 
         # 4 if table card.
         ret[CARD_TO_OBS[self.table_card]] = 4
+        ret2 = np.zeros(shape=(6, 36), )
+        state = [0, 0, 0]
+        if self.state == 'a':
+            state[0] = 1
+        elif self.state == 's':
+            state[1] = 1
+        elif self.state == 'd':
+            state[2] = 1
+            ret2[5][CARD_TO_OBS[self.table[-1]]] = 1
 
-        if self.state == "d":
-            ret[-2] = 0
-            try:
-                ret[-1] = CARD_TO_OBS[self.table[-1]]
-            except IndexError:
-                logging.error('Error in gen_obs')
-                logging.error('Card: %s', str(self.table))
-                logging.error('Table: %s', str([str(x) for x in self.table]))
-                logging.error('State: %s', self.state)
-                logging.error('Info %s', str(self.gen_info()))
+        for index, value in enumerate(ret):
+            ret2[value][index] = 1
 
-        elif self.state == "a":
-            ret[-2] = 1
-        else:
-            ret[-2] = 2
-
-        return np.array(ret)
+        return np.concatenate((ret2.flatten(), state))
 
     def gen_info(self):
         """Generates info to return.
@@ -614,7 +605,7 @@ class DurakEnv(gym.Env):
             done: Whether a step ends the game.
         """
 
-        return self.gen_legal_obs(), self.gen_score() + condition, done, self.gen_info()
+        return self.gen_obs(), self.gen_score() + condition, done, self.gen_info()
 
     def gen_score(self):
         """Generates a reward to return.

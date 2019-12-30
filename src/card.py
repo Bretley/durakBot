@@ -50,10 +50,20 @@ CARD_COMPARATORS = {}
 
 
 def dank_float_order(card, dank_suit):
-    v = RANK_NUM[card.rank]
-    v += (9 if card.suit == dank_suit else 0)
-    v = float(v/(len(RANKS) + 8))
-    return v
+    """A value number for a card relative to the dank suit.
+
+    Args:
+        card: The card.
+        dank_suit: The suit of the dank card.
+
+    Returns:
+        The value.
+    """
+    val = RANK_NUM[card.rank]
+    val += (9 if card.suit == dank_suit else 0)
+    val = float(val / (len(RANKS) + 8))
+    return val
+
 
 def create_comparator(dank_suit):
     """Creates a comparator to compare two cards.

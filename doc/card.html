@@ -69,16 +69,29 @@ class Card:
     def __hash__(self):
         return hash(self.suit + self.rank)
 
-    def __str__(self):
-        return self.rank + &#39; of &#39; + self.suit
-
 
 # Constants representing possible cards and attributes of cards.
-RANKS = [&#39;A&#39;, &#39;K&#39;, &#39;Q&#39;, &#39;J&#39;, &#39;10&#39;, &#39;9&#39;, &#39;8&#39;, &#39;7&#39;, &#39;6&#39;]
+RANKS = list(reversed([&#39;A&#39;, &#39;K&#39;, &#39;Q&#39;, &#39;J&#39;, &#39;10&#39;, &#39;9&#39;, &#39;8&#39;, &#39;7&#39;, &#39;6&#39;]))
 SUITS = [&#39;Diamonds&#39;, &#39;Spades&#39;, &#39;Clubs&#39;, &#39;Hearts&#39;]
 CARDS = [Card(rank, suit) for rank, suit in itertools.product(RANKS, SUITS)]
-RANK_NUM = {rank: index for index, rank in enumerate(reversed(RANKS))}
+RANK_NUM = {rank: index for index, rank in enumerate(RANKS)}
 CARD_COMPARATORS = {}
+
+
+def dank_float_order(card, dank_suit):
+    &#34;&#34;&#34;A value number for a card relative to the dank suit.
+
+    Args:
+        card: The card.
+        dank_suit: The suit of the dank card.
+
+    Returns:
+        The value.
+    &#34;&#34;&#34;
+    val = RANK_NUM[card.rank]
+    val += (9 if card.suit == dank_suit else 0)
+    val = float(val / (len(RANKS) + 8))
+    return val
 
 
 def create_comparator(dank_suit):
@@ -198,6 +211,40 @@ def suited(card, suit):
     return compare</code></pre>
 </details>
 </dd>
+<dt id="card.dank_float_order"><code class="name flex">
+<span>def <span class="ident">dank_float_order</span></span>(<span>card, dank_suit)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>A value number for a card relative to the dank suit.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><a title="card" href="#card"><code>card</code></a></strong></dt>
+<dd>The card.</dd>
+<dt><strong><code>dank_suit</code></strong></dt>
+<dd>The suit of the dank card.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>The value.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dank_float_order(card, dank_suit):
+    &#34;&#34;&#34;A value number for a card relative to the dank suit.
+
+    Args:
+        card: The card.
+        dank_suit: The suit of the dank card.
+
+    Returns:
+        The value.
+    &#34;&#34;&#34;
+    val = RANK_NUM[card.rank]
+    val += (9 if card.suit == dank_suit else 0)
+    val = float(val / (len(RANKS) + 8))
+    return val</code></pre>
+</details>
+</dd>
 <dt id="card.suited"><code class="name flex">
 <span>def <span class="ident">suited</span></span>(<span>card, suit)</span>
 </code></dt>
@@ -290,10 +337,7 @@ def suited(card, suit):
         return self.rank == o.rank and self.suit == o.suit
 
     def __hash__(self):
-        return hash(self.suit + self.rank)
-
-    def __str__(self):
-        return self.rank + &#39; of &#39; + self.suit</code></pre>
+        return hash(self.suit + self.rank)</code></pre>
 </details>
 </dd>
 </dl>
@@ -308,6 +352,7 @@ def suited(card, suit):
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="card.create_comparator" href="#card.create_comparator">create_comparator</a></code></li>
+<li><code><a title="card.dank_float_order" href="#card.dank_float_order">dank_float_order</a></code></li>
 <li><code><a title="card.suited" href="#card.suited">suited</a></code></li>
 </ul>
 </li>
