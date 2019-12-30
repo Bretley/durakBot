@@ -115,11 +115,11 @@ class Strategy:
 
 
 class S0(Strategy):
-    """TODO(Bretley)
+    """Most basic strategy class
     """
 
     def attack(self, hand, table, dank, ranks):
-        """TODO(Bretley)
+        """simplest attack logic, mostly just playing any legal move
 
         Args:
             hand: The list of cards in the player's hand.
@@ -144,7 +144,7 @@ class S0(Strategy):
         return Attack.done, None
 
     def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
-        """TODO(Bretley)
+        """simplest defense logic, mostly just playing legal moves
 
         Args:
             hand: The list of cards in the player's hand.
@@ -196,7 +196,7 @@ class S0(Strategy):
         return Defense.defend, [current_defense]
 
     def shed(self, hand, table, dank, max_shed_allowed, ranks):
-        """TODO(Bretley)
+        """most basic shed logic, match any and dump cards
 
         Args:
             hand: The list of cards in the player's hand.
@@ -229,7 +229,7 @@ class S1(Strategy):
     """
 
     def attack(self, hand, table, dank, ranks):
-        """TODO(Bretley)
+        """same as s0
 
         Args:
             hand: The list of cards in the player's hand.
@@ -255,7 +255,7 @@ class S1(Strategy):
         return Attack.done, None
 
     def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
-        """TODO(Bretley)
+        """same as s0 defense, but will not shed any cards
 
         Args:
             hand: The list of cards in the player's hand.
@@ -307,7 +307,7 @@ class S1(Strategy):
         return Defense.defend, [current_defense]
 
     def shed(self, hand, table, dank, max_shed_allowed, ranks):
-        """TODO(Bretley)
+        """same as s0, will not shed danks
 
         Args:
             hand: The list of cards in the player's hand.
@@ -341,7 +341,7 @@ class S2(Strategy):
     """
 
     def attack(self, hand, table, dank, ranks):
-        """TODO(Bretley)
+        """same as s1
 
         Args:
             hand: The list of cards in the player's hand.
@@ -366,7 +366,7 @@ class S2(Strategy):
         return Attack.done, None
 
     def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
-        """TODO(Bretley)
+        """same as s1
 
         Args:
             hand: The list of cards in the player's hand.
@@ -418,7 +418,7 @@ class S2(Strategy):
         return Defense.defend, [current_defense]
 
     def shed(self, hand, table, dank, max_shed_allowed, ranks):
-        """TODO(Bretley)
+        """same as s1, except it has a limit on rank of cards it can shed
 
         Args:
             hand: The list of cards in the player's hand.
@@ -460,7 +460,7 @@ def collapse(probability, input_list):
 
 
 class StratAI(Strategy):
-    """TODO(Bretley)
+    """Strategy class designed to be parameterized by AI
 
     Identical to S0 except:
         does not shed danks
@@ -474,16 +474,16 @@ class StratAI(Strategy):
         self.play_val = play_val
 
     def attack(self, hand, table, dank, ranks):
-        """TODO(Bretley)
+        """plays card based off confidence
 
         Args:
             hand: The list of cards in the player's hand.
             table: The cards on the table.
             dank: The suit of the Dank card.
-            ranks: TODO(Bretley)
+            ranks: dict of ranks in table
 
         Returns:
-            TODO(Bretley)
+            tuple of attack enum, relevant card
         """
 
         if len(table) == 0:
@@ -499,7 +499,7 @@ class StratAI(Strategy):
         return Attack.done, None
 
     def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
-        """TODO(Bretley)
+        """same as s2
 
         Args:
             hand: The list of cards in the player's hand.
@@ -509,7 +509,7 @@ class StratAI(Strategy):
             cards_to_defend: The number of cards to defend against.
 
         Returns:
-            TODO(Bretley)
+            tuple of Defense enum, relevant card(s)
         """
 
         if pass_is_legal:
@@ -551,14 +551,14 @@ class StratAI(Strategy):
         return Defense.defend, [current_defense]
 
     def shed(self, hand, table, dank, max_shed_allowed, ranks):
-        """TODO(Bretley)
+        """same as s2
 
         Args:
             hand: The list of cards in the player's hand.
             table: The cards on the table.
             dank: The suit of the Dank card.
             max_shed_allowed: The maximum amount of cards to shed.
-            ranks: TODO(Bretley)
+            ranks: dictionary of ranks in the table
 
         Returns:
             A list of cards to shed.

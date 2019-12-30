@@ -54,8 +54,6 @@ import random
 
 import neat
 # pylint: disable=import-error
-import numpy as np
-
 from durak_env import DurakEnv
 
 
@@ -97,7 +95,7 @@ class Worker:
         # Loops through the game until the game is finished or the machine makes an unforgivable mistake.
         while not done:
             actions = net.activate(observation)
-            observation, reward, done, info = self.env.step(np.argmax(actions).flat[0])
+            observation, reward, done, info = self.env.step(actions)
 
             if int(random.random() * 1000) == 1:
                 print(info, reward)
@@ -146,7 +144,7 @@ def main(config_file, restore_file):
     population.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     population.add_reporter(stats)
-    population.add_reporter(neat.Checkpointer(generation_interval=500, filename_prefix=&#39;../restores/neat-checkpoint-&#39;))
+    population.add_reporter(neat.Checkpointer(generation_interval=150, filename_prefix=&#39;../restores/neat-checkpoint-&#39;))
 
     # Runs the learning in parallel.
     evaluator = neat.ParallelEvaluator(8, eval_genomes)
@@ -168,7 +166,7 @@ if __name__ == &#39;__main__&#39;:
     if ARGS.restore is None:
         RESTORE_PATH = None
     else:
-        RESTORE_PATH = os.path.normpath(os.path.join(LOCAL_DIR, &#34;../restores/&#34;, ARGS.restore))
+        RESTORE_PATH = os.path.normpath(os.path.join(LOCAL_DIR, &#34;../restores/neat-checkpoint-&#34; + str(ARGS.restore)))
 
     main(CONFIG_PATH, RESTORE_PATH)</code></pre>
 </details>
@@ -259,7 +257,7 @@ running the NEAT emulation.</p>
     population.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     population.add_reporter(stats)
-    population.add_reporter(neat.Checkpointer(generation_interval=500, filename_prefix=&#39;../restores/neat-checkpoint-&#39;))
+    population.add_reporter(neat.Checkpointer(generation_interval=150, filename_prefix=&#39;../restores/neat-checkpoint-&#39;))
 
     # Runs the learning in parallel.
     evaluator = neat.ParallelEvaluator(8, eval_genomes)
@@ -331,7 +329,7 @@ running the NEAT emulation.</p>
         # Loops through the game until the game is finished or the machine makes an unforgivable mistake.
         while not done:
             actions = net.activate(observation)
-            observation, reward, done, info = self.env.step(np.argmax(actions).flat[0])
+            observation, reward, done, info = self.env.step(actions)
 
             if int(random.random() * 1000) == 1:
                 print(info, reward)
@@ -379,7 +377,7 @@ running the NEAT emulation.</p>
     # Loops through the game until the game is finished or the machine makes an unforgivable mistake.
     while not done:
         actions = net.activate(observation)
-        observation, reward, done, info = self.env.step(np.argmax(actions).flat[0])
+        observation, reward, done, info = self.env.step(actions)
 
         if int(random.random() * 1000) == 1:
             print(info, reward)

@@ -46,7 +46,6 @@ logging.debug("%s %s", 37, OPTIONS_DICT[37])
 
 WIN = 10
 LOSE = 0
-ILLEGAL = -3
 
 
 class Model:
@@ -131,7 +130,7 @@ class DurakEnv(gym.Env):
         super(DurakEnv, self).__init__()
 
         # 36 Cards, Take, Done
-        self.action_space = spaces.Discrete(38)
+        self.action_space = self.action_space = spaces.Box(low=np.array([0]*38), high=np.array([1]*38))
 
         # Bit vector of valid option
         self.observation_space = spaces.MultiDiscrete([1] * 219)
@@ -302,7 +301,7 @@ class DurakEnv(gym.Env):
                 return True
         return False
 
-    def step(self, action: int):
+    def step(self, action: list):
         """Proceeds through a single step in the game.
 
         Goes from one state of the game to the next based on the input action
@@ -319,10 +318,6 @@ class DurakEnv(gym.Env):
             additional information that may be useful.
         """
 
-        logging.debug("%s", action)
-        move = OPTIONS_DICT[action]
-        logging.debug("%s", move)
-
         if not self.game_started:
             self.game_started = True
             self.deck.shuffle_deck()
@@ -336,7 +331,7 @@ class DurakEnv(gym.Env):
             self.opponent.dank = self.dank
 
             # AI attacks first.
-            if int(action) % 2 == 0:
+            if action[0] < .5:
                 self.state = "a"
                 logging.info('Model attacks first')
                 return self.gen_return(0, False)
@@ -346,10 +341,18 @@ class DurakEnv(gym.Env):
             self.mandatory_opponent_attack(info="Atk[0] != Attack.play, bot is not attacking at start.")
             return self.gen_return(0, False)
 
+        legal_moves = self.gen_legal_moves()
+
+        filtered = np.abs(np.multiply(np.array(legal_moves), (np.array(action))))
+
+        filtered_action = int(np.argmax(filtered))
+        assert isinstance(filtered_action, int)
+        move = OPTIONS_DICT[filtered_action]
+
         if self.state == 'a':
             logging.info('Hand within durakEnv: %s', ' ,'.join([str(x) for x in self.model.hand]))
             logging.info('state a')
-            if self.legal_attack(action):
+            if self.legal_attack(filtered_action):
                 self.legal_moves += 1
                 logging.info('legal card action')
                 # AI plays a card.
@@ -409,16 +412,15 @@ class DurakEnv(gym.Env):
             logging.info('Model has played illegal move')
             logging.info(str(move))
             logging.info('move %s', move)
-            logging.info('action %s', action)
-            logging.info('legal_attack %s', self.legal_attack(action))
-            reward = (1.5 if move in self.model.hand else 0) + ILLEGAL
-            return self.gen_return(reward, True)
+            logging.info('action %s', filtered_action)
+            logging.info('legal_attack %s', self.legal_attack(filtered_action))
+            raise RuntimeError("Model made an illegal move")
         # Defend state logic.
         if self.state == "d":
             logging.info('state d')
             self.legal_moves += 1
             # Bot has already attacked.
-            if self.legal_defense(action):
+            if self.legal_defense(filtered_action):
                 logging.info('legal defense')
                 if isinstance(move, Card):
                     self.table.append(move)
@@ -441,7 +443,7 @@ class DurakEnv(gym.Env):
                     logging.info(atk[0])
                     if atk[0] == Attack.play:
                         self.add_attack(atk[1])
-                        self.state = "d"
+                        self.state = 'd'
                         return self.gen_return(0, False)
 
                     if atk[0] == Attack.done:
@@ -484,15 +486,14 @@ class DurakEnv(gym.Env):
             else:
                 # Return and punish.
                 logging.info('move %s', move)
-                logging.info('action %s', action)
+                logging.info('action %s', filtered_action)
                 logging.info('illegal move')
-                reward = (1.5 if move in self.model.hand else 0) + ILLEGAL
-                return self.gen_return(reward, True)
+                raise RuntimeError("Model made an illegal move")
 
         # Shed state logic.
         elif self.state == "s":
             logging.info('state s')
-            if self.legal_shed(action):
+            if self.legal_shed(filtered_action):
                 self.legal_moves += 1
                 if isinstance(move, Card):
                     # Shed 1 card -> return to shed.
@@ -518,19 +519,17 @@ class DurakEnv(gym.Env):
 
                 else:
                     logging.info('move %s', move)
-                    logging.info('action %s', action)
+                    logging.info('action %s', filtered_action)
                     raise RuntimeError('legal_shed true but not shed or done')
-            # Return and punish.
             else:
-                reward = (1.5 if move in self.model.hand else 0) + ILLEGAL
-                return self.gen_return(reward, True)
+                raise RuntimeError("Model made an illegal move")
 
         logging.info("%s", self.state)
 
         return self.gen_return(0, False)
 
-    def gen_legal_obs(self):
-        """ Generates a set of legal moves.
+    def gen_legal_moves(self):
+        """Generates a set of legal moves.
 
         Returns:
             Boolean vector of legal moves.
@@ -538,7 +537,8 @@ class DurakEnv(gym.Env):
 
         ret = [0] * 38
         if self.state == 'a':
-            ret[36] = 1
+            if len(self.table) != 0:
+                ret[36] = 1
             for card in self.model.hand:
                 if self.legal_attack(CARD_TO_OBS[card]):
                     ret[CARD_TO_OBS[card]] = 1
@@ -554,13 +554,14 @@ class DurakEnv(gym.Env):
 
         return ret
 
-    def gen_obs(self):
+    def gen_obs(self, condition):
         """Generates observations to send to the model.
 
         Returns:
             An observation based on game state.
         """
-
+        if condition in (WIN, LOSE):
+            return np.zeros(219, )
         # 0 if unknown.
         ret = [0] * 36
         # 1 if on table.
@@ -584,43 +585,45 @@ class DurakEnv(gym.Env):
             state[1] = 1
         elif self.state == 'd':
             state[2] = 1
-            ret2[5][CARD_TO_OBS[self.table[-1]]] = 1
+            last_card = self.table[-1]
+            obs = CARD_TO_OBS[last_card]
+            ret2[5][obs] = 1
 
         for index, value in enumerate(ret):
             ret2[value][index] = 1
 
         return np.concatenate((ret2.flatten(), state))
 
-    def gen_info(self):
+    def gen_info(self, condition):
         """Generates info to return.
         """
-
-        return {'takes': self.takes, 'legal_moves': self.legal_moves, 'successful_attacks': self.successful_attacks, 'successful_defends': self.successful_defenses}
+        if condition == WIN:
+            end_condition = 'WIN'
+        elif condition == LOSE:
+            end_condition = 'LOSE'
+        else:
+            end_condition = 'N/A'
+        return {'takes': self.takes, 'legal_moves': self.legal_moves, 'successful_attacks': self.successful_attacks,
+                'successful_defends': self.successful_defenses, 'end_condition': end_condition}
 
     def gen_return(self, condition, done):
         """Generates all 4 return objects.
 
         Args:
-            condition: WIN, LOSS, or ILLEGAL.
+            condition: WIN or LOSS
             done: Whether a step ends the game.
         """
 
-        return self.gen_obs(), self.gen_score() + condition, done, self.gen_info()
+        return self.gen_obs(condition), self.gen_score() + condition, done, self.gen_info(condition)
 
     def gen_score(self):
         """Generates a reward to return.
         """
 
-        # Base reward for not messing up.
-        legal_moves_reward = min(20, self.legal_moves - self.takes)
-
-        # Ratio of bot making opponent take vs opponent making bot take.
-        # attack_success_reward = sqrt(self.successful_attacks/float((self.takes+1))) - 0.8
-
         # Punishes for excessive taking.
         taking_reward = 2 / 3.1415 * 3.5 * atan(4 - self.takes)
 
-        return legal_moves_reward + taking_reward
+        return taking_reward
 
     def reset(self):
         """Resets the game to the starting state.

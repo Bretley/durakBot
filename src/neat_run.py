@@ -18,8 +18,6 @@ import random
 
 import neat
 # pylint: disable=import-error
-import numpy as np
-
 from durak_env import DurakEnv
 
 
@@ -61,7 +59,7 @@ class Worker:
         # Loops through the game until the game is finished or the machine makes an unforgivable mistake.
         while not done:
             actions = net.activate(observation)
-            observation, reward, done, info = self.env.step(np.argmax(actions).flat[0])
+            observation, reward, done, info = self.env.step(actions)
 
             if int(random.random() * 1000) == 1:
                 print(info, reward)
@@ -110,7 +108,7 @@ def main(config_file, restore_file):
     population.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     population.add_reporter(stats)
-    population.add_reporter(neat.Checkpointer(generation_interval=500, filename_prefix='../restores/neat-checkpoint-'))
+    population.add_reporter(neat.Checkpointer(generation_interval=150, filename_prefix='../restores/neat-checkpoint-'))
 
     # Runs the learning in parallel.
     evaluator = neat.ParallelEvaluator(8, eval_genomes)
@@ -132,6 +130,6 @@ if __name__ == '__main__':
     if ARGS.restore is None:
         RESTORE_PATH = None
     else:
-        RESTORE_PATH = os.path.normpath(os.path.join(LOCAL_DIR, "../restores/", ARGS.restore))
+        RESTORE_PATH = os.path.normpath(os.path.join(LOCAL_DIR, "../restores/neat-checkpoint-" + str(ARGS.restore)))
 
     main(CONFIG_PATH, RESTORE_PATH)

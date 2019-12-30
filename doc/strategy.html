@@ -144,11 +144,11 @@ class Strategy:
 
 
 class S0(Strategy):
-    &#34;&#34;&#34;TODO(Bretley)
+    &#34;&#34;&#34;Most basic strategy class
     &#34;&#34;&#34;
 
     def attack(self, hand, table, dank, ranks):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;simplest attack logic, mostly just playing any legal move
 
         Args:
             hand: The list of cards in the player&#39;s hand.
@@ -173,7 +173,7 @@ class S0(Strategy):
         return Attack.done, None
 
     def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;simplest defense logic, mostly just playing legal moves
 
         Args:
             hand: The list of cards in the player&#39;s hand.
@@ -225,7 +225,7 @@ class S0(Strategy):
         return Defense.defend, [current_defense]
 
     def shed(self, hand, table, dank, max_shed_allowed, ranks):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;most basic shed logic, match any and dump cards
 
         Args:
             hand: The list of cards in the player&#39;s hand.
@@ -258,7 +258,7 @@ class S1(Strategy):
     &#34;&#34;&#34;
 
     def attack(self, hand, table, dank, ranks):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;same as s0
 
         Args:
             hand: The list of cards in the player&#39;s hand.
@@ -284,7 +284,7 @@ class S1(Strategy):
         return Attack.done, None
 
     def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;same as s0 defense, but will not shed any cards
 
         Args:
             hand: The list of cards in the player&#39;s hand.
@@ -336,7 +336,7 @@ class S1(Strategy):
         return Defense.defend, [current_defense]
 
     def shed(self, hand, table, dank, max_shed_allowed, ranks):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;same as s0, will not shed danks
 
         Args:
             hand: The list of cards in the player&#39;s hand.
@@ -370,7 +370,7 @@ class S2(Strategy):
     &#34;&#34;&#34;
 
     def attack(self, hand, table, dank, ranks):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;same as s1
 
         Args:
             hand: The list of cards in the player&#39;s hand.
@@ -395,7 +395,7 @@ class S2(Strategy):
         return Attack.done, None
 
     def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;same as s1
 
         Args:
             hand: The list of cards in the player&#39;s hand.
@@ -447,7 +447,7 @@ class S2(Strategy):
         return Defense.defend, [current_defense]
 
     def shed(self, hand, table, dank, max_shed_allowed, ranks):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;same as s1, except it has a limit on rank of cards it can shed
 
         Args:
             hand: The list of cards in the player&#39;s hand.
@@ -489,7 +489,7 @@ def collapse(probability, input_list):
 
 
 class StratAI(Strategy):
-    &#34;&#34;&#34;TODO(Bretley)
+    &#34;&#34;&#34;Strategy class designed to be parameterized by AI
 
     Identical to S0 except:
         does not shed danks
@@ -503,16 +503,16 @@ class StratAI(Strategy):
         self.play_val = play_val
 
     def attack(self, hand, table, dank, ranks):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;plays card based off confidence
 
         Args:
             hand: The list of cards in the player&#39;s hand.
             table: The cards on the table.
             dank: The suit of the Dank card.
-            ranks: TODO(Bretley)
+            ranks: dict of ranks in table
 
         Returns:
-            TODO(Bretley)
+            tuple of attack enum, relevant card
         &#34;&#34;&#34;
 
         if len(table) == 0:
@@ -528,7 +528,7 @@ class StratAI(Strategy):
         return Attack.done, None
 
     def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;same as s2
 
         Args:
             hand: The list of cards in the player&#39;s hand.
@@ -538,7 +538,7 @@ class StratAI(Strategy):
             cards_to_defend: The number of cards to defend against.
 
         Returns:
-            TODO(Bretley)
+            tuple of Defense enum, relevant card(s)
         &#34;&#34;&#34;
 
         if pass_is_legal:
@@ -580,14 +580,14 @@ class StratAI(Strategy):
         return Defense.defend, [current_defense]
 
     def shed(self, hand, table, dank, max_shed_allowed, ranks):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;same as s2
 
         Args:
             hand: The list of cards in the player&#39;s hand.
             table: The cards on the table.
             dank: The suit of the Dank card.
             max_shed_allowed: The maximum amount of cards to shed.
-            ranks: TODO(Bretley)
+            ranks: dictionary of ranks in the table
 
         Returns:
             A list of cards to shed.
@@ -814,18 +814,18 @@ class StratAI(Strategy):
 <span>class <span class="ident">S0</span></span>
 </code></dt>
 <dd>
-<section class="desc"><p>TODO(Bretley)</p>
+<section class="desc"><p>Most basic strategy class</p>
 <p>Inits Strategy.</p></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class S0(Strategy):
-    &#34;&#34;&#34;TODO(Bretley)
+    &#34;&#34;&#34;Most basic strategy class
     &#34;&#34;&#34;
 
     def attack(self, hand, table, dank, ranks):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;simplest attack logic, mostly just playing any legal move
 
         Args:
             hand: The list of cards in the player&#39;s hand.
@@ -850,7 +850,7 @@ class StratAI(Strategy):
         return Attack.done, None
 
     def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;simplest defense logic, mostly just playing legal moves
 
         Args:
             hand: The list of cards in the player&#39;s hand.
@@ -902,7 +902,7 @@ class StratAI(Strategy):
         return Defense.defend, [current_defense]
 
     def shed(self, hand, table, dank, max_shed_allowed, ranks):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;most basic shed logic, match any and dump cards
 
         Args:
             hand: The list of cards in the player&#39;s hand.
@@ -937,7 +937,7 @@ class StratAI(Strategy):
 <span>def <span class="ident">attack</span></span>(<span>self, hand, table, dank, ranks)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>TODO(Bretley)</p>
+<section class="desc"><p>simplest attack logic, mostly just playing any legal move</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>hand</code></strong></dt>
@@ -956,7 +956,7 @@ class StratAI(Strategy):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def attack(self, hand, table, dank, ranks):
-    &#34;&#34;&#34;TODO(Bretley)
+    &#34;&#34;&#34;simplest attack logic, mostly just playing any legal move
 
     Args:
         hand: The list of cards in the player&#39;s hand.
@@ -985,7 +985,7 @@ class StratAI(Strategy):
 <span>def <span class="ident">defend</span></span>(<span>self, hand, table, dank, pass_is_legal, cards_to_defend)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>TODO(Bretley)</p>
+<section class="desc"><p>simplest defense logic, mostly just playing legal moves</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>hand</code></strong></dt>
@@ -1006,7 +1006,7 @@ class StratAI(Strategy):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
-    &#34;&#34;&#34;TODO(Bretley)
+    &#34;&#34;&#34;simplest defense logic, mostly just playing legal moves
 
     Args:
         hand: The list of cards in the player&#39;s hand.
@@ -1062,7 +1062,7 @@ class StratAI(Strategy):
 <span>def <span class="ident">shed</span></span>(<span>self, hand, table, dank, max_shed_allowed, ranks)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>TODO(Bretley)</p>
+<section class="desc"><p>most basic shed logic, match any and dump cards</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>hand</code></strong></dt>
@@ -1083,7 +1083,7 @@ class StratAI(Strategy):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def shed(self, hand, table, dank, max_shed_allowed, ranks):
-    &#34;&#34;&#34;TODO(Bretley)
+    &#34;&#34;&#34;most basic shed logic, match any and dump cards
 
     Args:
         hand: The list of cards in the player&#39;s hand.
@@ -1130,7 +1130,7 @@ Does not pass if it requires a dank to do so.</p>
     &#34;&#34;&#34;
 
     def attack(self, hand, table, dank, ranks):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;same as s0
 
         Args:
             hand: The list of cards in the player&#39;s hand.
@@ -1156,7 +1156,7 @@ Does not pass if it requires a dank to do so.</p>
         return Attack.done, None
 
     def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;same as s0 defense, but will not shed any cards
 
         Args:
             hand: The list of cards in the player&#39;s hand.
@@ -1208,7 +1208,7 @@ Does not pass if it requires a dank to do so.</p>
         return Defense.defend, [current_defense]
 
     def shed(self, hand, table, dank, max_shed_allowed, ranks):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;same as s0, will not shed danks
 
         Args:
             hand: The list of cards in the player&#39;s hand.
@@ -1243,7 +1243,7 @@ Does not pass if it requires a dank to do so.</p>
 <span>def <span class="ident">attack</span></span>(<span>self, hand, table, dank, ranks)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>TODO(Bretley)</p>
+<section class="desc"><p>same as s0</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>hand</code></strong></dt>
@@ -1262,7 +1262,7 @@ Does not pass if it requires a dank to do so.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def attack(self, hand, table, dank, ranks):
-    &#34;&#34;&#34;TODO(Bretley)
+    &#34;&#34;&#34;same as s0
 
     Args:
         hand: The list of cards in the player&#39;s hand.
@@ -1292,7 +1292,7 @@ Does not pass if it requires a dank to do so.</p>
 <span>def <span class="ident">defend</span></span>(<span>self, hand, table, dank, pass_is_legal, cards_to_defend)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>TODO(Bretley)</p>
+<section class="desc"><p>same as s0 defense, but will not shed any cards</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>hand</code></strong></dt>
@@ -1313,7 +1313,7 @@ Does not pass if it requires a dank to do so.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
-    &#34;&#34;&#34;TODO(Bretley)
+    &#34;&#34;&#34;same as s0 defense, but will not shed any cards
 
     Args:
         hand: The list of cards in the player&#39;s hand.
@@ -1369,7 +1369,7 @@ Does not pass if it requires a dank to do so.</p>
 <span>def <span class="ident">shed</span></span>(<span>self, hand, table, dank, max_shed_allowed, ranks)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>TODO(Bretley)</p>
+<section class="desc"><p>same as s0, will not shed danks</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>hand</code></strong></dt>
@@ -1390,7 +1390,7 @@ Does not pass if it requires a dank to do so.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def shed(self, hand, table, dank, max_shed_allowed, ranks):
-    &#34;&#34;&#34;TODO(Bretley)
+    &#34;&#34;&#34;same as s0, will not shed danks
 
     Args:
         hand: The list of cards in the player&#39;s hand.
@@ -1439,7 +1439,7 @@ Does not pass if it requires a dank to do so.</p>
     &#34;&#34;&#34;
 
     def attack(self, hand, table, dank, ranks):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;same as s1
 
         Args:
             hand: The list of cards in the player&#39;s hand.
@@ -1464,7 +1464,7 @@ Does not pass if it requires a dank to do so.</p>
         return Attack.done, None
 
     def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;same as s1
 
         Args:
             hand: The list of cards in the player&#39;s hand.
@@ -1516,7 +1516,7 @@ Does not pass if it requires a dank to do so.</p>
         return Defense.defend, [current_defense]
 
     def shed(self, hand, table, dank, max_shed_allowed, ranks):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;same as s1, except it has a limit on rank of cards it can shed
 
         Args:
             hand: The list of cards in the player&#39;s hand.
@@ -1551,7 +1551,7 @@ Does not pass if it requires a dank to do so.</p>
 <span>def <span class="ident">attack</span></span>(<span>self, hand, table, dank, ranks)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>TODO(Bretley)</p>
+<section class="desc"><p>same as s1</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>hand</code></strong></dt>
@@ -1570,7 +1570,7 @@ Does not pass if it requires a dank to do so.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def attack(self, hand, table, dank, ranks):
-    &#34;&#34;&#34;TODO(Bretley)
+    &#34;&#34;&#34;same as s1
 
     Args:
         hand: The list of cards in the player&#39;s hand.
@@ -1599,7 +1599,7 @@ Does not pass if it requires a dank to do so.</p>
 <span>def <span class="ident">defend</span></span>(<span>self, hand, table, dank, pass_is_legal, cards_to_defend)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>TODO(Bretley)</p>
+<section class="desc"><p>same as s1</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>hand</code></strong></dt>
@@ -1620,7 +1620,7 @@ Does not pass if it requires a dank to do so.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
-    &#34;&#34;&#34;TODO(Bretley)
+    &#34;&#34;&#34;same as s1
 
     Args:
         hand: The list of cards in the player&#39;s hand.
@@ -1676,7 +1676,7 @@ Does not pass if it requires a dank to do so.</p>
 <span>def <span class="ident">shed</span></span>(<span>self, hand, table, dank, max_shed_allowed, ranks)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>TODO(Bretley)</p>
+<section class="desc"><p>same as s1, except it has a limit on rank of cards it can shed</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>hand</code></strong></dt>
@@ -1697,7 +1697,7 @@ Does not pass if it requires a dank to do so.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def shed(self, hand, table, dank, max_shed_allowed, ranks):
-    &#34;&#34;&#34;TODO(Bretley)
+    &#34;&#34;&#34;same as s1, except it has a limit on rank of cards it can shed
 
     Args:
         hand: The list of cards in the player&#39;s hand.
@@ -1730,7 +1730,7 @@ Does not pass if it requires a dank to do so.</p>
 <span>(</span><span>shed_val, play_val)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>TODO(Bretley)</p>
+<section class="desc"><p>Strategy class designed to be parameterized by AI</p>
 <p>Identical to S0 except:
 does not shed danks
 does not shed if card rank &gt; 10
@@ -1741,7 +1741,7 @@ does not pass if it requires a dank to do so</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class StratAI(Strategy):
-    &#34;&#34;&#34;TODO(Bretley)
+    &#34;&#34;&#34;Strategy class designed to be parameterized by AI
 
     Identical to S0 except:
         does not shed danks
@@ -1755,16 +1755,16 @@ does not pass if it requires a dank to do so</p>
         self.play_val = play_val
 
     def attack(self, hand, table, dank, ranks):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;plays card based off confidence
 
         Args:
             hand: The list of cards in the player&#39;s hand.
             table: The cards on the table.
             dank: The suit of the Dank card.
-            ranks: TODO(Bretley)
+            ranks: dict of ranks in table
 
         Returns:
-            TODO(Bretley)
+            tuple of attack enum, relevant card
         &#34;&#34;&#34;
 
         if len(table) == 0:
@@ -1780,7 +1780,7 @@ does not pass if it requires a dank to do so</p>
         return Attack.done, None
 
     def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;same as s2
 
         Args:
             hand: The list of cards in the player&#39;s hand.
@@ -1790,7 +1790,7 @@ does not pass if it requires a dank to do so</p>
             cards_to_defend: The number of cards to defend against.
 
         Returns:
-            TODO(Bretley)
+            tuple of Defense enum, relevant card(s)
         &#34;&#34;&#34;
 
         if pass_is_legal:
@@ -1832,14 +1832,14 @@ does not pass if it requires a dank to do so</p>
         return Defense.defend, [current_defense]
 
     def shed(self, hand, table, dank, max_shed_allowed, ranks):
-        &#34;&#34;&#34;TODO(Bretley)
+        &#34;&#34;&#34;same as s2
 
         Args:
             hand: The list of cards in the player&#39;s hand.
             table: The cards on the table.
             dank: The suit of the Dank card.
             max_shed_allowed: The maximum amount of cards to shed.
-            ranks: TODO(Bretley)
+            ranks: dictionary of ranks in the table
 
         Returns:
             A list of cards to shed.
@@ -1867,7 +1867,7 @@ does not pass if it requires a dank to do so</p>
 <span>def <span class="ident">attack</span></span>(<span>self, hand, table, dank, ranks)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>TODO(Bretley)</p>
+<section class="desc"><p>plays card based off confidence</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>hand</code></strong></dt>
@@ -1877,11 +1877,11 @@ does not pass if it requires a dank to do so</p>
 <dt><strong><code>dank</code></strong></dt>
 <dd>The suit of the Dank card.</dd>
 <dt><strong><code>ranks</code></strong></dt>
-<dd>TODO(Bretley)</dd>
+<dd>dict of ranks in table</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>TODO</code>(<code>Bretley</code>)</dt>
+<dt><code>tuple</code> of <code>attack</code> <code>enum</code>, <code>relevant</code> <a title="card" href="card.html"><code>card</code></a></dt>
 <dd>&nbsp;</dd>
 </dl></section>
 <details class="source">
@@ -1889,16 +1889,16 @@ does not pass if it requires a dank to do so</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def attack(self, hand, table, dank, ranks):
-    &#34;&#34;&#34;TODO(Bretley)
+    &#34;&#34;&#34;plays card based off confidence
 
     Args:
         hand: The list of cards in the player&#39;s hand.
         table: The cards on the table.
         dank: The suit of the Dank card.
-        ranks: TODO(Bretley)
+        ranks: dict of ranks in table
 
     Returns:
-        TODO(Bretley)
+        tuple of attack enum, relevant card
     &#34;&#34;&#34;
 
     if len(table) == 0:
@@ -1918,7 +1918,7 @@ does not pass if it requires a dank to do so</p>
 <span>def <span class="ident">defend</span></span>(<span>self, hand, table, dank, pass_is_legal, cards_to_defend)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>TODO(Bretley)</p>
+<section class="desc"><p>same as s2</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>hand</code></strong></dt>
@@ -1934,7 +1934,7 @@ does not pass if it requires a dank to do so</p>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>TODO</code>(<code>Bretley</code>)</dt>
+<dt><code>tuple</code> of <a title="strategy.Defense" href="#strategy.Defense"><code>Defense</code></a> <code>enum</code>, <code>relevant</code> <a title="card" href="card.html"><code>card</code></a>(<code>s</code>)</dt>
 <dd>&nbsp;</dd>
 </dl></section>
 <details class="source">
@@ -1942,7 +1942,7 @@ does not pass if it requires a dank to do so</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def defend(self, hand, table, dank, pass_is_legal, cards_to_defend):
-    &#34;&#34;&#34;TODO(Bretley)
+    &#34;&#34;&#34;same as s2
 
     Args:
         hand: The list of cards in the player&#39;s hand.
@@ -1952,7 +1952,7 @@ does not pass if it requires a dank to do so</p>
         cards_to_defend: The number of cards to defend against.
 
     Returns:
-        TODO(Bretley)
+        tuple of Defense enum, relevant card(s)
     &#34;&#34;&#34;
 
     if pass_is_legal:
@@ -1998,7 +1998,7 @@ does not pass if it requires a dank to do so</p>
 <span>def <span class="ident">shed</span></span>(<span>self, hand, table, dank, max_shed_allowed, ranks)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>TODO(Bretley)</p>
+<section class="desc"><p>same as s2</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>hand</code></strong></dt>
@@ -2010,7 +2010,7 @@ does not pass if it requires a dank to do so</p>
 <dt><strong><code>max_shed_allowed</code></strong></dt>
 <dd>The maximum amount of cards to shed.</dd>
 <dt><strong><code>ranks</code></strong></dt>
-<dd>TODO(Bretley)</dd>
+<dd>dictionary of ranks in the table</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <p>A list of cards to shed.</p></section>
@@ -2019,14 +2019,14 @@ does not pass if it requires a dank to do so</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def shed(self, hand, table, dank, max_shed_allowed, ranks):
-    &#34;&#34;&#34;TODO(Bretley)
+    &#34;&#34;&#34;same as s2
 
     Args:
         hand: The list of cards in the player&#39;s hand.
         table: The cards on the table.
         dank: The suit of the Dank card.
         max_shed_allowed: The maximum amount of cards to shed.
-        ranks: TODO(Bretley)
+        ranks: dictionary of ranks in the table
 
     Returns:
         A list of cards to shed.

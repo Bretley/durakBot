@@ -32,6 +32,9 @@ class Card:
         self.rank = rank
         self.suit = suit
 
+    def __str__(self):
+        return str(self.rank) + ' of ' + str(self.suit)
+
     def __eq__(self, o):
         if not isinstance(0, Card):
             return False
