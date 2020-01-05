@@ -72,7 +72,7 @@ class Worker:
         self.genome = genome
         self.config = config
         self.env = DurakEnv()
-        self.net = neat.nn.RecurrentNetwork.create(self.genome, self.config)
+        self.net = neat.nn.FeedForwardNetwork.create(self.genome, self.config)
 
     def work(self):
         &#34;&#34;&#34;Evaluates the fitness of a genome.
@@ -308,7 +308,7 @@ running the NEAT emulation.</p>
         self.genome = genome
         self.config = config
         self.env = DurakEnv()
-        self.net = neat.nn.RecurrentNetwork.create(self.genome, self.config)
+        self.net = neat.nn.FeedForwardNetwork.create(self.genome, self.config)
 
     def work(self):
         &#34;&#34;&#34;Evaluates the fitness of a genome.
