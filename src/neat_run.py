@@ -12,11 +12,11 @@ game until it reaches a completion state.
 """
 
 import argparse
-import logging
 import os
 import random
 
 import neat
+
 # pylint: disable=import-error
 from durak_env import DurakEnv
 
@@ -35,7 +35,8 @@ class Worker:
         """
         self.genome = genome
         self.config = config
-        self.env = None
+        self.env = DurakEnv()
+        self.net = neat.nn.RecurrentNetwork.create(self.genome, self.config)
 
     def work(self):
         """Evaluates the fitness of a genome.
@@ -44,29 +45,30 @@ class Worker:
             A float that represents the fitness of a genome. The higher the number
             the fitter it is and the more likely the genome is to reproduce.
         """
-        self.env = DurakEnv()
 
         # Loads in a default Durak state.
         self.env.reset()
 
-        net = neat.nn.FeedForwardNetwork.create(self.genome, self.config)
-
         # Takes the first step to get an observation ofn the current state.
-        observation, _, _, _ = self.env.step(self.env.action_space.sample())
-        reward = 0
+        observation, _, _, info = self.env.step(self.env.action_space.sample())
+        total_reward = 0
         done = False
-
+        reward = 0.
+        num_games = 30
         # Loops through the game until the game is finished or the machine makes an unforgivable mistake.
-        while not done:
-            actions = net.activate(observation)
-            observation, reward, done, info = self.env.step(actions)
+        for _ in range(num_games):
+            while not done:
+                actions = self.net.activate(observation)
+                observation, reward, done, info = self.env.step(actions)
+
+            total_reward += reward
 
             if int(random.random() * 1000) == 1:
                 print(info, reward)
 
-        logging.info("%s", reward)
+            self.env.reset()
 
-        return reward
+        return total_reward / num_games
 
 
 def eval_genomes(genome, config):
@@ -111,7 +113,7 @@ def main(config_file, restore_file):
     population.add_reporter(neat.Checkpointer(generation_interval=500, filename_prefix='../restores/neat-checkpoint-'))
 
     # Runs the learning in parallel.
-    evaluator = neat.ParallelEvaluator(8, eval_genomes)
+    evaluator = neat.ThreadedEvaluator(8, eval_genomes)
     winner = population.run(evaluator.evaluate)
 
     print(winner)
