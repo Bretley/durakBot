@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.2" />
+<title>versus_run API documentation</title>
+<meta name="description" content="Uses NEAT genetic machine learning to teach a machine how to play Durak …" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>versus_run</code></h1>
+</header>
+<section id="section-intro">
+<p>Uses NEAT genetic machine learning to teach a machine how to play Durak.</p>
+<p>Contains the Worker class, which does the main program loop for the Durak
+emulation. Main initializes the configuration for neat-python and sends it to
+the Worker class, which uses a custom Gym environment to iterate through the
+game until it reaches a completion state.</p>
+<pre><code>Usage:
+
+python neat_run.py
+python neat_run.py --config=FILEPATH --restore=FILEPATH
+</code></pre>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;Uses NEAT genetic machine learning to teach a machine how to play Durak.
+
+Contains the Worker class, which does the main program loop for the Durak
+emulation. Main initializes the configuration for neat-python and sends it to
+the Worker class, which uses a custom Gym environment to iterate through the
+game until it reaches a completion state.
+
+    Usage:
+
+    python neat_run.py
+    python neat_run.py --config=FILEPATH --restore=FILEPATH
+&#34;&#34;&#34;
+
+import argparse
+import os
+import random
+
+import neat
+
+# pylint: disable=import-error
+from durak_env import DurakEnv
+from versus_evaluator import VersusEvaluator
+
+
+class Worker:
+    &#34;&#34;&#34;A worker for multi-threaded evolution.
+
+    Attributes:
+        genome: The genome to be tested.
+        config: The configuration specifications for NEAT.
+        env: The Durak environment.
+    &#34;&#34;&#34;
+
+    def __init__(self, genome_a, genome_b, config):
+        &#34;&#34;&#34;Inits a worker with a genome and the config.
+        &#34;&#34;&#34;
+        self.genome_a = genome_a
+        self.genome_b = genome_b
+        self.config = config
+        self.env = DurakEnv()
+        self.net_a = neat.nn.FeedForwardNetwork.create(self.genome_a, self.config)
+        self.net_b = neat.nn.FeedForwardNetwork.create(self.genome_b, self.config)
+
+    def work(self):
+        &#34;&#34;&#34;Evaluates the fitness of a genome.
+
+        Returns:
+            A float that represents the fitness of a genome. The higher the number
+            the fitter it is and the more likely the genome is to reproduce.
+        &#34;&#34;&#34;
+
+        # Loads in a default Durak state.
+        self.env.reset()
+
+        # Takes the first step to get an observation ofn the current state.
+        observation, _, _, info = self.env.step(self.env.action_space.sample())
+        total_reward_a = 0
+        total_reward_b = 0
+        done = False
+        reward = 0.
+        num_games = 30
+        # Loops through the game until the game is finished or the machine makes an unforgivable mistake.
+        for _ in range(num_games):
+            i = -1
+            while not done:
+                i += 1
+                if info[&#39;player1&#39;]:
+                    actions = self.net_a.activate(observation)
+                    observation, reward, done, info = self.env.step(actions)
+                else:
+                    actions = self.net_a.activate(observation)
+                    observation, reward, done, info = self.env.step(actions)
+
+            if info[&#39;player1&#39;]:
+                total_reward_a += reward
+            else:
+                total_reward_b += reward
+
+            if int(random.random() * 1000) == 1:
+                print(info, reward)
+
+            self.env.reset()
+
+        return total_reward_a / num_games, total_reward_b / num_games
+
+
+def eval_genomes(genome_a, genome_b, config):
+    &#34;&#34;&#34;Evaluates the fitness of a genome by sending it to the worker.
+
+    Args:
+        genome_a: The first genome to be tested.
+        genome_b: The second genome to be tested.
+        config: The configuration specifications for NEAT.
+    Returns:
+        A float that represents the fitness of a genome. The higher the number
+        the fitter it is and the more likely the genome is to reproduce.
+    &#34;&#34;&#34;
+
+    worker = Worker(genome_a, genome_b, config)
+    return worker.work()
+
+
+def main(config_file, restore_file):
+    &#34;&#34;&#34;The main function for the neat_run module.
+
+    Loads in the NEAT configuration and creates the objects necessary for
+    running the NEAT emulation.
+
+    Args:
+        config_file: The location of the configuration file.
+        restore_file: The location of the restore point file.
+    &#34;&#34;&#34;
+
+    # Loads configuration.
+    config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction, neat.DefaultSpeciesSet, neat.DefaultStagnation, config_file)
+
+    # Loads Restore file if it is specified.
+    if restore_file is None:
+        population = neat.Population(config)
+    else:
+        population = neat.Checkpointer.restore_checkpoint(restore_file)
+
+    # Creates reporters.
+    population.add_reporter(neat.StdOutReporter(True))
+    stats = neat.StatisticsReporter()
+    population.add_reporter(stats)
+    population.add_reporter(neat.Checkpointer(generation_interval=500, filename_prefix=&#39;../restores/neat-checkpoint-&#39;))
+
+    # Runs the learning in parallel.
+    evaluator = VersusEvaluator(8, eval_genomes)
+    winner = population.run(evaluator.evaluate)
+
+    print(winner)
+
+
+if __name__ == &#39;__main__&#39;:
+    # Reads in optional file specification arguments.
+    PARSER = argparse.ArgumentParser(description=&#34;Run NEAT on the Durak game.&#34;)
+    PARSER.add_argument(&#39;--config&#39;, type=str, default=&#34;../config/.NEAT&#34;, required=False)
+    PARSER.add_argument(&#39;--restore&#39;, type=str, default=None, required=False)
+    ARGS = PARSER.parse_args()
+
+    LOCAL_DIR = os.path.dirname(__file__)
+    CONFIG_PATH = os.path.normpath(os.path.join(LOCAL_DIR, ARGS.config))
+
+    if ARGS.restore is None:
+        RESTORE_PATH = None
+    else:
+        RESTORE_PATH = os.path.normpath(os.path.join(LOCAL_DIR, &#34;../restores/neat-checkpoint-&#34; + str(ARGS.restore)))
+
+    main(CONFIG_PATH, RESTORE_PATH)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="versus_run.eval_genomes"><code class="name flex">
+<span>def <span class="ident">eval_genomes</span></span>(<span>genome_a, genome_b, config)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Evaluates the fitness of a genome by sending it to the worker.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>genome_a</code></strong></dt>
+<dd>The first genome to be tested.</dd>
+<dt><strong><code>genome_b</code></strong></dt>
+<dd>The second genome to be tested.</dd>
+<dt><strong><code>config</code></strong></dt>
+<dd>The configuration specifications for NEAT.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>A</code> <code>float</code> <code>that</code> <code>represents</code> <code>the</code> <code>fitness</code> of <code>a</code> <code>genome.</code> <code>The</code> <code>higher</code> <code>the</code> <code>number</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<p>the fitter it is and the more likely the genome is to reproduce.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def eval_genomes(genome_a, genome_b, config):
+    &#34;&#34;&#34;Evaluates the fitness of a genome by sending it to the worker.
+
+    Args:
+        genome_a: The first genome to be tested.
+        genome_b: The second genome to be tested.
+        config: The configuration specifications for NEAT.
+    Returns:
+        A float that represents the fitness of a genome. The higher the number
+        the fitter it is and the more likely the genome is to reproduce.
+    &#34;&#34;&#34;
+
+    worker = Worker(genome_a, genome_b, config)
+    return worker.work()</code></pre>
+</details>
+</dd>
+<dt id="versus_run.main"><code class="name flex">
+<span>def <span class="ident">main</span></span>(<span>config_file, restore_file)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>The main function for the neat_run module.</p>
+<p>Loads in the NEAT configuration and creates the objects necessary for
+running the NEAT emulation.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>config_file</code></strong></dt>
+<dd>The location of the configuration file.</dd>
+<dt><strong><code>restore_file</code></strong></dt>
+<dd>The location of the restore point file.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def main(config_file, restore_file):
+    &#34;&#34;&#34;The main function for the neat_run module.
+
+    Loads in the NEAT configuration and creates the objects necessary for
+    running the NEAT emulation.
+
+    Args:
+        config_file: The location of the configuration file.
+        restore_file: The location of the restore point file.
+    &#34;&#34;&#34;
+
+    # Loads configuration.
+    config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction, neat.DefaultSpeciesSet, neat.DefaultStagnation, config_file)
+
+    # Loads Restore file if it is specified.
+    if restore_file is None:
+        population = neat.Population(config)
+    else:
+        population = neat.Checkpointer.restore_checkpoint(restore_file)
+
+    # Creates reporters.
+    population.add_reporter(neat.StdOutReporter(True))
+    stats = neat.StatisticsReporter()
+    population.add_reporter(stats)
+    population.add_reporter(neat.Checkpointer(generation_interval=500, filename_prefix=&#39;../restores/neat-checkpoint-&#39;))
+
+    # Runs the learning in parallel.
+    evaluator = VersusEvaluator(8, eval_genomes)
+    winner = population.run(evaluator.evaluate)
+
+    print(winner)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="versus_run.Worker"><code class="flex name class">
+<span>class <span class="ident">Worker</span></span>
+<span>(</span><span>genome_a, genome_b, config)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>A worker for multi-threaded evolution.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>genome</code></strong></dt>
+<dd>The genome to be tested.</dd>
+<dt><strong><code>config</code></strong></dt>
+<dd>The configuration specifications for NEAT.</dd>
+<dt><strong><code>env</code></strong></dt>
+<dd>The Durak environment.</dd>
+</dl>
+<p>Inits a worker with a genome and the config.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Worker:
+    &#34;&#34;&#34;A worker for multi-threaded evolution.
+
+    Attributes:
+        genome: The genome to be tested.
+        config: The configuration specifications for NEAT.
+        env: The Durak environment.
+    &#34;&#34;&#34;
+
+    def __init__(self, genome_a, genome_b, config):
+        &#34;&#34;&#34;Inits a worker with a genome and the config.
+        &#34;&#34;&#34;
+        self.genome_a = genome_a
+        self.genome_b = genome_b
+        self.config = config
+        self.env = DurakEnv()
+        self.net_a = neat.nn.FeedForwardNetwork.create(self.genome_a, self.config)
+        self.net_b = neat.nn.FeedForwardNetwork.create(self.genome_b, self.config)
+
+    def work(self):
+        &#34;&#34;&#34;Evaluates the fitness of a genome.
+
+        Returns:
+            A float that represents the fitness of a genome. The higher the number
+            the fitter it is and the more likely the genome is to reproduce.
+        &#34;&#34;&#34;
+
+        # Loads in a default Durak state.
+        self.env.reset()
+
+        # Takes the first step to get an observation ofn the current state.
+        observation, _, _, info = self.env.step(self.env.action_space.sample())
+        total_reward_a = 0
+        total_reward_b = 0
+        done = False
+        reward = 0.
+        num_games = 30
+        # Loops through the game until the game is finished or the machine makes an unforgivable mistake.
+        for _ in range(num_games):
+            i = -1
+            while not done:
+                i += 1
+                if info[&#39;player1&#39;]:
+                    actions = self.net_a.activate(observation)
+                    observation, reward, done, info = self.env.step(actions)
+                else:
+                    actions = self.net_a.activate(observation)
+                    observation, reward, done, info = self.env.step(actions)
+
+            if info[&#39;player1&#39;]:
+                total_reward_a += reward
+            else:
+                total_reward_b += reward
+
+            if int(random.random() * 1000) == 1:
+                print(info, reward)
+
+            self.env.reset()
+
+        return total_reward_a / num_games, total_reward_b / num_games</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="versus_run.Worker.work"><code class="name flex">
+<span>def <span class="ident">work</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Evaluates the fitness of a genome.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>A</code> <code>float</code> <code>that</code> <code>represents</code> <code>the</code> <code>fitness</code> of <code>a</code> <code>genome.</code> <code>The</code> <code>higher</code> <code>the</code> <code>number</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<p>the fitter it is and the more likely the genome is to reproduce.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def work(self):
+    &#34;&#34;&#34;Evaluates the fitness of a genome.
+
+    Returns:
+        A float that represents the fitness of a genome. The higher the number
+        the fitter it is and the more likely the genome is to reproduce.
+    &#34;&#34;&#34;
+
+    # Loads in a default Durak state.
+    self.env.reset()
+
+    # Takes the first step to get an observation ofn the current state.
+    observation, _, _, info = self.env.step(self.env.action_space.sample())
+    total_reward_a = 0
+    total_reward_b = 0
+    done = False
+    reward = 0.
+    num_games = 30
+    # Loops through the game until the game is finished or the machine makes an unforgivable mistake.
+    for _ in range(num_games):
+        i = -1
+        while not done:
+            i += 1
+            if info[&#39;player1&#39;]:
+                actions = self.net_a.activate(observation)
+                observation, reward, done, info = self.env.step(actions)
+            else:
+                actions = self.net_a.activate(observation)
+                observation, reward, done, info = self.env.step(actions)
+
+        if info[&#39;player1&#39;]:
+            total_reward_a += reward
+        else:
+            total_reward_b += reward
+
+        if int(random.random() * 1000) == 1:
+            print(info, reward)
+
+        self.env.reset()
+
+    return total_reward_a / num_games, total_reward_b / num_games</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="versus_run.eval_genomes" href="#versus_run.eval_genomes">eval_genomes</a></code></li>
+<li><code><a title="versus_run.main" href="#versus_run.main">main</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="versus_run.Worker" href="#versus_run.Worker">Worker</a></code></h4>
+<ul class="">
+<li><code><a title="versus_run.Worker.work" href="#versus_run.Worker.work">work</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.2</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

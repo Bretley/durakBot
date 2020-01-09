@@ -127,6 +127,7 @@ class DurakEnv(gym.Env):
         successful_attacks The count of successful attacks the model has done.
         successful_defenses: The count of successful defenses the model has done.
         takes: The count of takes the model has done.
+        player1: Whether it is player 1's turn
     """
 
     def __init__(self):
@@ -163,6 +164,7 @@ class DurakEnv(gym.Env):
         self.successful_attacks = 0
         self.successful_defenses = 0
         self.takes = 0
+        self.player1 = True
 
     def add_attack(self, card):
         """Adds card to the table and updates ranks.
@@ -637,7 +639,7 @@ class DurakEnv(gym.Env):
             end_condition = 'LOSE'
         else:
             end_condition = 'N/A'
-        return {'takes': self.takes, 'legal_moves': self.legal_moves, 'successful_attacks': self.successful_attacks, 'successful_defends': self.successful_defenses, 'end_condition': end_condition}
+        return {'takes': self.takes, 'legal_moves': self.legal_moves, 'successful_attacks': self.successful_attacks, 'successful_defends': self.successful_defenses, 'end_condition': end_condition, 'player1': self.player1}
 
     def gen_return(self, condition):
         """Generates all 4 return objects.
@@ -688,6 +690,7 @@ class DurakEnv(gym.Env):
         self.successful_attacks = 0
         self.successful_defenses = 0
         self.takes = 0
+        self.player1 = True
 
     def render(self, mode='human'):
         """Will not be used.

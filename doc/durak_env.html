@@ -157,6 +157,7 @@ class DurakEnv(gym.Env):
         successful_attacks The count of successful attacks the model has done.
         successful_defenses: The count of successful defenses the model has done.
         takes: The count of takes the model has done.
+        player1: Whether it is player 1&#39;s turn
     &#34;&#34;&#34;
 
     def __init__(self):
@@ -193,6 +194,7 @@ class DurakEnv(gym.Env):
         self.successful_attacks = 0
         self.successful_defenses = 0
         self.takes = 0
+        self.player1 = True
 
     def add_attack(self, card):
         &#34;&#34;&#34;Adds card to the table and updates ranks.
@@ -667,7 +669,7 @@ class DurakEnv(gym.Env):
             end_condition = &#39;LOSE&#39;
         else:
             end_condition = &#39;N/A&#39;
-        return {&#39;takes&#39;: self.takes, &#39;legal_moves&#39;: self.legal_moves, &#39;successful_attacks&#39;: self.successful_attacks, &#39;successful_defends&#39;: self.successful_defenses, &#39;end_condition&#39;: end_condition}
+        return {&#39;takes&#39;: self.takes, &#39;legal_moves&#39;: self.legal_moves, &#39;successful_attacks&#39;: self.successful_attacks, &#39;successful_defends&#39;: self.successful_defenses, &#39;end_condition&#39;: end_condition, &#39;player1&#39;: self.player1}
 
     def gen_return(self, condition):
         &#34;&#34;&#34;Generates all 4 return objects.
@@ -718,6 +720,7 @@ class DurakEnv(gym.Env):
         self.successful_attacks = 0
         self.successful_defenses = 0
         self.takes = 0
+        self.player1 = True
 
     def render(self, mode=&#39;human&#39;):
         &#34;&#34;&#34;Will not be used.
@@ -791,6 +794,8 @@ suit matters. It's a good blend of mechanics, strategy, and luck.</p>
 <dd>The count of successful defenses the model has done.</dd>
 <dt><strong><code>takes</code></strong></dt>
 <dd>The count of takes the model has done.</dd>
+<dt><strong><code>player1</code></strong></dt>
+<dd>Whether it is player 1's turn</dd>
 </dl>
 <p>Inits DurakEnv.</p></section>
 <details class="source">
@@ -830,6 +835,7 @@ suit matters. It's a good blend of mechanics, strategy, and luck.</p>
         successful_attacks The count of successful attacks the model has done.
         successful_defenses: The count of successful defenses the model has done.
         takes: The count of takes the model has done.
+        player1: Whether it is player 1&#39;s turn
     &#34;&#34;&#34;
 
     def __init__(self):
@@ -866,6 +872,7 @@ suit matters. It's a good blend of mechanics, strategy, and luck.</p>
         self.successful_attacks = 0
         self.successful_defenses = 0
         self.takes = 0
+        self.player1 = True
 
     def add_attack(self, card):
         &#34;&#34;&#34;Adds card to the table and updates ranks.
@@ -1340,7 +1347,7 @@ suit matters. It's a good blend of mechanics, strategy, and luck.</p>
             end_condition = &#39;LOSE&#39;
         else:
             end_condition = &#39;N/A&#39;
-        return {&#39;takes&#39;: self.takes, &#39;legal_moves&#39;: self.legal_moves, &#39;successful_attacks&#39;: self.successful_attacks, &#39;successful_defends&#39;: self.successful_defenses, &#39;end_condition&#39;: end_condition}
+        return {&#39;takes&#39;: self.takes, &#39;legal_moves&#39;: self.legal_moves, &#39;successful_attacks&#39;: self.successful_attacks, &#39;successful_defends&#39;: self.successful_defenses, &#39;end_condition&#39;: end_condition, &#39;player1&#39;: self.player1}
 
     def gen_return(self, condition):
         &#34;&#34;&#34;Generates all 4 return objects.
@@ -1391,6 +1398,7 @@ suit matters. It's a good blend of mechanics, strategy, and luck.</p>
         self.successful_attacks = 0
         self.successful_defenses = 0
         self.takes = 0
+        self.player1 = True
 
     def render(self, mode=&#39;human&#39;):
         &#34;&#34;&#34;Will not be used.
@@ -1487,7 +1495,7 @@ suit matters. It's a good blend of mechanics, strategy, and luck.</p>
         end_condition = &#39;LOSE&#39;
     else:
         end_condition = &#39;N/A&#39;
-    return {&#39;takes&#39;: self.takes, &#39;legal_moves&#39;: self.legal_moves, &#39;successful_attacks&#39;: self.successful_attacks, &#39;successful_defends&#39;: self.successful_defenses, &#39;end_condition&#39;: end_condition}</code></pre>
+    return {&#39;takes&#39;: self.takes, &#39;legal_moves&#39;: self.legal_moves, &#39;successful_attacks&#39;: self.successful_attacks, &#39;successful_defends&#39;: self.successful_defenses, &#39;end_condition&#39;: end_condition, &#39;player1&#39;: self.player1}</code></pre>
 </details>
 </dd>
 <dt id="durak_env.DurakEnv.gen_legal_moves"><code class="name flex">
@@ -1883,7 +1891,8 @@ Shed card is legal if card is in hand and rank matches table.</p></section>
     self.legal_moves = 0
     self.successful_attacks = 0
     self.successful_defenses = 0
-    self.takes = 0</code></pre>
+    self.takes = 0
+    self.player1 = True</code></pre>
 </details>
 </dd>
 <dt id="durak_env.DurakEnv.step"><code class="name flex">
